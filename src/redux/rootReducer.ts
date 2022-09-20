@@ -18,12 +18,6 @@ type Product = {
 	sizes: string[];
 };
 
-type Variant = {
-	color_code: string;
-	size: string;
-	stock: number;
-};
-
 export type Add = {
 	type: 'ADD';
 	payload: {

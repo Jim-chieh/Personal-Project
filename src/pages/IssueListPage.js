@@ -10,17 +10,7 @@ function IssuePage() {
 	console.log(counter);
 	// if (!labels) return null;
 
-	return (
-		<button
-			onClick={() => {
-				dispatch({
-					type: 'ADD'
-				});
-			}}
-		>
-			Add
-		</button>
-	);
+	return <div>1</div>;
 }
 
 export default IssuePage;

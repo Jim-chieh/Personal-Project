@@ -7,9 +7,13 @@ import {
 	TriangleDownIcon,
 	ThreeBarsIcon
 } from '@primer/octicons-react';
-import HeaderMobile from './HeaderMobile';
 
+import HeaderMobile from './HeaderMobile';
+import ProfileDropDown from './ProfileDropDown';
 import ProfileImg from './images.jpg';
+import RepoDetail from './RepoDetail';
+
+type Click = { $isActive: boolean };
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -42,26 +46,29 @@ const NavBarContainer = styled.div`
 	}
 `;
 
-const SearchBar = styled.input`
-	border: 1px solid #57606a;
-	background-color: transparent;
+const SearchBar = styled.input<Click>`
+	border: 1px solid ${props => (props.$isActive ? '#ffffff' : '#57606a')};
+	background-color: ${props => (props.$isActive ? 'white' : 'transparent')};
 	padding: 0 12px;
 	height: 28px;
-	width: 266px;
+	width: ${props => (props.$isActive ? '50%' : '266px')};
 	border-radius: 5px;
 	margin-right: 16px;
 	position: relative;
+	outline: none;
+	transition: all 0.5s;
+	color: ${props => (props.$isActive ? 'black' : 'white')};
 	::placeholder {
 		color: #c8c9cb;
 	}
 `;
 
-const InputSlash = styled.div`
+const InputSlash = styled.div<Click>`
 	width: 20px;
 	height: 20px;
-	color: #979a9c;
+	color: ${props => (props.$isActive ? 'white' : '#979a9c')};
 	font-size: 14px;
-	border: 1px solid #57606a;
+	border: 1px solid ${props => (props.$isActive ? 'white' : '#57606a')};
 	border-radius: 5px;
 	position: absolute;
 	left: 312px;
@@ -69,6 +76,7 @@ const InputSlash = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	transition: all 0.5s;
 `;
 
 const NavContainer = styled.div`
@@ -116,6 +124,7 @@ const IconContainer = styled.div`
 	margin-right: 16px;
 	display: flex;
 	align-items: center;
+	position: relative;
 	@media screen and (max-width: 767px) {
 		display: none;
 	}
@@ -146,24 +155,76 @@ const Profile = styled.img`
 	border-radius: 50%;
 `;
 
-const MobileMenu = styled.div`
-	background-color: #24292f;
+const Input = styled.input`
+	width: 28px;
+	height: 20px;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	position: absolute;
+	right: 6px;
+	cursor: pointer;
+	color: transparent;
+`;
+
+const MobileMenu = styled.div<Click>`
+	display: none;
+	@media screen and (max-width: 767px) {
+		background-color: #24292f;
+		display: ${props => (props.$isActive ? 'block' : 'none')};
+	}
+`;
+
+const ProfileDropdown = styled.div<Click>`
+	position: absolute;
+	bottom: -90px;
+	right: 0px;
+	width: 178px;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	border-radius: 10px;
+	display: ${props => (props.$isActive ? 'block' : 'none')};
+	&:after {
+		border-right: solid 10px transparent;
+		border-left: solid 10px transparent;
+		border-bottom: solid 10px #ffffff;
+		transform: translateX(-50%);
+		position: absolute;
+		z-index: 1;
+		content: '';
+		top: -10px;
+		right: 0px;
+		height: 0;
+		width: 0;
+	}
+
+	@media screen and (max-width: 767px) {
+		display: none;
+	}
 `;
 
 const navArr = ['Pull requests', 'Issues', 'Marketplace', 'Explore', 'Pulls'];
 
 function Header() {
-	const [menuClick, setMenuClick] = useState();
+	const [menuClick, setMenuClick] = useState(false);
+	const [inputClick, setInputClick] = useState(false);
+	const [profileClick, setProfileClick] = useState(false);
+
 	return (
 		<>
 			<Wrapper>
-				<HambergerContainer>
+				<HambergerContainer onClick={() => setMenuClick(!menuClick)}>
 					<ThreeBarsIcon size={24} fill="#ffffff" />
 				</HambergerContainer>
 				<GitHubIcon size={32} fill="#ffffff" />
 				<NavBarContainer>
-					<SearchBar placeholder="Search or jump to..." />
-					<InputSlash>/</InputSlash>
+					<SearchBar
+						placeholder="Search or jump to..."
+						onClick={() => setInputClick(true)}
+						onBlur={() => setInputClick(false)}
+						$isActive={inputClick}
+					/>
+					<InputSlash $isActive={inputClick}>/</InputSlash>
 					<NavContainer>
 						{navArr.map((nav, index) => (
 							<Nav key={index}>{nav}</Nav>
@@ -176,13 +237,21 @@ function Header() {
 					<Triangle size={16} fill="#ffffff" />
 				</IconContainer>
 				<IconContainer>
+					<Input
+						onClick={() => setProfileClick(!profileClick)}
+						onBlur={() => setProfileClick(false)}
+					/>
 					<Profile src={ProfileImg} alt="Profile" />
 					<Triangle size={16} fill="#ffffff" />
+					<ProfileDropdown $isActive={profileClick}>
+						<ProfileDropDown />
+					</ProfileDropdown>
 				</IconContainer>
 			</Wrapper>
-			<MobileMenu>
+			<MobileMenu $isActive={menuClick}>
 				<HeaderMobile />
 			</MobileMenu>
+			<RepoDetail />
 		</>
 	);
 }

@@ -40,6 +40,9 @@ const HambergerContainer = styled.div`
 
 const GitHubIcon = styled(MarkGithubIcon)`
 	margin-right: 16px;
+	:hover {
+		cursor: pointer;
+	}
 `;
 
 const NavBarContainer = styled.div`
@@ -86,6 +89,9 @@ const InputSlash = styled.div<Click>`
 const NavContainer = styled.div`
 	display: flex;
 	align-items: center;
+	:hover {
+		color: #bebfc1;
+	}
 `;
 
 const Nav = styled.div`
@@ -95,7 +101,7 @@ const Nav = styled.div`
 	font-weight: bold;
 	:hover {
 		cursor: pointer;
-		color: bebfb8;
+		color: #bebfb8;
 	}
 
 	:first-child {
@@ -186,13 +192,14 @@ const MobileMenu = styled.div<Click>`
 
 const ProfileDrop = styled.div<Click>`
 	position: absolute;
-	bottom: -464px;
+	bottom: -474px;
 	right: 0px;
 	width: 178px;
 	background-color: #ffffff;
 	border: 1px solid #cccccc;
 	border-radius: 10px;
 	display: ${props => (props.$isActive ? 'block' : 'none')};
+	z-index: 99;
 	&:after {
 		border-right: solid 10px transparent;
 		border-left: solid 10px transparent;
@@ -252,19 +259,13 @@ function Header() {
 					<Triangle size={16} fill="#ffffff" />
 				</IconContainer>
 				<IconContainer>
-					<Input
-						onClick={() => setProfileClick(!profileClick)}
-						onBlur={() => setProfileClick(false)}
-					/>
+					<Input onClick={() => setProfileClick(!profileClick)} />
 					<Profile src={ProfileImg} alt="Profile" />
 					<Triangle size={16} fill="#ffffff" />
 					<ProfileDrop $isActive={profileClick}>
 						<ProfileDropDown />
 					</ProfileDrop>
-					<ProfileInput
-						onClick={() => setPlusClick(!plusClick)}
-						onBlur={() => setPlusClick(false)}
-					/>
+					<ProfileInput onClick={() => setPlusClick(!plusClick)} />
 					<Dropdown array={plusArr} $isActive={plusClick} />
 				</IconContainer>
 			</Wrapper>

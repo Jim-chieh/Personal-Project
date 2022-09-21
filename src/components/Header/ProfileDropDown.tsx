@@ -114,7 +114,13 @@ function ProfileDropDown() {
 				))}
 			</ContentBox>
 			<ContentBox>
-				<Signout>Sign out</Signout>
+				<Signout
+					onClick={() => {
+						console.log('click');
+					}}
+				>
+					Sign out
+				</Signout>
 			</ContentBox>
 		</>
 	);

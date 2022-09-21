@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import { MarkGithubIcon } from '@primer/octicons-react';
 
+const OuterWrapper = styled.div`
+	width: 100%;
+	position: absolute;
+	bottom: 40px;
+`;
+
 const Wrapper = styled.div`
 	max-width: 1248px;
 	height: 114px;
@@ -60,11 +66,13 @@ const NavBar = styled.ul`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-left: 30px;
 	@media screen and (max-width: 1011px) {
 		margin-bottom: 8px;
 		flex-wrap: wrap;
 		justify-content: center;
 		width: 94%;
+		margin-left: 0;
 	}
 `;
 
@@ -75,6 +83,11 @@ const NavList = styled.li`
 	@media screen and (max-width: 1011px) {
 		margin-right: 16px;
 		height: 16px;
+	}
+
+	:hover {
+		text-decoration: underline;
+		cursor: pointer;
 	}
 `;
 
@@ -94,21 +107,23 @@ const FooterArr = [
 
 function Footer() {
 	return (
-		<Wrapper>
-			<Container>
-				<LogoWrapper>
-					<LogoContainer>
-						<MarkGithubIcon size={24} fill="#6e7781" />
-						<GithubCopyRight>© 2022 GitHub, Inc.</GithubCopyRight>
-					</LogoContainer>
-				</LogoWrapper>
-				<NavBar>
-					{FooterArr.map((footer, index) => (
-						<NavList key={index}>{footer}</NavList>
-					))}
-				</NavBar>
-			</Container>
-		</Wrapper>
+		<OuterWrapper>
+			<Wrapper>
+				<Container>
+					<LogoWrapper>
+						<LogoContainer>
+							<MarkGithubIcon size={24} fill="#6e7781" />
+							<GithubCopyRight>© 2022 GitHub, Inc.</GithubCopyRight>
+						</LogoContainer>
+					</LogoWrapper>
+					<NavBar>
+						{FooterArr.map((footer, index) => (
+							<NavList key={index}>{footer}</NavList>
+						))}
+					</NavBar>
+				</Container>
+			</Wrapper>
+		</OuterWrapper>
 	);
 }
 

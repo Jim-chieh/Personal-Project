@@ -10,7 +10,7 @@ import App from './App';
 import IssueListPage from './pages/IssueListPage';
 import IssuePage from './pages/IssuePage';
 import NewIssuePage from './pages/NewIssuePage';
-import LabelManagement from './pages/LabelManagement';
+import LabelManagement from './pages/Label/LabelManagement';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -20,14 +20,13 @@ root.render(
 		<Provider store={store}>
 			<Routes>
 				<Route path="/" element={<App />}>
-					<Route index element={<IssueListPage />} />
+					<Route path="labelmanagement" element={<IssueListPage />} />
 					<Route path="issue/:id" element={<IssuePage />} />
 					<Route path="newissue" element={<NewIssuePage />} />
-					<Route path="labelmanagement" element={<LabelManagement />} />
+					<Route index element={<LabelManagement />} />
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
 			</Routes>
 		</Provider>
 	</BrowserRouter>
 );
-

@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from './components/Header/Header';
-import Footer from './components/Footer';
+import Footer from './components/Footer/Footer';
 import { Outlet } from 'react-router-dom';
 import { ResetStyle, GlobalStyle } from './components/ResetStyle';
 // import { Counter } from './features/counter/Counter';

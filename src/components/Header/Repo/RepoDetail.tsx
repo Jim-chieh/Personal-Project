@@ -1,11 +1,22 @@
 import ActionList from './ActionList';
+import RepoAction from './RepoAction';
 import styled from 'styled-components';
 import {
-	RepoIcon,
-	PinIcon,
+	BookIcon,
+	CodeIcon,
 	EyeIcon,
+	GearIcon,
+	GitPullRequestIcon,
+	GraphIcon,
+	IssueOpenedIcon,
+	PinIcon,
+	PlayIcon,
 	RepoForkedIcon,
-	StarIcon
+	RepoIcon,
+	ShieldIcon,
+	StarIcon,
+	TableIcon,
+	TriangleDownIcon
 } from '@primer/octicons-react';
 
 const Wrapper = styled.div`
@@ -66,105 +77,35 @@ const Public = styled.div`
 	align-items: center;
 `;
 
-const RepoActions = styled.div`
-	display: flex;
-	margin-left: auto;
-	@media screen and (max-width: 767px) {
-		display: none;
-	}
-`;
-
-const Pin = styled(PinIcon)`
-	margin-right: 8px;
-`;
-
-const PinContainer = styled.div`
-	/* width: 70px; */
-	height: 28px;
-	border: 1px solid #d5d8da;
-	border-radius: 10px;
-	padding: 3px 12px;
-	font-size: 12px;
-	display: flex;
-	align-items: center;
-	margin-right: 8px;
-	:hover {
-		cursor: pointer;
-		background-color: #f3f4f6;
-	}
-`;
-
-const Unwatch = styled(EyeIcon)`
-	margin-right: 8px;
-`;
-
-const IconWrapper = styled.div`
-	/* width: 100px; */
-	height: 28px;
-	border: 1px solid #d5d8da;
-	border-radius: 10px;
-	padding: 0px 12px;
-	font-size: 12px;
-	display: flex;
-	align-items: center;
-	margin-right: 8px;
-	:hover {
-		cursor: pointer;
-		background-color: #f3f4f6;
-	}
-	:last-child {
-		margin-right: 0px;
-	}
-`;
-
-const IconContainer = styled.div`
-	display: flex;
-	align-items: center;
-`;
-
-const Triangle = styled.div`
-	width: 0;
-	height: 0;
-	border-style: solid;
-	border-width: 4px 4px 0 4px;
-	border-color: #4e5257 transparent transparent transparent;
-	margin-left: 4px;
-	/* position: absolute; */
-`;
-
-const Circle = styled.div`
-	width: 20px;
-	height: 20px;
-	background-color: #e2e3e6;
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 0 4px;
-`;
-
-const Fork = styled(RepoForkedIcon)`
-	margin-right: 8px;
-`;
-
-const TriangleContainer = styled.div`
-	height: 100%;
-	border-left: 1px solid #d5d8da;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 8px 0px 8px 3px;
-	margin-left: 8px;
-	${IconContainer}:hover & {
-		background-color: blue;
-	}
-`;
-
-const Star = styled(StarIcon)`
-	margin-right: 8px;
-`;
+const actionArr = [
+	[<PinIcon fill="#6b737c" />, 'Pin'],
+	[
+		<EyeIcon fill="#6b737c" />,
+		'Unwatch',
+		1,
+		<TriangleDownIcon fill="#6b737c" />
+	],
+	[
+		<RepoForkedIcon fill="#6b737c" />,
+		'Fork',
+		0,
+		<TriangleDownIcon fill="#6b737c" />
+	],
+	[<StarIcon fill="#6b737c" />, 'Star', 0, <TriangleDownIcon fill="#6b737c" />]
+];
 
 function RepoDetail() {
+	const pageActionArr = [
+		[<CodeIcon fill="#6b737c" />, 'Pin'],
+		[<IssueOpenedIcon fill="#6b737c" />, 'Issues', 1],
+		[<GitPullRequestIcon fill="#6b737c" />, 'Pull requests'],
+		[<PlayIcon fill="#6b737c" />, 'Actions'],
+		[<TableIcon fill="#6b737c" />, 'Projects'],
+		[<BookIcon fill="#6b737c" />, 'Wiki'],
+		[<ShieldIcon fill="#6b737c" />, 'Security'],
+		[<GraphIcon fill="#6b737c" />, 'Insights'],
+		[<GearIcon fill="#6b737c" />, 'Settings']
+	];
 	return (
 		<Wrapper>
 			<RepoNameContainer>
@@ -177,40 +118,9 @@ function RepoDetail() {
 					</ShowRepoName>
 					<Public>Public</Public>
 				</RepoInner>
-				<RepoActions>
-					<PinContainer>
-						<Pin size={16} />
-						Pin
-					</PinContainer>
-					<IconWrapper>
-						<Unwatch size={16} />
-						Unwatch
-						<Circle>1</Circle>
-						<Triangle />
-					</IconWrapper>
-					<IconWrapper>
-						<IconContainer>
-							<Fork size={16} />
-							Fork
-							<Circle>0</Circle>
-						</IconContainer>
-						<TriangleContainer>
-							<Triangle />
-						</TriangleContainer>
-					</IconWrapper>
-					<IconWrapper>
-						<IconContainer>
-							<Star size={16} />
-							Star
-							<Circle>0</Circle>
-						</IconContainer>
-						<TriangleContainer>
-							<Triangle />
-						</TriangleContainer>
-					</IconWrapper>
-				</RepoActions>
+				<RepoAction array={actionArr} />
 			</RepoNameContainer>
-			<ActionList />
+			<ActionList array={pageActionArr} />
 		</Wrapper>
 	);
 }

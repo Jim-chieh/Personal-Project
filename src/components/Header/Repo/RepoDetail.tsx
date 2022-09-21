@@ -19,9 +19,10 @@ const RepoNameContainer = styled.div`
 	padding-top: 16px;
 	display: flex;
 	justify-content: space-between;
-	flex-wrap: wrap;
 	gap: 1rem;
 	margin-bottom: 16px;
+	white-space: nowrap;
+	flex-wrap: wrap;
 	@media screen and (max-width: 1011px) {
 		padding: 0 24px;
 		padding-top: 16px;
@@ -32,6 +33,9 @@ const RepoInner = styled.div`
 	height: 30px;
 	display: flex;
 	align-items: center;
+	@media screen and (max-width: 567px) {
+		flex-wrap: wrap;
+	}
 `;
 
 const RepoIconComponent = styled(RepoIcon)`
@@ -65,6 +69,9 @@ const Public = styled.div`
 const RepoActions = styled.div`
 	display: flex;
 	margin-left: auto;
+	@media screen and (max-width: 767px) {
+		display: none;
+	}
 `;
 
 const Pin = styled(PinIcon)`

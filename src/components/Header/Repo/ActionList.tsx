@@ -7,12 +7,15 @@ import {
 	PlayIcon,
 	TableIcon,
 	ShieldIcon,
-	GraphIcon
+	GraphIcon,
+	GearIcon
 } from '@primer/octicons-react';
 
 const Wrapper = styled.div`
 	display: flex;
 	padding: 0 24px;
+	overflow: auto;
+	flex-wrap: nowrap;
 `;
 const Code = styled(CodeIcon)`
 	margin-right: 8px;
@@ -42,6 +45,10 @@ const Graph = styled(GraphIcon)`
 	margin-right: 8px;
 `;
 
+const Gear = styled(GearIcon)`
+	margin-right: 8px;
+`;
+
 const ActionContainer = styled.div`
 	display: flex;
 	justify-content: center;
@@ -50,6 +57,7 @@ const ActionContainer = styled.div`
 	font-size: 14px;
 	padding: 0 5px;
 	color: #57606a;
+	white-space: nowrap;
 	:nth-child(2) {
 		border-bottom: 2px solid #fd8c73;
 		color: black;
@@ -64,6 +72,12 @@ const Container = styled.div`
 	align-items: center;
 	:hover {
 		background-color: #eaedf1;
+	}
+`;
+
+const IconContainer = styled.div`
+	@media screen and (max-width: 543px) {
+		display: none;
 	}
 `;
 
@@ -83,45 +97,66 @@ function ActionList() {
 		<Wrapper>
 			<ActionContainer>
 				<Container>
-					<Code size={16} />
+					<IconContainer>
+						<Code size={16} />
+					</IconContainer>
 					Code
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<Issue size={16} fill=" #57606a" />
+					<IconContainer>
+						<Issue size={16} fill=" #57606a" />
+					</IconContainer>
 					Issues
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<PullRequest size={16} />
+					<IconContainer>
+						<PullRequest size={16} />
+					</IconContainer>
 					Pull requests
-					<Circle>2</Circle>
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<Action size={16} />
+					<IconContainer>
+						<Action size={16} />
+					</IconContainer>
 					Actions
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<Table size={16} />
+					<IconContainer>
+						<Table size={16} />
+					</IconContainer>
 					Projects
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<Shild size={16} />
+					<IconContainer>
+						<Shild size={16} />
+					</IconContainer>
 					Security
 				</Container>
 			</ActionContainer>
 			<ActionContainer>
 				<Container>
-					<Graph size={16} />
+					<IconContainer>
+						<Graph size={16} />
+					</IconContainer>
 					Insights
+				</Container>
+			</ActionContainer>
+			<ActionContainer>
+				<Container>
+					<IconContainer>
+						<Gear size={16} />
+					</IconContainer>
+					Settings
 				</Container>
 			</ActionContainer>
 		</Wrapper>

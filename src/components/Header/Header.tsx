@@ -12,6 +12,7 @@ import HeaderMobile from './HeaderMobile';
 import ProfileDropDown from './ProfileDropDown';
 import ProfileImg from './images.jpg';
 import RepoDetail from './Repo/RepoDetail';
+import Dropdown from './Dropdown';
 
 type Click = { $isActive: boolean };
 
@@ -54,7 +55,7 @@ const SearchBar = styled.input<Click>`
 	background-color: ${props => (props.$isActive ? 'white' : 'transparent')};
 	padding: 0 12px;
 	height: 28px;
-	width: ${props => (props.$isActive ? '50%' : '266px')};
+	width: ${props => (props.$isActive ? '40%' : '266px')};
 	border-radius: 5px;
 	margin-right: 16px;
 	position: relative;
@@ -170,6 +171,11 @@ const Input = styled.input`
 	color: transparent;
 `;
 
+const ProfileInput = styled(Input)`
+	width: 30px;
+	right: 55px;
+`;
+
 const MobileMenu = styled.div<Click>`
 	display: none;
 	@media screen and (max-width: 767px) {
@@ -178,7 +184,7 @@ const MobileMenu = styled.div<Click>`
 	}
 `;
 
-const ProfileDropdown = styled.div<Click>`
+const ProfileDrop = styled.div<Click>`
 	position: absolute;
 	bottom: -464px;
 	right: 0px;
@@ -206,11 +212,18 @@ const ProfileDropdown = styled.div<Click>`
 `;
 
 const navArr = ['Pull requests', 'Issues', 'Marketplace', 'Explore', 'Pulls'];
+const plusArr = [
+	'New repository',
+	'Import repository',
+	'New gist',
+	'New organization'
+];
 
 function Header() {
 	const [menuClick, setMenuClick] = useState(false);
 	const [inputClick, setInputClick] = useState(false);
 	const [profileClick, setProfileClick] = useState(false);
+	const [plusClick, setPlusClick] = useState(false);
 
 	return (
 		<>
@@ -245,9 +258,14 @@ function Header() {
 					/>
 					<Profile src={ProfileImg} alt="Profile" />
 					<Triangle size={16} fill="#ffffff" />
-					<ProfileDropdown $isActive={profileClick}>
+					<ProfileDrop $isActive={profileClick}>
 						<ProfileDropDown />
-					</ProfileDropdown>
+					</ProfileDrop>
+					<ProfileInput
+						onClick={() => setPlusClick(!plusClick)}
+						onBlur={() => setPlusClick(false)}
+					/>
+					<Dropdown array={plusArr} $isActive={plusClick} />
 				</IconContainer>
 			</Wrapper>
 			<MobileMenu $isActive={menuClick}>

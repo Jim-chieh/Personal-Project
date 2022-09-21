@@ -6,10 +6,6 @@ const ContentBox = styled.div`
 	font-size: 14px;
 	color: #24292f;
 	border-bottom: 1px solid #d0d7de;
-
-	:first-child {
-		color: red;
-	}
 `;
 
 const Profile = styled.div`

@@ -11,7 +11,7 @@ import {
 import HeaderMobile from './HeaderMobile';
 import ProfileDropDown from './ProfileDropDown';
 import ProfileImg from './images.jpg';
-import RepoDetail from './RepoDetail';
+import RepoDetail from './Repo/RepoDetail';
 
 type Click = { $isActive: boolean };
 
@@ -19,9 +19,12 @@ const Wrapper = styled.div`
 	width: 100%;
 	height: 62px;
 	background-color: #24292f;
-	padding: 16px 24px;
+	padding: 16px 32px;
 	display: flex;
 	align-items: center;
+	@media screen and (max-width: 1011px) {
+		padding: 16px 24px;
+	}
 	@media screen and (max-width: 767px) {
 		justify-content: space-between;
 	}
@@ -156,13 +159,13 @@ const Profile = styled.img`
 `;
 
 const Input = styled.input`
-	width: 28px;
+	width: 32px;
 	height: 20px;
 	border: none;
 	outline: none;
 	background-color: transparent;
 	position: absolute;
-	right: 6px;
+	right: 4px;
 	cursor: pointer;
 	color: transparent;
 `;
@@ -177,7 +180,7 @@ const MobileMenu = styled.div<Click>`
 
 const ProfileDropdown = styled.div<Click>`
 	position: absolute;
-	bottom: -90px;
+	bottom: -464px;
 	right: 0px;
 	width: 178px;
 	background-color: #ffffff;
@@ -190,7 +193,6 @@ const ProfileDropdown = styled.div<Click>`
 		border-bottom: solid 10px #ffffff;
 		transform: translateX(-50%);
 		position: absolute;
-		z-index: 1;
 		content: '';
 		top: -10px;
 		right: 0px;

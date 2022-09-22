@@ -7,9 +7,16 @@ import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import Sort from '../../components/Sort';
 import LabelList from './LabelList';
+import CreateLabel from './CreateLabel';
+
+type Display = { $display: boolean };
 
 const Wrapper = styled.div`
 	width: 100%;
+	padding-bottom: 180px;
+	@media screen and (max-width: 1011px) {
+		padding-bottom: 220px;
+	}
 `;
 
 const LabelInnerContainer = styled.div`
@@ -31,6 +38,7 @@ const HeaderContainer = styled.div`
 	justify-content: space-between;
 	flex-wrap: nowrap;
 	margin-bottom: 20px;
+	overflow: initial;
 	@media screen and (max-width: 767px) {
 		flex-wrap: wrap;
 	}
@@ -38,11 +46,15 @@ const HeaderContainer = styled.div`
 
 const InputContainer = styled.div`
 	display: flex;
-	flex-grow: 1;
-	margin-right: 63px;
+
+	margin-right: auto;
 	@media screen and (max-width: 767px) {
+		margin-right: 150px;
 		order: 3;
 		margin-top: 16px;
+	}
+	@media screen and (max-width: 500px) {
+		margin-right: unset;
 	}
 `;
 
@@ -69,7 +81,7 @@ const LabelListHeader = styled.div`
 const TextContainer = styled.div`
 	display: flex;
 	align-items: center;
-	color: ${props => (props.$color ? '#57606a' : 'black')};
+	color: black;
 `;
 
 const Text = styled.p`
@@ -77,11 +89,17 @@ const Text = styled.p`
 	margin-left: 3px;
 `;
 
+const ControlDisplay = styled.div<Display>`
+	display: ${props => (props.$display ? 'block' : 'none')};
+`;
+
 function LabelManagement() {
+	const [createLabelClick, setCreateLabelClick] = useState(false);
+
 	// const [labels, setLabels] = useState();
-	const labelName = useRef();
-	const labelColor = useRef();
-	const labeldescription = useRef();
+	// const labelName = useRef();
+	// const labelColor = useRef();
+	// const labeldescription = useRef();
 	// console.log(labels);
 	// useEffect(() => {
 	// 	fetch('https://api.github.com/repos/Jim-chieh/Personal-Project/labels')
@@ -100,21 +118,25 @@ function LabelManagement() {
 		['Milestones', <MilestoneIcon size={14} />]
 	];
 
-	function handleDelete(labelName) {
-		const data = api.createLabel;
-	}
+	// function handleDelete(labelName) {
+	// 	const data = api.createLabel;
+	// }
 
-	function handleAddLabel() {
-		const newlabelColor = labelColor.current.substr(1);
-		console.log(newlabelColor);
+	// function handleAddLabel() {
+	// 	const newlabelColor = labelColor.current.substr(1);
+	// 	console.log(newlabelColor);
 
-		const data = api.createLabel(
-			'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',
-			labelName.current,
-			newlabelColor,
-			labeldescription.current
-		);
-		console.log(data);
+	// 	const data = api.createLabel(
+	// 		'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',
+	// 		labelName.current,
+	// 		newlabelColor,
+	// 		labeldescription.current
+	// 	);
+	// 	console.log(data);
+	// }
+
+	function handleNewLabelClick() {
+		setCreateLabelClick(!createLabelClick);
 	}
 
 	// if (!labels) return null;
@@ -130,9 +152,19 @@ function LabelManagement() {
 						<InputComponent />
 					</InputContainer>
 					<NewButton>
-						<NewIssueAndLabel />
+						<NewIssueAndLabel
+							buttonName={'New label'}
+							backgroundColor={'#2da44e'}
+							textColor={'#ffffff'}
+							onClick={handleNewLabelClick}
+							$border={'#2a9048'}
+							$hoverColor={'#2c974b'}
+						/>
 					</NewButton>
 				</HeaderContainer>
+				<ControlDisplay $display={createLabelClick}>
+					<CreateLabel />
+				</ControlDisplay>
 				<LabelListHeader>
 					<TextContainer>
 						{9}

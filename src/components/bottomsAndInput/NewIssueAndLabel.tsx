@@ -1,23 +1,57 @@
 import styled from 'styled-components';
 
-const NewIssue = styled.button`
+type Label = {
+	$color: string;
+	$textColor: string;
+	$border: string;
+	$hoverColor: string;
+};
+
+const NewIssue = styled.button<Label>`
 	width: 97px;
-	height: 31px;
-	background-color: #2da44e;
+	height: 100%;
+	background-color: ${props => props.$color};
 	outline: none;
-	border: 1px solid #2a9048;
+	border: 1px solid ${props => props.$border};
 	border-radius: 5px;
-	color: #ffffff;
+	color: ${props => props.$textColor};
 	font-size: 14px;
 	font-weight: 600;
 	white-space: nowrap;
 	:hover {
-		background-color: #2c974b;
+		background-color: ${props => (props ? props.$hoverColor : 'unset')};
+		cursor: pointer;
 	}
 `;
 
-function NewIssueAndLabel() {
-	return <NewIssue>New label</NewIssue>;
+type buttonProps = {
+	buttonName: string | JSX.Element;
+	backgroundColor: string;
+	onClick: () => void;
+	textColor: string;
+	$border: string;
+	$hoverColor: string;
+};
+
+function NewIssueAndLabel({
+	buttonName,
+	backgroundColor,
+	onClick,
+	textColor,
+	$border,
+	$hoverColor
+}: buttonProps) {
+	return (
+		<NewIssue
+			$color={backgroundColor}
+			onClick={onClick ? () => onClick() : () => {}}
+			$textColor={textColor}
+			$border={$border}
+			$hoverColor={$hoverColor}
+		>
+			{buttonName}
+		</NewIssue>
+	);
 }
 
 export default NewIssueAndLabel;

@@ -12,7 +12,7 @@ import HeaderMobile from './HeaderMobile';
 import ProfileDropDown from './ProfileDropDown';
 import ProfileImg from './images.jpg';
 import RepoDetail from './Repo/RepoDetail';
-import Dropdown from './Dropdown';
+import Dropdown from './Repo/Dropdown';
 
 type Click = { $isActive: boolean };
 
@@ -58,9 +58,11 @@ const SearchBar = styled.input<Click>`
 	background-color: ${props => (props.$isActive ? 'white' : 'transparent')};
 	padding: 0 12px;
 	height: 28px;
-	width: ${props => (props.$isActive ? '40%' : '266px')};
+	max-width: 518px;
+	width: 266px;
 	border-radius: 5px;
 	margin-right: 16px;
+	flex-grow: ${props => (props.$isActive ? '1' : '0')};
 	position: relative;
 	outline: none;
 	transition: all 0.5s;
@@ -83,7 +85,7 @@ const InputSlash = styled.div<Click>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: all 0.5s;
+	transition: all 0.2s;
 `;
 
 const NavContainer = styled.div`

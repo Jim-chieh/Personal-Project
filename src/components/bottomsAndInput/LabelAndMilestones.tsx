@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
 
 const Wrapper = styled.div`
 	display: flex;

@@ -5,6 +5,7 @@ const OuterWrapper = styled.div`
 	width: 100%;
 	position: absolute;
 	bottom: 40px;
+	z-index: -1;
 `;
 
 const Wrapper = styled.div`

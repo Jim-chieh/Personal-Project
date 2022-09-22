@@ -2,9 +2,12 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
+import { KebabHorizontalIcon } from '@primer/octicons-react';
+import Dropdown from '../../components/Header/Repo/Dropdown';
 
 type Display = { $display: boolean };
 type DisplayAndIndex = { $display: boolean; $index: number };
+type Active = { $isActive: boolean };
 
 const LabelWrapper = styled.div`
 	width: 100%;
@@ -46,6 +49,7 @@ const Button = styled.button<DisplayAndIndex>`
 	color: #57606a;
 	background-color: transparent;
 	margin-left: 16px;
+	text-align: center;
 	:nth-child(1) {
 		display: ${props => (props.$display ? 'none' : 'inline')};
 	}
@@ -60,6 +64,22 @@ const Button = styled.button<DisplayAndIndex>`
 		:nth-child(1) {
 			display: none;
 		}
+	}
+`;
+
+const ShowOnMobile = styled.div<Active>`
+	display: none;
+	@media screen and (max-width: 1011px) {
+		width: 42px;
+		height: 28px;
+		background-color: ${props => (props.$isActive ? '#0969da' : '#f6f8fa')};
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 5px;
+		border: 1px solid #d5d8da;
+		position: relative;
+		color: ${props => (props.$isActive ? '#ffffff' : 'black')};
 	}
 `;
 
@@ -81,13 +101,32 @@ const buttonArr = ['Edit', 'Delete'];
 
 function LabelList() {
 	const [editClick, setEditClick] = useState(false);
+	const [mobileIconClick, setMobileIconClick] = useState(false);
+	const [colorCode, setColorCode] = useState(
+		'#' + Math.floor(Math.random() * 16777215).toString(16)
+	);
+	const [nameChange, setNameChange] = useState('');
+	// const [colorChange, setColorChange]
 
-	function handleEditClick() {
-		setEditClick(!editClick);
+	function getRandomColor() {
+		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+		setColorCode('#' + randomColor);
 	}
 
 	function handleDeleteClick() {
 		console.log('Delete');
+	}
+
+	function handleDropdownListClick(item: string) {
+		if (item === 'Edit') {
+			setEditClick(true);
+		} else {
+			console.log('Delete');
+		}
+	}
+
+	function handleInputChange(value: string) {
+		setNameChange(value);
 	}
 
 	return (
@@ -96,8 +135,8 @@ function LabelList() {
 				<LabelInfoContainer>
 					<SingleLabel
 						$width={'15%'}
-						$backgroundColor={'blue'}
-						text={'TEXTING'}
+						$backgroundColor={colorCode}
+						text={nameChange.length === 0 ? 'Label preview' : nameChange}
 						$color={'#ffffff'}
 						$margin={false}
 					/>
@@ -110,7 +149,9 @@ function LabelList() {
 							<Button
 								key={index}
 								onClick={
-									button === 'Edit' ? handleEditClick : handleDeleteClick
+									button === 'Edit'
+										? () => setEditClick(!editClick)
+										: handleDeleteClick
 								}
 								$display={index === 0 ? editClick : true}
 								$index={index}
@@ -118,10 +159,28 @@ function LabelList() {
 								{button}
 							</Button>
 						))}
+						<ShowOnMobile
+							onClick={() => setMobileIconClick(!mobileIconClick)}
+							$isActive={mobileIconClick}
+						>
+							<KebabHorizontalIcon />
+							<Dropdown
+								array={buttonArr}
+								$isActive={mobileIconClick}
+								bottom={'-70px'}
+								right={'-4px'}
+								onClick={handleDropdownListClick}
+							/>
+						</ShowOnMobile>
 					</EditDeleteContainer>
 				</LabelInfoContainer>
 				<ControlDisplay $display={editClick}>
-					<CreateLabelComponent onClick={handleEditClick} />
+					<CreateLabelComponent
+						onClick={() => setEditClick(!editClick)}
+						getColorFn={getRandomColor}
+						$backgroundColor={colorCode}
+						$onChange={handleInputChange}
+					/>
 				</ControlDisplay>
 			</LabelWrapper>
 		</>

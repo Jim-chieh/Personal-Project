@@ -16,7 +16,7 @@ const Wrapper = styled.div<Width>`
 `;
 
 const LabelContent = styled.span<Background>`
-	background-color: blue;
+	background-color: ${props => props.$backgroundColor};
 	height: 100%;
 	color: white;
 	padding: 0 10px;

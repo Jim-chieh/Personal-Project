@@ -3,12 +3,12 @@ import styled from 'styled-components';
 // type Click = { $isActive: boolean };
 // 	/* display: ${props => (props.$isActive ? 'block' : 'none')}; */
 
-type Click = { $active: boolean };
+type Click = { $active: boolean; bottom: string; right: string };
 
 const ProfileDrop = styled.div<Click>`
 	position: absolute;
-	bottom: -138px;
-	right: 52px;
+	bottom: ${props => props.bottom};
+	right: ${props => props.right};
 	width: 178px;
 	background-color: #ffffff;
 	border: 1px solid #cccccc;
@@ -51,13 +51,21 @@ const ContentWithoutBorder = styled.div`
 interface DropdownProps {
 	array: string[];
 	$isActive: boolean;
+	bottom: string;
+	right: string;
+	onClick?: (item: string) => void;
 }
 
-function Dropdown({ array, $isActive }: DropdownProps) {
+function Dropdown({ array, $isActive, bottom, right, onClick }: DropdownProps) {
 	return (
-		<ProfileDrop $active={$isActive}>
+		<ProfileDrop $active={$isActive} bottom={bottom} right={right}>
 			{array.map((item, index) => (
-				<ContentWithoutBorder key={index}>{item}</ContentWithoutBorder>
+				<ContentWithoutBorder
+					key={index}
+					onClick={onClick ? () => onClick(item) : () => {}}
+				>
+					{item}
+				</ContentWithoutBorder>
 			))}
 		</ProfileDrop>
 	);

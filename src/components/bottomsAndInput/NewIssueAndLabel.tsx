@@ -8,8 +8,8 @@ type Label = {
 };
 
 const NewIssue = styled.button<Label>`
-	width: 97px;
 	height: 100%;
+	padding: 0 8px;
 	background-color: ${props => props.$color};
 	outline: none;
 	border: 1px solid ${props => props.$border};

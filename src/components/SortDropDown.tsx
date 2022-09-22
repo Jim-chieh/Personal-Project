@@ -14,6 +14,7 @@ const Wrapper = styled.div<Click>`
 	border-radius: 10px;
 	border: 1px solid #d0d7de;
 	display: ${props => (props.$isClicked ? 'block' : 'none')};
+	z-index: 99;
 `;
 
 const Header = styled.div`

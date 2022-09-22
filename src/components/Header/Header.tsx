@@ -268,7 +268,12 @@ function Header() {
 						<ProfileDropDown />
 					</ProfileDrop>
 					<ProfileInput onClick={() => setPlusClick(!plusClick)} />
-					<Dropdown array={plusArr} $isActive={plusClick} />
+					<Dropdown
+						array={plusArr}
+						$isActive={plusClick}
+						bottom={'-138px'}
+						right={'52px'}
+					/>
 				</IconContainer>
 			</Wrapper>
 			<MobileMenu $isActive={menuClick}>

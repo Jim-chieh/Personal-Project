@@ -139,6 +139,10 @@ function LabelManagement() {
 		setCreateLabelClick(!createLabelClick);
 	}
 
+	function handleCancelClick() {
+		setCreateLabelClick(false);
+	}
+
 	// if (!labels) return null;
 
 	return (
@@ -163,7 +167,7 @@ function LabelManagement() {
 					</NewButton>
 				</HeaderContainer>
 				<ControlDisplay $display={createLabelClick}>
-					<CreateLabel />
+					<CreateLabel onClick={handleCancelClick} />
 				</ControlDisplay>
 				<LabelListHeader>
 					<TextContainer>

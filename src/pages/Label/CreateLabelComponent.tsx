@@ -1,6 +1,7 @@
 import { SyncIcon } from '@primer/octicons-react';
 import styled from 'styled-components';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
+import { useState } from 'react';
 
 const LabelContainer = styled.div`
 	display: flex;
@@ -60,7 +61,7 @@ const DescriptionContainer = styled(SingleLabelContainer)`
 `;
 
 const ColorContainer = styled(SingleLabelContainer)`
-	width: 18%;
+	width: 20%;
 
 	@media screen and (max-width: 767px) {
 		width: 100%;
@@ -76,7 +77,7 @@ const ColorButtonContainer = styled.div`
 	display: flex;
 	width: 32px;
 	height: 32px;
-	margin-right: 8px;
+	margin-right: 12px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -109,12 +110,18 @@ const ButtonContainer = styled.div`
 	}
 `;
 
-type CreateLabelProps = { onClick?: () => void };
-function CreateLabelComponent({ onClick }: CreateLabelProps) {
-	function handleColorChangeClick() {
-		console.log('click');
-	}
-
+type CreateLabelProps = {
+	onClick?: () => void;
+	getColorFn: () => void;
+	$backgroundColor: string;
+	$onChange: (e: string) => void;
+};
+function CreateLabelComponent({
+	onClick,
+	getColorFn,
+	$backgroundColor,
+	$onChange
+}: CreateLabelProps) {
 	function handleCreateLableClick() {
 		console.log('create clicked');
 	}
@@ -123,7 +130,11 @@ function CreateLabelComponent({ onClick }: CreateLabelProps) {
 		<LabelContainer>
 			<SingleLabelContainer>
 				<LabelText htmlFor="label">Label name</LabelText>
-				<LabelInput id="label" placeholder="Label name" />
+				<LabelInput
+					id="label"
+					placeholder="Label name"
+					onChange={$onChange ? e => $onChange(e.target.value) : () => {}}
+				/>
 			</SingleLabelContainer>
 			<DescriptionContainer>
 				<LabelText htmlFor="description">Description</LabelText>
@@ -135,14 +146,13 @@ function CreateLabelComponent({ onClick }: CreateLabelProps) {
 					<ColorButtonContainer>
 						<NewIssueAndLabel
 							buttonName={<SyncIcon fill="#ffffff" />}
-							backgroundColor={'#772f7d'}
-							onClick={handleColorChangeClick}
+							backgroundColor={$backgroundColor}
+							onClick={getColorFn ? () => getColorFn() : () => {}}
 							textColor={'#ffffff'}
 							$border={'transparent'}
 							$hoverColor={''}
 						/>
 					</ColorButtonContainer>
-
 					<LabelInput
 						id="color"
 						placeholder="Color "
@@ -166,7 +176,7 @@ function CreateLabelComponent({ onClick }: CreateLabelProps) {
 				</ButtonContainer>
 				<ButtonContainer>
 					<NewIssueAndLabel
-						buttonName={'Create label'}
+						buttonName={'Save changes'}
 						backgroundColor={'#94d3a2'}
 						onClick={handleCreateLableClick}
 						textColor={'#ffffff'}

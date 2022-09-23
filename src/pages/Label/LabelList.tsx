@@ -106,7 +106,6 @@ function LabelList() {
 		'#' + Math.floor(Math.random() * 16777215).toString(16)
 	);
 	const [nameChange, setNameChange] = useState('');
-	// const [colorChange, setColorChange]
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -129,6 +128,10 @@ function LabelList() {
 		setNameChange(value);
 	}
 
+	function handleColorInputChange(value: string) {
+		setColorCode('#' + value);
+	}
+
 	return (
 		<>
 			<LabelWrapper>
@@ -137,7 +140,6 @@ function LabelList() {
 						$width={'15%'}
 						$backgroundColor={colorCode}
 						text={nameChange.length === 0 ? 'Label preview' : nameChange}
-						$color={'#ffffff'}
 						$margin={false}
 					/>
 					<LabelContent $display={editClick}>
@@ -180,6 +182,9 @@ function LabelList() {
 						getColorFn={getRandomColor}
 						$backgroundColor={colorCode}
 						$onChange={handleInputChange}
+						$onColorChange={handleColorInputChange}
+						$textColor={colorCode}
+						$checkInputLength={nameChange}
 					/>
 				</ControlDisplay>
 			</LabelWrapper>

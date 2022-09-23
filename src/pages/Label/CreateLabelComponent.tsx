@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import { useState } from 'react';
 
+type Color = { $textColor?: string };
+
 const LabelContainer = styled.div`
 	display: flex;
 	flex-grow: 1;
@@ -30,7 +32,7 @@ const LabelText = styled.label`
 	font-weight: 600;
 `;
 
-const LabelInput = styled.input`
+const LabelInput = styled.input<Color>`
 	width: 100%;
 	height: 32px;
 	outline: none;
@@ -38,6 +40,7 @@ const LabelInput = styled.input`
 	padding: 5px 12px;
 	border: 1px solid #d0d7de;
 	border-radius: 5px;
+	color: ${props => props.$textColor};
 
 	:focus {
 		border: 2px solid #0981e5;
@@ -115,12 +118,18 @@ type CreateLabelProps = {
 	getColorFn: () => void;
 	$backgroundColor: string;
 	$onChange: (e: string) => void;
+	$onColorChange: (e: string) => void;
+	$textColor: string;
+	$checkInputLength: string;
 };
 function CreateLabelComponent({
 	onClick,
 	getColorFn,
 	$backgroundColor,
-	$onChange
+	$onChange,
+	$onColorChange,
+	$textColor,
+	$checkInputLength
 }: CreateLabelProps) {
 	function handleCreateLableClick() {
 		console.log('create clicked');
@@ -148,18 +157,20 @@ function CreateLabelComponent({
 							buttonName={<SyncIcon fill="#ffffff" />}
 							backgroundColor={$backgroundColor}
 							onClick={getColorFn ? () => getColorFn() : () => {}}
-							textColor={'#ffffff'}
+							textColor={$textColor}
 							$border={'transparent'}
 							$hoverColor={''}
+							$checkMouseEvent
 						/>
 					</ColorButtonContainer>
 					<LabelInput
 						id="color"
-						placeholder="Color "
-						value={'#'}
-						onChange={() => {
-							console.log('change');
-						}}
+						placeholder="Color"
+						value={$textColor}
+						onChange={
+							$onColorChange ? e => $onColorChange(e.target.value) : () => {}
+						}
+						$textColor={$textColor}
 					/>
 				</ColorChange>
 			</ColorContainer>
@@ -172,16 +183,20 @@ function CreateLabelComponent({
 						textColor={'#24293c'}
 						$border={'#d5d8da'}
 						$hoverColor={'#d5d8da'}
+						$checkMouseEvent
 					/>
 				</ButtonContainer>
 				<ButtonContainer>
 					<NewIssueAndLabel
 						buttonName={'Save changes'}
-						backgroundColor={'#94d3a2'}
+						backgroundColor={
+							$checkInputLength.length > 0 ? '#2da44e' : '#94d3a2'
+						}
 						onClick={handleCreateLableClick}
 						textColor={'#ffffff'}
 						$border={'#8ac297'}
 						$hoverColor={'#2c974b'}
+						$checkMouseEvent={$checkInputLength.length > 0 ? true : false}
 					/>
 				</ButtonContainer>
 			</ButtonWrapper>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
-import { useState } from 'react';
+import { useDebugValue, useState } from 'react';
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -43,13 +43,17 @@ function CreateLabel({ onClick }: Click) {
 	function handleInputChange(value: string) {
 		setNameChange(value);
 	}
+
+	function handleColorInputChange(value: string) {
+		setColorCode('#' + value);
+	}
+
 	return (
 		<Wrapper>
 			<SingleLabel
 				$width={'100%'}
 				$backgroundColor={colorCode}
 				text={nameChange.length === 0 ? 'Label preview' : nameChange}
-				$color={'#ffffff'}
 				$margin
 			/>
 			<LabelWrapper>
@@ -58,6 +62,9 @@ function CreateLabel({ onClick }: Click) {
 					getColorFn={getRandomColor}
 					$backgroundColor={colorCode}
 					$onChange={handleInputChange}
+					$onColorChange={handleColorInputChange}
+					$textColor={colorCode}
+					$checkInputLength={nameChange}
 				/>
 			</LabelWrapper>
 		</Wrapper>

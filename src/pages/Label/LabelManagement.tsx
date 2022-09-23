@@ -163,6 +163,7 @@ function LabelManagement() {
 							onClick={handleNewLabelClick}
 							$border={'#2a9048'}
 							$hoverColor={'#2c974b'}
+							$checkMouseEvent
 						/>
 					</NewButton>
 				</HeaderContainer>
@@ -176,6 +177,8 @@ function LabelManagement() {
 					</TextContainer>
 					<Sort />
 				</LabelListHeader>
+				<LabelList />
+				<LabelList />
 				<LabelList />
 			</Container>
 		</Wrapper>

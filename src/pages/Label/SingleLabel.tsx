@@ -1,3 +1,4 @@
+import console from 'console';
 import styled from 'styled-components';
 
 type Width = { $width: string; $margin: boolean };
@@ -24,6 +25,10 @@ const LabelContent = styled.span<Background>`
 	font-size: 12px;
 	display: flex;
 	align-items: center;
+	white-space: nowrap;
+	border: 1px solid
+		${props =>
+			props.$backgroundColor === '#ffffff' ? '#d0d7de' : 'transparent'};
 `;
 
 type LabelProps = {
@@ -35,7 +40,6 @@ type LabelProps = {
 
 function SingleLabel({ $width, text, $backgroundColor, $margin }: LabelProps) {
 	function lightOrDark(bgcolor: string) {
-		console.log(bgcolor);
 		const r = parseInt(bgcolor.slice(0, 2), 16);
 		const g = parseInt(bgcolor.slice(2, 4), 16);
 		const b = parseInt(bgcolor.slice(4, 6), 16);

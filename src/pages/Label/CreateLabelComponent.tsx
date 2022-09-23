@@ -40,7 +40,6 @@ const LabelInput = styled.input<Color>`
 	padding: 5px 12px;
 	border: 1px solid #d0d7de;
 	border-radius: 5px;
-	color: ${props => props.$textColor};
 
 	:focus {
 		border: 2px solid #0981e5;
@@ -121,16 +120,22 @@ type CreateLabelProps = {
 	$onColorChange: (e: string) => void;
 	$textColor: string;
 	$checkInputLength: string;
+	$inputValue?: string;
+	$dataLabelName?: string;
 };
 function CreateLabelComponent({
 	onClick,
 	getColorFn,
-	$backgroundColor,
 	$onChange,
 	$onColorChange,
 	$textColor,
-	$checkInputLength
+	$checkInputLength,
+	$inputValue,
+	$dataLabelName
 }: CreateLabelProps) {
+	// const [colorInputClick, setColorInputClick] = useState(false)
+	//270 * 105
+
 	function handleCreateLableClick() {
 		console.log('create clicked');
 	}
@@ -143,6 +148,7 @@ function CreateLabelComponent({
 					id="label"
 					placeholder="Label name"
 					onChange={$onChange ? e => $onChange(e.target.value) : () => {}}
+					value={$dataLabelName}
 				/>
 			</SingleLabelContainer>
 			<DescriptionContainer>
@@ -155,7 +161,7 @@ function CreateLabelComponent({
 					<ColorButtonContainer>
 						<NewIssueAndLabel
 							buttonName={<SyncIcon fill="#ffffff" />}
-							backgroundColor={$backgroundColor}
+							backgroundColor={$textColor}
 							onClick={getColorFn ? () => getColorFn() : () => {}}
 							textColor={$textColor}
 							$border={'transparent'}
@@ -168,9 +174,15 @@ function CreateLabelComponent({
 						placeholder="Color"
 						value={$textColor}
 						onChange={
-							$onColorChange ? e => $onColorChange(e.target.value) : () => {}
+							$onColorChange
+								? e =>
+										$onColorChange(
+											e.target.value.length === 0 ? '#' : e.target.value
+										)
+								: () => {}
 						}
-						$textColor={$textColor}
+						onClick={() => console.log('click')}
+						onBlur={() => console.log('blur')}
 					/>
 				</ColorChange>
 			</ColorContainer>

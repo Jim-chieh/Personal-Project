@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
-import api from '../../utils/api';
+import { useSelector } from 'react-redux';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import Sort from '../../components/Sort';
 import LabelList from './LabelList';
 import CreateLabel from './CreateLabel';
+import { createLabelApi } from '../../redux/LabelCreateApi';
+import { GetLebal } from '../../redux/LabelCreateApi';
 
 type Display = { $display: boolean };
 
@@ -96,44 +98,15 @@ const ControlDisplay = styled.div<Display>`
 function LabelManagement() {
 	const [createLabelClick, setCreateLabelClick] = useState(false);
 
-	// const [labels, setLabels] = useState();
-	// const labelName = useRef();
-	// const labelColor = useRef();
-	// const labeldescription = useRef();
-	// console.log(labels);
-	// useEffect(() => {
-	// 	fetch('https://api.github.com/repos/Jim-chieh/Personal-Project/labels')
-	// 		.then(res => res.json())
-	// 		.then(data => console.log(data));
-	// 	console.log('render');
-	// }, []);
+	const { data, isError, isSuccess, isLoading } =
+		createLabelApi.useGetAllLabelsQuery('Jim-chieh');
 
-	// useEffect(() => {
-	// 	const data = api.getLabels();
-	// 	data.then(data => setLabels(data));
-	// }, []);
+	const [labels, setLabels] = useState();
 
 	const labelArr = [
 		['Labels', <TagIcon size={14} />],
 		['Milestones', <MilestoneIcon size={14} />]
 	];
-
-	// function handleDelete(labelName) {
-	// 	const data = api.createLabel;
-	// }
-
-	// function handleAddLabel() {
-	// 	const newlabelColor = labelColor.current.substr(1);
-	// 	console.log(newlabelColor);
-
-	// 	const data = api.createLabel(
-	// 		'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',
-	// 		labelName.current,
-	// 		newlabelColor,
-	// 		labeldescription.current
-	// 	);
-	// 	console.log(data);
-	// }
 
 	function handleNewLabelClick() {
 		setCreateLabelClick(!createLabelClick);
@@ -142,8 +115,9 @@ function LabelManagement() {
 	function handleCancelClick() {
 		setCreateLabelClick(false);
 	}
+	console.log(data);
 
-	// if (!labels) return null;
+	if (!isSuccess) return <>Loading...</>;
 
 	return (
 		<Wrapper>
@@ -177,9 +151,14 @@ function LabelManagement() {
 					</TextContainer>
 					<Sort />
 				</LabelListHeader>
-				<LabelList />
-				<LabelList />
-				<LabelList />
+				{data.map((item: GetLebal) => (
+					<LabelList
+						key={item.id}
+						$dataBackgroundColor={item.color}
+						$dataLabelName={item.name}
+						$dataDescription={item.description}
+					/>
+				))}
 			</Container>
 		</Wrapper>
 	);

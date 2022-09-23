@@ -45,7 +45,7 @@ function CreateLabel({ onClick }: Click) {
 	}
 
 	function handleColorInputChange(value: string) {
-		setColorCode('#' + value);
+		setColorCode(value);
 	}
 
 	return (

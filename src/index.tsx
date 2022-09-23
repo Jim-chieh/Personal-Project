@@ -2,7 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { ApiProvider } from '@reduxjs/toolkit/query/react';
 import store from './redux/store';
+import { createLabelApi } from './redux/LabelCreateApi';
 
 // import { Provider } from 'react-redux';
 // import { store } from './app/store';
@@ -17,7 +19,7 @@ const root = createRoot(container);
 
 root.render(
 	<BrowserRouter>
-		<Provider store={store}>
+		<ApiProvider api={createLabelApi}>
 			<Routes>
 				<Route path="/" element={<App />}>
 					<Route path="labelmanagement" element={<IssueListPage />} />
@@ -27,6 +29,6 @@ root.render(
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
 			</Routes>
-		</Provider>
+		</ApiProvider>
 	</BrowserRouter>
 );

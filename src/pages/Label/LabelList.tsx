@@ -30,6 +30,9 @@ const LabelContent = styled.span<Display>`
 	align-items: center;
 	font-size: 12px;
 	color: #57606a;
+	@media screen and (max-width: 767px) {
+		display: none;
+	}
 `;
 
 const LabelRelate = styled.span<Display>`
@@ -38,6 +41,9 @@ const LabelRelate = styled.span<Display>`
 	align-items: center;
 	font-size: 12px;
 	color: #57606a;
+	@media screen and (max-width: 767px) {
+		display: none;
+	}
 `;
 
 const EditDeleteContainer = styled.div``;
@@ -99,13 +105,23 @@ const ControlDisplay = styled.div<Display>`
 
 const buttonArr = ['Edit', 'Delete'];
 
-function LabelList() {
+type LabelProps = {
+	$dataBackgroundColor: string;
+	$dataLabelName: string;
+	$dataDescription: string;
+	$dataUrl?: string;
+};
+
+function LabelList({
+	$dataBackgroundColor,
+	$dataLabelName,
+	$dataDescription,
+	$dataUrl
+}: LabelProps) {
 	const [editClick, setEditClick] = useState(false);
 	const [mobileIconClick, setMobileIconClick] = useState(false);
-	const [colorCode, setColorCode] = useState(
-		'#' + Math.floor(Math.random() * 16777215).toString(16)
-	);
-	const [nameChange, setNameChange] = useState('');
+	const [colorCode, setColorCode] = useState('#' + $dataBackgroundColor);
+	const [nameChange, setNameChange] = useState($dataLabelName);
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -129,7 +145,12 @@ function LabelList() {
 	}
 
 	function handleColorInputChange(value: string) {
-		setColorCode('#' + value);
+		setColorCode(value);
+	}
+
+	function handleCancelBtnClick() {
+		setEditClick(!editClick);
+		setNameChange($dataLabelName);
 	}
 
 	return (
@@ -142,10 +163,10 @@ function LabelList() {
 						text={nameChange.length === 0 ? 'Label preview' : nameChange}
 						$margin={false}
 					/>
-					<LabelContent $display={editClick}>
-						Lorem ipsum dolor sit amet consectetur adipisicing
-					</LabelContent>
-					<LabelRelate $display={editClick}>{''}</LabelRelate>
+					<LabelContent $display={editClick}>{$dataDescription}</LabelContent>
+					<LabelRelate $display={editClick}>
+						{$dataUrl ? '1 open issues and pull requests' : ''}
+					</LabelRelate>
 					<EditDeleteContainer>
 						{buttonArr.map((button, index) => (
 							<Button
@@ -178,13 +199,14 @@ function LabelList() {
 				</LabelInfoContainer>
 				<ControlDisplay $display={editClick}>
 					<CreateLabelComponent
-						onClick={() => setEditClick(!editClick)}
+						onClick={handleCancelBtnClick}
 						getColorFn={getRandomColor}
 						$backgroundColor={colorCode}
 						$onChange={handleInputChange}
 						$onColorChange={handleColorInputChange}
 						$textColor={colorCode}
 						$checkInputLength={nameChange}
+						$dataLabelName={nameChange}
 					/>
 				</ControlDisplay>
 			</LabelWrapper>

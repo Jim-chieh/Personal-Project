@@ -64,7 +64,7 @@ function SortDropDown({
 		<>
 			<BlurEffect
 				open={$isActive ? 'fixed' : 'none'}
-				onClick={() => $checkBlur}
+				onClick={() => $checkBlur()}
 			/>
 			<Wrapper $isClicked={$isActive}>
 				<Header>{$HeaderText}</Header>

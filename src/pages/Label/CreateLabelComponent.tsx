@@ -115,7 +115,7 @@ const ButtonContainer = styled.div`
 	}
 `;
 
-const ColorPeekerWrapper = styled.div<ColorPeekerWrapperProps>`
+const ColorPickerWrapper = styled.div<ColorPeekerWrapperProps>`
 	width: 260px;
 	height: 95px;
 	position: absolute;
@@ -127,6 +127,7 @@ const ColorPeekerWrapper = styled.div<ColorPeekerWrapperProps>`
 	border: 1px solid #d0d7de;
 	top: 58px;
 	left: 33px;
+	z-index: 199;
 	&:after {
 		border-right: solid 8px transparent;
 		border-left: solid 8px transparent;
@@ -158,18 +159,18 @@ const ColorPeekerWrapper = styled.div<ColorPeekerWrapperProps>`
 	}
 `;
 
-const ColorPeekerP = styled.p`
+const ColorPickerP = styled.p`
 	color: #57606a;
 	font-size: 12px;
 	margin-left: 4px;
 `;
 
-const ColorPeekerContainer = styled.div`
+const ColorPickerContainer = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 `;
 
-const ColorPeeker = styled.div<ColorPeekerContainerProps>`
+const ColorPicker = styled.div<ColorPeekerContainerProps>`
 	background-color: ${props => '#' + props.$backgroundColor};
 	width: 24px;
 	height: 24px;
@@ -200,10 +201,10 @@ type CreateLabelProps = {
 	$inputValue?: string;
 	$dataLabelName?: string;
 	$handleCancelBtnClick?: () => void;
-	$colorPeekerClick: (e: string) => void;
+	$colorPickerClick: (e: string) => void;
 };
 
-const colorPeekerArr = [
+const colorPickerArr = [
 	'b60205',
 	'd93f0b',
 	'fbca04',
@@ -229,11 +230,10 @@ function CreateLabelComponent({
 	$onColorChange,
 	$textColor,
 	$checkInputLength,
-	$inputValue,
 	$dataLabelName,
-	$colorPeekerClick
+	$colorPickerClick
 }: CreateLabelProps) {
-	const [colorPeekerDisplay, setColorPeekerDisplay] = useState(false);
+	const [colorPickerDisplay, setColorPickerDisplay] = useState(false);
 	function lightOrDark(bgcolor: string) {
 		const r = parseInt(bgcolor.slice(0, 2), 16);
 		const g = parseInt(bgcolor.slice(2, 4), 16);
@@ -296,7 +296,7 @@ function CreateLabelComponent({
 								: () => {}
 						}
 						onClick={() => {
-							setColorPeekerDisplay(true);
+							setColorPickerDisplay(true);
 						}}
 						$inputTextColor={
 							$textColor.length === 4 || $textColor.length === 7
@@ -304,25 +304,25 @@ function CreateLabelComponent({
 								: '#FF0000'
 						}
 					/>
-					<ColorPeekerWrapper $display={colorPeekerDisplay}>
-						<ColorPeekerP>Choose from default colors:</ColorPeekerP>
-						<ColorPeekerContainer>
-							{colorPeekerArr.map((colorPeeker, index) => (
-								<ColorPeeker
+					<ColorPickerWrapper $display={colorPickerDisplay}>
+						<ColorPickerP>Choose from default colors:</ColorPickerP>
+						<ColorPickerContainer>
+							{colorPickerArr.map((colorPicker, index) => (
+								<ColorPicker
 									key={index}
-									$backgroundColor={colorPeeker}
+									$backgroundColor={colorPicker}
 									onClick={() => {
-										$colorPeekerClick('#' + colorPeeker);
-										setColorPeekerDisplay(false);
+										$colorPickerClick('#' + colorPicker);
+										setColorPickerDisplay(false);
 									}}
 								/>
 							))}
-						</ColorPeekerContainer>
-						<BlurEffect
-							open={colorPeekerDisplay ? 'block' : 'none'}
-							onClick={() => setColorPeekerDisplay(false)}
-						/>
-					</ColorPeekerWrapper>
+						</ColorPickerContainer>
+					</ColorPickerWrapper>
+					<BlurEffect
+						open={colorPickerDisplay ? 'block' : 'none'}
+						onClick={() => setColorPickerDisplay(false)}
+					/>
 				</ColorChange>
 			</ColorContainer>
 			<ButtonWrapper>

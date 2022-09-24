@@ -27,7 +27,7 @@ export const createLabelApi = createApi({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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'
+					Authorization: 'token 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'
 				})
 			})
 		})

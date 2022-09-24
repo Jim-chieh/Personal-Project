@@ -144,6 +144,7 @@ function LabelManagement() {
 		setLabelNameChange('');
 		setColorCode(colorRef.current);
 	}
+	console.log(colorCode);
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -171,12 +172,11 @@ function LabelManagement() {
 				</HeaderContainer>
 				<ControlDisplay $display={createLabelDisplay}>
 					<SingleLabel
-						$width={'100%'}
+						// $width={'100%'}
 						$backgroundColor={colorCode}
 						text={
 							labelNameChange.length === 0 ? 'Label preview' : labelNameChange
 						}
-						$margin
 					/>
 					<CreateLabelComponentContainer>
 						<CreateLabelComponent
@@ -188,7 +188,7 @@ function LabelManagement() {
 							$textColor={colorCode}
 							$checkInputLength={labelNameChange}
 							$dataLabelName={labelNameChange}
-							$colorPeekerClick={e => {
+							$colorPickerClick={e => {
 								setColorCode(e);
 							}}
 						/>

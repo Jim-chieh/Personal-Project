@@ -1,19 +1,15 @@
-import console from 'console';
 import styled from 'styled-components';
-
-type Width = { $width: string; $margin: boolean };
 
 type Background = {
 	$backgroundColor: string;
 	textColor: string;
 };
 
-const Wrapper = styled.div<Width>`
-	width: ${props => props.$width};
+const Wrapper = styled.div`
+	width: 15%;
 	height: 24px;
 	display: flex;
 	align-items: center;
-	margin-bottom: ${props => (props.$margin ? '8px' : 'none')};
 `;
 
 const LabelContent = styled.span<Background>`
@@ -36,13 +32,11 @@ const LabelContent = styled.span<Background>`
 `;
 
 type LabelProps = {
-	$width: string;
 	text: string;
 	$backgroundColor: string;
-	$margin: boolean;
 };
 
-function SingleLabel({ $width, text, $backgroundColor, $margin }: LabelProps) {
+function SingleLabel({ text, $backgroundColor }: LabelProps) {
 	function lightOrDark(bgcolor: string) {
 		const r = parseInt(bgcolor.slice(0, 2), 16);
 		const g = parseInt(bgcolor.slice(2, 4), 16);
@@ -55,7 +49,7 @@ function SingleLabel({ $width, text, $backgroundColor, $margin }: LabelProps) {
 		}
 	}
 	return (
-		<Wrapper $width={$width} $margin={$margin}>
+		<Wrapper>
 			<LabelContent
 				$backgroundColor={$backgroundColor.toLocaleUpperCase()}
 				textColor={lightOrDark($backgroundColor.substring(1, 7))}

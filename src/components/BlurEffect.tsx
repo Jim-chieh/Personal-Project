@@ -19,8 +19,6 @@ type DropdownPropsType = {
 };
 
 function BlurEffect({ open, onClick }: DropdownPropsType) {
-	console.log(open);
-
 	return <OutSideWrapper open={open} onClick={() => onClick()} />;
 }
 

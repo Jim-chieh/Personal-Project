@@ -160,10 +160,9 @@ function LabelList({
 			<LabelWrapper>
 				<LabelInfoContainer>
 					<SingleLabel
-						$width={'15%'}
+						// $width={'15%'}
 						$backgroundColor={colorCode}
 						text={nameChange.length === 0 ? 'Label preview' : nameChange}
-						$margin={false}
 					/>
 					<LabelContent $display={editClick}>{$dataDescription}</LabelContent>
 					<LabelRelate $display={editClick}>
@@ -214,7 +213,7 @@ function LabelList({
 						$textColor={colorCode}
 						$checkInputLength={nameChange}
 						$dataLabelName={nameChange}
-						$colorPeekerClick={e => setColorCode(e)}
+						$colorPickerClick={e => setColorCode(e)}
 					/>
 				</ControlDisplay>
 			</LabelWrapper>

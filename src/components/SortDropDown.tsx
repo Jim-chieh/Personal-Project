@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { CheckIcon } from '@primer/octicons-react';
 import { useState } from 'react';
+import BlurEffect from './BlurEffect';
 
 type State = { $isActive: number; $index: number };
 type Click = { $isClicked: boolean };
@@ -45,25 +46,38 @@ const CheckContainer = styled.div<State>`
 	}
 `;
 
-interface ArrayProps {
+type ArrayProps = {
 	array: (string | JSX.Element)[][];
 	$isActive: boolean;
-}
+	$checkBlur: () => void;
+	$HeaderText: string;
+};
 
-function SortDropDown({ array, $isActive }: ArrayProps) {
+function SortDropDown({
+	array,
+	$isActive,
+	$checkBlur,
+	$HeaderText
+}: ArrayProps) {
 	const [sortClick, setSortClick] = useState(0);
 	return (
-		<Wrapper $isClicked={$isActive}>
-			<Header>Sort</Header>
-			{array.map((item, index) => (
-				<Inner key={index} onClick={() => setSortClick(index)}>
-					{item[0]}
-					<CheckContainer $isActive={sortClick} $index={index}>
-						<CheckIcon />
-					</CheckContainer>
-				</Inner>
-			))}
-		</Wrapper>
+		<>
+			<BlurEffect
+				open={$isActive ? 'fixed' : 'none'}
+				onClick={() => $checkBlur}
+			/>
+			<Wrapper $isClicked={$isActive}>
+				<Header>{$HeaderText}</Header>
+				{array.map((item, index) => (
+					<Inner key={index} onClick={() => setSortClick(index)}>
+						{item[0]}
+						<CheckContainer $isActive={sortClick} $index={index}>
+							<CheckIcon />
+						</CheckContainer>
+					</Inner>
+				))}
+			</Wrapper>
+		</>
 	);
 }
 

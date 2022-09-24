@@ -45,7 +45,12 @@ function Sort() {
 				<Text>Sort</Text>
 				<TriangleDownIcon />
 			</SortContainer>
-			<SortDropDown array={array} $isActive={sortClick} />
+			<SortDropDown
+				array={array}
+				$isActive={sortClick}
+				$checkBlur={() => setSortClick(false)}
+				$HeaderText={'Sort'}
+			/>
 		</TextContainer>
 	);
 }

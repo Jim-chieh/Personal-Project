@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
-type NumberProps = { $isActive: number };
+type NumberProps = { $isActive: boolean };
 
 const Wrapper = styled.div`
 	display: flex;
@@ -18,8 +19,7 @@ const ActionContainer = styled.div<NumberProps>`
 	padding: 0 5px;
 	color: #57606a;
 	white-space: nowrap;
-	border-bottom: ${props =>
-		props.$isActive === 1 ? '2px solid #fd8c73' : 'none'};
+	border-bottom: ${props => (props.$isActive ? '2px solid #fd8c73' : 'none')};
 	color: black;
 	fill: #57606a;
 `;
@@ -56,10 +56,15 @@ const Circle = styled.div`
 type arrayProps = { array: (string | number | JSX.Element)[][] };
 
 function ActionList({ array }: arrayProps) {
+	const [currentClickAction, setCurrentClickAction] = useState('Issues');
 	return (
 		<Wrapper>
 			{array.map((action, index) => (
-				<ActionContainer key={index} $isActive={index}>
+				<ActionContainer
+					key={index}
+					$isActive={action[1] === currentClickAction}
+					onClick={() => setCurrentClickAction(action[1].toString())}
+				>
 					<Container>
 						<IconContainer>{action[0]}</IconContainer>
 						{action[1]}

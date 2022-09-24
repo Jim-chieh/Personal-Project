@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "personal-project-fbde5"
-  }
+  },
+  "targets": {
+    "personal-project-fbde5": {
+      "hosting": {
+        "project": [
+          "personal-project-fbde5"
+        ],
+        "storybook": [
+          "storybook-b3851"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

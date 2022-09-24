@@ -2,8 +2,9 @@ import { SyncIcon } from '@primer/octicons-react';
 import styled from 'styled-components';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import { useState } from 'react';
+import BlurEffect from '../../components/BlurEffect';
 
-type Color = { $textColor?: string };
+type Color = { $textColor?: string; $inputTextColor?: string };
 
 const LabelContainer = styled.div`
 	display: flex;
@@ -40,6 +41,7 @@ const LabelInput = styled.input<Color>`
 	padding: 5px 12px;
 	border: 1px solid #d0d7de;
 	border-radius: 5px;
+	color: ${props => props.$inputTextColor};
 
 	:focus {
 		border: 2px solid #0981e5;
@@ -64,6 +66,7 @@ const DescriptionContainer = styled(SingleLabelContainer)`
 
 const ColorContainer = styled(SingleLabelContainer)`
 	width: 20%;
+	position: relative;
 
 	@media screen and (max-width: 767px) {
 		width: 100%;
@@ -112,6 +115,80 @@ const ButtonContainer = styled.div`
 	}
 `;
 
+const ColorPeekerWrapper = styled.div<ColorPeekerWrapperProps>`
+	width: 260px;
+	height: 95px;
+	position: absolute;
+	display: ${props => (props.$display ? 'flex' : 'none')};
+	flex-direction: column;
+	background-color: #ffffff;
+	padding: 8px;
+	border-radius: 8px;
+	border: 1px solid #d0d7de;
+	top: 58px;
+	left: 33px;
+	&:after {
+		border-right: solid 8px transparent;
+		border-left: solid 8px transparent;
+		border-bottom: solid 8px #ffffff;
+		transform: translateX(-50%);
+		position: absolute;
+		outline: 1px red;
+		z-index: 1;
+		content: '';
+		top: -8px;
+		left: 35px;
+		height: 0;
+		width: 0;
+	}
+
+	&:before {
+		border-right: solid 9px transparent;
+		border-left: solid 9px transparent;
+		border-bottom: solid 9px #e6eaee;
+		transform: translateX(-50%);
+		position: absolute;
+		outline: 1px red;
+		z-index: 1;
+		content: '';
+		top: -8.6px;
+		left: 35px;
+		height: 0;
+		width: 0;
+	}
+`;
+
+const ColorPeekerP = styled.p`
+	color: #57606a;
+	font-size: 12px;
+	margin-left: 4px;
+`;
+
+const ColorPeekerContainer = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+`;
+
+const ColorPeeker = styled.div<ColorPeekerContainerProps>`
+	background-color: ${props => '#' + props.$backgroundColor};
+	width: 24px;
+	height: 24px;
+	border-radius: 5px;
+	margin: 0px 3px;
+	margin-top: 7px;
+	:hover {
+		cursor: pointer;
+	}
+`;
+
+type ColorPeekerContainerProps = {
+	$backgroundColor: string;
+};
+
+type ColorPeekerWrapperProps = {
+	$display: boolean;
+};
+
 type CreateLabelProps = {
 	onClick?: () => void;
 	getColorFn: () => void;
@@ -122,7 +199,29 @@ type CreateLabelProps = {
 	$checkInputLength: string;
 	$inputValue?: string;
 	$dataLabelName?: string;
+	$handleCancelBtnClick?: () => void;
+	$colorPeekerClick: (e: string) => void;
 };
+
+const colorPeekerArr = [
+	'b60205',
+	'd93f0b',
+	'fbca04',
+	'0e8a16',
+	'006b75',
+	'1d76db',
+	'0052cc',
+	'5319e7',
+	'e99695',
+	'f9d0c4',
+	'fef2c0',
+	'c2e0c6',
+	'bfdadc',
+	'c5def5',
+	'bfd4f2',
+	'd4c5f9'
+];
+
 function CreateLabelComponent({
 	onClick,
 	getColorFn,
@@ -131,10 +230,21 @@ function CreateLabelComponent({
 	$textColor,
 	$checkInputLength,
 	$inputValue,
-	$dataLabelName
+	$dataLabelName,
+	$colorPeekerClick
 }: CreateLabelProps) {
-	// const [colorInputClick, setColorInputClick] = useState(false)
-	//270 * 105
+	const [colorPeekerDisplay, setColorPeekerDisplay] = useState(false);
+	function lightOrDark(bgcolor: string) {
+		const r = parseInt(bgcolor.slice(0, 2), 16);
+		const g = parseInt(bgcolor.slice(2, 4), 16);
+		const b = parseInt(bgcolor.slice(4, 6), 16);
+		const hsp = r * 0.3 + g * 0.6 + b * 0.1;
+		if (hsp > 127.5) {
+			return <SyncIcon fill="#000000" />;
+		} else {
+			return <SyncIcon fill="#ffffff" />;
+		}
+	}
 
 	function handleCreateLableClick() {
 		console.log('create clicked');
@@ -160,7 +270,7 @@ function CreateLabelComponent({
 				<ColorChange>
 					<ColorButtonContainer>
 						<NewIssueAndLabel
-							buttonName={<SyncIcon fill="#ffffff" />}
+							buttonName={lightOrDark($textColor.substring(1, 7))}
 							backgroundColor={$textColor}
 							onClick={getColorFn ? () => getColorFn() : () => {}}
 							textColor={$textColor}
@@ -172,18 +282,47 @@ function CreateLabelComponent({
 					<LabelInput
 						id="color"
 						placeholder="Color"
-						value={$textColor}
+						value={$textColor.toUpperCase()}
 						onChange={
 							$onColorChange
 								? e =>
 										$onColorChange(
-											e.target.value.length === 0 ? '#' : e.target.value
+											e.target.value.length === 0
+												? '#'
+												: e.target.value.length >= 8
+												? e.target.value.substring(0, 7)
+												: e.target.value
 										)
 								: () => {}
 						}
-						onClick={() => console.log('click')}
-						onBlur={() => console.log('blur')}
+						onClick={() => {
+							setColorPeekerDisplay(true);
+						}}
+						$inputTextColor={
+							$textColor.length === 4 || $textColor.length === 7
+								? 'black'
+								: '#FF0000'
+						}
 					/>
+					<ColorPeekerWrapper $display={colorPeekerDisplay}>
+						<ColorPeekerP>Choose from default colors:</ColorPeekerP>
+						<ColorPeekerContainer>
+							{colorPeekerArr.map((colorPeeker, index) => (
+								<ColorPeeker
+									key={index}
+									$backgroundColor={colorPeeker}
+									onClick={() => {
+										$colorPeekerClick('#' + colorPeeker);
+										setColorPeekerDisplay(false);
+									}}
+								/>
+							))}
+						</ColorPeekerContainer>
+						<BlurEffect
+							open={colorPeekerDisplay ? 'block' : 'none'}
+							onClick={() => setColorPeekerDisplay(false)}
+						/>
+					</ColorPeekerWrapper>
 				</ColorChange>
 			</ColorContainer>
 			<ButtonWrapper>

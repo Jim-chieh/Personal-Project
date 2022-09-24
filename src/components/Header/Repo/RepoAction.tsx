@@ -1,11 +1,4 @@
 import styled from 'styled-components';
-import {
-	PinIcon,
-	EyeIcon,
-	RepoForkedIcon,
-	StarIcon,
-	TriangleDownIcon
-} from '@primer/octicons-react';
 
 type TextProps = { $isActive: number };
 

@@ -1,5 +1,6 @@
 {
-  "hosting": {
+  "hosting": [{
+    "target":"project",
     "public": "build",
     "ignore": [
       "firebase.json",
@@ -12,5 +13,21 @@
         "destination": "/index.html"
       }
     ]
-  }
+  },
+{
+  "target":"storybook",
+    "public": "storybook-static",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+}
+]
 }

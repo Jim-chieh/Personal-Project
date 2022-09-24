@@ -28,7 +28,11 @@ const LabelContent = styled.span<Background>`
 	white-space: nowrap;
 	border: 1px solid
 		${props =>
-			props.$backgroundColor === '#ffffff' ? '#d0d7de' : 'transparent'};
+			props.$backgroundColor === '#FFFFFF'
+				? '#d0d7de'
+				: props.$backgroundColor === '#FFF'
+				? '#d0d7de'
+				: 'transparent'};
 `;
 
 type LabelProps = {
@@ -53,7 +57,7 @@ function SingleLabel({ $width, text, $backgroundColor, $margin }: LabelProps) {
 	return (
 		<Wrapper $width={$width} $margin={$margin}>
 			<LabelContent
-				$backgroundColor={$backgroundColor}
+				$backgroundColor={$backgroundColor.toLocaleUpperCase()}
 				textColor={lightOrDark($backgroundColor.substring(1, 7))}
 			>
 				{text}

@@ -49,6 +49,8 @@ const SingOut = styled(SignOutIcon)`
 	margin-right: 3px;
 `;
 
+const SignOutContainer = styled.div``;
+
 const navArr = [
 	'Dashboard',
 	'Pull requests',
@@ -59,7 +61,17 @@ const navArr = [
 	'Settings'
 ];
 
-function HeaderMobile() {
+type HeaderMobileProps = {
+	$userFullName: string;
+	$userProfileUrl: string;
+	$signoutClick: () => void;
+};
+
+function HeaderMobile({
+	$userFullName,
+	$userProfileUrl,
+	$signoutClick
+}: HeaderMobileProps) {
 	return (
 		<>
 			<SearchBarContainer>
@@ -69,12 +81,14 @@ function HeaderMobile() {
 				<MobileNav key={index}>{nav}</MobileNav>
 			))}
 			<MobileNav>
-				<Profile src={ProfileImg} />
-				Jim-Chieh
+				<Profile src={$userProfileUrl} />
+				{$userFullName}
 			</MobileNav>
 			<MobileNav>
 				<SingOut size={16} />
-				Sign out
+				<SignOutContainer onClick={() => $signoutClick()}>
+					Sign out
+				</SignOutContainer>
 			</MobileNav>
 		</>
 	);

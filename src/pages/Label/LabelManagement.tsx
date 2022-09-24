@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
-import { useSelector } from 'react-redux';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import Sort from '../../components/Sort';
 import LabelList from './LabelList';
-import CreateLabel from './CreateLabel';
 import { createLabelApi } from '../../redux/LabelCreateApi';
 import { GetLebal } from '../../redux/LabelCreateApi';
+import SingleLabel from './SingleLabel';
+import CreateLabelComponent from './CreateLabelComponent';
 
 type Display = { $display: boolean };
 
@@ -92,30 +92,58 @@ const Text = styled.p`
 `;
 
 const ControlDisplay = styled.div<Display>`
+	width: 100%;
+	height: 150px;
+	background-color: #f6f8fa;
+	margin-bottom: 16px;
+	border: 1px solid #d0d7de;
+	border-radius: 10px;
+	padding: 16px;
 	display: ${props => (props.$display ? 'block' : 'none')};
+	flex-direction: column;
+	@media screen and (max-width: 767px) {
+		height: auto;
+	}
 `;
 
+const CreateLabelComponentContainer = styled.div`
+	display: flex;
+	justify-content: space-between;
+	margin: 28px 0;
+	@media screen and (max-width: 767px) {
+		margin: unset;
+	}
+`;
+
+const labelArr = [
+	['Labels', <TagIcon size={14} />],
+	['Milestones', <MilestoneIcon size={14} />]
+];
+
 function LabelManagement() {
-	const [createLabelClick, setCreateLabelClick] = useState(false);
+	const [createLabelDisplay, setCreateLabelDisplay] = useState(false);
+	const [colorCode, setColorCode] = useState(
+		'#' + Math.floor(Math.random() * 16777215).toString(16)
+	);
+	const [labelNameChange, setLabelNameChange] = useState('');
+	const colorRef = useRef(colorCode);
 
 	const { data, isError, isSuccess, isLoading } =
-		createLabelApi.useGetAllLabelsQuery('Jim-chieh');
+		createLabelApi.useGetAllLabelsQuery({
+			name: 'Jim-chieh',
+			repo: 'Personal-Project'
+		});
 
-	const [labels, setLabels] = useState();
-
-	const labelArr = [
-		['Labels', <TagIcon size={14} />],
-		['Milestones', <MilestoneIcon size={14} />]
-	];
-
-	function handleNewLabelClick() {
-		setCreateLabelClick(!createLabelClick);
+	function getRandomColor() {
+		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+		setColorCode('#' + randomColor.toLocaleUpperCase());
 	}
 
-	function handleCancelClick() {
-		setCreateLabelClick(false);
+	function cancelBtnClick() {
+		setCreateLabelDisplay(false);
+		setLabelNameChange('');
+		setColorCode(colorRef.current);
 	}
-	console.log(data);
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -134,19 +162,41 @@ function LabelManagement() {
 							buttonName={'New label'}
 							backgroundColor={'#2da44e'}
 							textColor={'#ffffff'}
-							onClick={handleNewLabelClick}
+							onClick={() => setCreateLabelDisplay(!createLabelDisplay)}
 							$border={'#2a9048'}
 							$hoverColor={'#2c974b'}
 							$checkMouseEvent
 						/>
 					</NewButton>
 				</HeaderContainer>
-				<ControlDisplay $display={createLabelClick}>
-					<CreateLabel onClick={handleCancelClick} />
+				<ControlDisplay $display={createLabelDisplay}>
+					<SingleLabel
+						$width={'100%'}
+						$backgroundColor={colorCode}
+						text={
+							labelNameChange.length === 0 ? 'Label preview' : labelNameChange
+						}
+						$margin
+					/>
+					<CreateLabelComponentContainer>
+						<CreateLabelComponent
+							onClick={cancelBtnClick}
+							getColorFn={getRandomColor}
+							$backgroundColor={colorCode}
+							$onChange={e => setLabelNameChange(e)}
+							$onColorChange={e => setColorCode(e)}
+							$textColor={colorCode}
+							$checkInputLength={labelNameChange}
+							$dataLabelName={labelNameChange}
+							$colorPeekerClick={e => {
+								setColorCode(e);
+							}}
+						/>
+					</CreateLabelComponentContainer>
 				</ControlDisplay>
 				<LabelListHeader>
 					<TextContainer>
-						{9}
+						{data.length}
 						<Text>labels</Text>
 					</TextContainer>
 					<Sort />

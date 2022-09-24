@@ -29,7 +29,7 @@ const Signout = styled.div`
 	border-bottom: 1px solid #d0d7de;
 	overflow: hidden;
 	border: none;
-
+	z-index: 100;
 	:hover {
 		background-color: #0969da;
 		color: #ffffff;
@@ -38,7 +38,6 @@ const Signout = styled.div`
 
 const ContentWithoutBorder = styled.div`
 	width: 100%;
-	/* height: 37px; */
 	font-size: 14px;
 	color: #24292f;
 	font-size: 14px;
@@ -89,12 +88,20 @@ const profileArr = [
 
 const settingArr = ['Upgrade', 'Feature preview', 'Help', 'Settings'];
 
-function ProfileDropDown() {
+type ProfileDropDownProps = {
+	$signoutClick: () => void;
+	$userFullName?: string;
+};
+
+function ProfileDropDown({
+	$signoutClick,
+	$userFullName
+}: ProfileDropDownProps) {
 	return (
 		<>
 			<ContentBox>
 				<Profile>
-					Signed in as <strong>Jim-Chieh</strong>
+					Signed in as <strong>{$userFullName}</strong>
 				</Profile>
 			</ContentBox>
 			<ContentBox>
@@ -116,7 +123,7 @@ function ProfileDropDown() {
 			<ContentBox>
 				<Signout
 					onClick={() => {
-						console.log('click');
+						$signoutClick();
 					}}
 				>
 					Sign out

@@ -14,6 +14,7 @@ const ProfileDrop = styled.div<Click>`
 	border: 1px solid #cccccc;
 	border-radius: 10px;
 	display: ${props => (props.$active ? 'block' : 'none')};
+	z-index: 99;
 
 	&:after {
 		border-right: solid 10px transparent;

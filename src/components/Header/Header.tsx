@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
 	MarkGithubIcon,
@@ -10,11 +10,69 @@ import {
 
 import HeaderMobile from './HeaderMobile';
 import ProfileDropDown from './ProfileDropDown';
-import ProfileImg from './images.jpg';
 import RepoDetail from './Repo/RepoDetail';
 import Dropdown from './Repo/Dropdown';
+import { supabase } from '../../OAuth/Clients';
+import BlurEffect from '../BlurEffect';
 
 type Click = { $isActive: boolean };
+
+export interface UserType {
+	id: string;
+	aud: string;
+	role: string;
+	email: string;
+	email_confirmed_at: string;
+	phone: string;
+	confirmed_at: string;
+	last_sign_in_at: string;
+	app_metadata: AppMetadata;
+	user_metadata: UserMetadata;
+	identities: Identity[];
+	created_at: string;
+	updated_at: string;
+}
+
+export interface AppMetadata {
+	provider: string;
+	providers: string[];
+}
+
+export interface UserMetadata {
+	avatar_url: string;
+	email: string;
+	email_verified: boolean;
+	full_name: string;
+	iss: string;
+	name: string;
+	preferred_username: string;
+	provider_id: string;
+	sub: string;
+	user_name: string;
+}
+
+export interface Identity {
+	id: string;
+	user_id: string;
+	identity_data: IdentityData;
+	provider: string;
+	last_sign_in_at: string;
+	created_at: string;
+	updated_at: string;
+}
+
+export interface IdentityData {
+	avatar_url: string;
+	email: string;
+	email_verified: boolean;
+	full_name: string;
+	iss: string;
+	name: string;
+	preferred_username: string;
+	provider_id: string;
+	sub: string;
+	user_name: string;
+}
 
 const Wrapper = styled.div`
 	width: 100%;
@@ -150,7 +208,7 @@ const IconContainer = styled.div`
 `;
 
 const Plus = styled(PlusIcon)`
-	${IconContainer}:hover & {
+	:hover & {
 		fill: #bebfc1;
 	}
 `;
@@ -165,23 +223,6 @@ const Profile = styled.img`
 	width: 20px;
 	height: 20px;
 	border-radius: 50%;
-`;
-
-const Input = styled.input`
-	width: 32px;
-	height: 20px;
-	border: none;
-	outline: none;
-	background-color: transparent;
-	position: absolute;
-	right: 4px;
-	cursor: pointer;
-	color: transparent;
-`;
-
-const ProfileInput = styled(Input)`
-	width: 30px;
-	right: 55px;
 `;
 
 const MobileMenu = styled.div<Click>`
@@ -201,7 +242,7 @@ const ProfileDrop = styled.div<Click>`
 	border: 1px solid #cccccc;
 	border-radius: 10px;
 	display: ${props => (props.$isActive ? 'block' : 'none')};
-	z-index: 99;
+	z-index: 199;
 	&:after {
 		border-right: solid 10px transparent;
 		border-left: solid 10px transparent;
@@ -220,6 +261,21 @@ const ProfileDrop = styled.div<Click>`
 	}
 `;
 
+const SighinButton = styled.button`
+	width: 70px;
+	height: 30px;
+	padding: 5px;
+	background-color: transparent;
+	border: 1px solid #ffffff;
+	color: #ffffff;
+	border-radius: 5px;
+	:hover {
+		cursor: pointer;
+		border: 1px solid #cccccc;
+		color: #cccccc;
+	}
+`;
+
 const navArr = ['Pull requests', 'Issues', 'Marketplace', 'Explore', 'Pulls'];
 const plusArr = [
 	'New repository',
@@ -233,6 +289,37 @@ function Header() {
 	const [inputClick, setInputClick] = useState(false);
 	const [profileClick, setProfileClick] = useState(false);
 	const [plusClick, setPlusClick] = useState(false);
+	const [user, setUser] = useState<UserType>();
+
+	useEffect(() => {
+		checkUser();
+		window.addEventListener('hashchange', () => {
+			checkUser();
+		});
+	}, []);
+
+	async function checkUser() {
+		const user = supabase.auth.user() as UserType;
+		setUser(user);
+	}
+
+	async function signInWithGitHub() {
+		const { user, session, error } = await supabase.auth.signIn(
+			{
+				provider: 'github'
+			},
+			{
+				scopes: 'repo gist notifications'
+			}
+		);
+	}
+
+	async function signOut() {
+		await supabase.auth.signOut();
+		setUser(undefined);
+	}
+
+	console.log(user);
 
 	return (
 		<>
@@ -255,30 +342,63 @@ function Header() {
 						))}
 					</NavContainer>
 				</NavBarContainer>
-				<Bell size={16} fill="#ffffff" />
-				<IconContainer>
-					<Plus size={16} fill="#ffffff" />
-					<Triangle size={16} fill="#ffffff" />
-				</IconContainer>
-				<IconContainer>
-					<Input onClick={() => setProfileClick(!profileClick)} />
-					<Profile src={ProfileImg} alt="Profile" />
-					<Triangle size={16} fill="#ffffff" />
-					<ProfileDrop $isActive={profileClick}>
-						<ProfileDropDown />
-					</ProfileDrop>
-					<ProfileInput onClick={() => setPlusClick(!plusClick)} />
-					<Dropdown
-						array={plusArr}
-						$isActive={plusClick}
-						bottom={'-138px'}
-						right={'52px'}
-					/>
-				</IconContainer>
+
+				{user === null ? (
+					<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
+				) : user === undefined ? (
+					<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
+				) : (
+					<>
+						<Bell size={16} fill="#ffffff" />
+						<IconContainer onClick={() => setPlusClick(!plusClick)}>
+							<Plus size={16} fill="#ffffff" />
+							<Triangle size={16} fill="#ffffff" />
+							<Dropdown
+								array={plusArr}
+								$isActive={plusClick}
+								bottom={'-138px'}
+								right={'0px'}
+							/>
+							<BlurEffect
+								open={plusClick ? 'block' : 'none'}
+								onClick={() => setPlusClick(false)}
+							/>
+						</IconContainer>
+						<IconContainer onClick={() => setProfileClick(!profileClick)}>
+							<Profile
+								src={user.identities[0].identity_data.avatar_url}
+								alt="Profile"
+							/>
+							<Triangle size={16} fill="#ffffff" />
+							<ProfileDrop $isActive={profileClick}>
+								<ProfileDropDown
+									$signoutClick={signOut}
+									$userFullName={
+										user.identities[0].identity_data.preferred_username
+									}
+								/>
+							</ProfileDrop>
+							<BlurEffect
+								open={profileClick ? 'block' : 'none'}
+								onClick={() => setProfileClick(false)}
+							/>
+						</IconContainer>
+					</>
+				)}
 			</Wrapper>
-			<MobileMenu $isActive={menuClick}>
-				<HeaderMobile />
-			</MobileMenu>
+			{user === null ? (
+				<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
+			) : user === undefined ? (
+				<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
+			) : (
+				<MobileMenu $isActive={menuClick}>
+					<HeaderMobile
+						$userFullName={user.identities[0].identity_data.preferred_username}
+						$userProfileUrl={user.identities[0].identity_data.avatar_url}
+						$signoutClick={signOut}
+					/>
+				</MobileMenu>
+			)}
 			<RepoDetail />
 		</>
 	);

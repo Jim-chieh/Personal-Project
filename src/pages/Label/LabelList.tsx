@@ -151,6 +151,7 @@ function LabelList({
 	function handleCancelBtnClick() {
 		setEditClick(!editClick);
 		setNameChange($dataLabelName);
+		setColorCode('#' + $dataBackgroundColor);
 	}
 
 	return (
@@ -207,6 +208,7 @@ function LabelList({
 						$textColor={colorCode}
 						$checkInputLength={nameChange}
 						$dataLabelName={nameChange}
+						$colorPeekerClick={e => setColorCode(e)}
 					/>
 				</ControlDisplay>
 			</LabelWrapper>

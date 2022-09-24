@@ -5,6 +5,8 @@ import styled from 'styled-components';
 
 type Click = { $active: boolean; bottom: string; right: string };
 
+type Display = { $firstElementDisplay?: string };
+
 const ProfileDrop = styled.div<Click>`
 	position: absolute;
 	bottom: ${props => props.bottom};
@@ -14,7 +16,7 @@ const ProfileDrop = styled.div<Click>`
 	border: 1px solid #cccccc;
 	border-radius: 10px;
 	display: ${props => (props.$active ? 'block' : 'none')};
-	z-index: 99;
+	z-index: 199;
 
 	&:after {
 		border-right: solid 10px transparent;
@@ -28,13 +30,9 @@ const ProfileDrop = styled.div<Click>`
 		height: 0;
 		width: 0;
 	}
-
-	@media screen and (max-width: 767px) {
-		display: none;
-	}
 `;
 
-const ContentWithoutBorder = styled.div`
+const ContentWithoutBorder = styled.div<Display>`
 	width: 100%;
 	font-size: 14px;
 	color: #24292f;
@@ -47,6 +45,9 @@ const ContentWithoutBorder = styled.div`
 		background-color: #0969da;
 		color: #ffffff;
 	}
+	:first-child {
+		display: ${props => props.$firstElementDisplay};
+	}
 `;
 
 interface DropdownProps {
@@ -55,15 +56,24 @@ interface DropdownProps {
 	bottom: string;
 	right: string;
 	onClick?: (item: string) => void;
+	$firstElementShouldhide?: string;
 }
 
-function Dropdown({ array, $isActive, bottom, right, onClick }: DropdownProps) {
+function Dropdown({
+	array,
+	$isActive,
+	bottom,
+	right,
+	onClick,
+	$firstElementShouldhide
+}: DropdownProps) {
 	return (
 		<ProfileDrop $active={$isActive} bottom={bottom} right={right}>
 			{array.map((item, index) => (
 				<ContentWithoutBorder
 					key={index}
 					onClick={onClick ? () => onClick(item) : () => {}}
+					$firstElementDisplay={$firstElementShouldhide}
 				>
 					{item}
 				</ContentWithoutBorder>

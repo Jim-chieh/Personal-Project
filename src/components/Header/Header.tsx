@@ -123,7 +123,7 @@ const SearchBar = styled.input<Click>`
 	flex-grow: ${props => (props.$isActive ? '1' : '0')};
 	position: relative;
 	outline: none;
-	transition: all 0.5s;
+	transition: ease-in-out 0.3s;
 	color: ${props => (props.$isActive ? 'black' : 'white')};
 	::placeholder {
 		color: #c8c9cb;
@@ -143,7 +143,7 @@ const InputSlash = styled.div<Click>`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: all 0.2s;
+	/* transition: all 0.1s; */
 `;
 
 const NavContainer = styled.div`

@@ -4,6 +4,7 @@ import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
 import { KebabHorizontalIcon } from '@primer/octicons-react';
 import Dropdown from '../../components/Header/Repo/Dropdown';
+import BlurEffect from '../../components/BlurEffect';
 
 type Display = { $display: boolean };
 type DisplayAndIndex = { $display: boolean; $index: number };
@@ -191,9 +192,14 @@ function LabelList({
 							<Dropdown
 								array={buttonArr}
 								$isActive={mobileIconClick}
-								bottom={'-70px'}
+								bottom={editClick ? '-40px' : '-70px'}
 								right={'-4px'}
 								onClick={handleDropdownListClick}
+								$firstElementShouldhide={editClick ? 'none' : 'flex'}
+							/>
+							<BlurEffect
+								open={mobileIconClick ? 'block' : 'none'}
+								onClick={() => setMobileIconClick(false)}
 							/>
 						</ShowOnMobile>
 					</EditDeleteContainer>

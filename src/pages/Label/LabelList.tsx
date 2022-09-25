@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
@@ -130,6 +130,7 @@ function LabelList({
 	const [updateLabels] = useUpdateLabelsMutation();
 	const [deleteLabels] = useDeleteLabelsMutation();
 	const token = localStorage.getItem('token') as string;
+	const descriptionRef = useRef($dataDescription);
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -161,6 +162,7 @@ function LabelList({
 		setEditClick(!editClick);
 		setNameChange($dataLabelName);
 		setColorCode('#' + $dataBackgroundColor);
+		setDescriptionChange(descriptionRef.current);
 	}
 
 	return (
@@ -231,7 +233,7 @@ function LabelList({
 						$dataLabelName={nameChange}
 						$colorPickerClick={e => setColorCode(e)}
 						$onDescriptionChange={e => setDescriptionChange(e)}
-						$descriptionValue={$dataDescription}
+						$descriptionValue={descriptionChange}
 						$createLabelClick={() => {
 							updateLabels({
 								name: 'Jim-chieh',

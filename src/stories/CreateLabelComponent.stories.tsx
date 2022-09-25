@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import LabelList from '../pages/Label/LabelList';
 import { Provider } from 'react-redux';
 import { store } from '../redux/store';
+import '../../.storybook/header.css';
 
 export default {
 	title: 'CreateLabelComponent',
@@ -14,7 +15,12 @@ export default {
 
 const Template: ComponentStory<typeof LabelList> = args => (
 	<Provider store={store}>
-		<div style={{ margin: '20px', width: '80%' }}>
+		<div
+			style={{
+				margin: '20px',
+				padding: '10px'
+			}}
+		>
 			<LabelList {...args} />
 		</div>
 	</Provider>

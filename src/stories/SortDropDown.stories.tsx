@@ -8,7 +8,14 @@ export default {
 } as ComponentMeta<typeof SortDropDown>;
 
 const Template: ComponentStory<typeof SortDropDown> = args => (
-	<div style={{ margin: '10px', position: 'relative' }}>
+	<div
+		style={{
+			margin: '10px',
+			position: 'relative',
+			width: '500px',
+			height: '500px'
+		}}
+	>
 		<SortDropDown {...args} />
 	</div>
 );

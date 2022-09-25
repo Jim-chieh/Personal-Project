@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import NewIssueAndLabel from '../components/bottomsAndInput/NewIssueAndLabel';
+import '../../.storybook/header.css';
 
 export default {
 	title: 'NewIssueButton',

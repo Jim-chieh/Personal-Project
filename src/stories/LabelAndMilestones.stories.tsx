@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import LabelAndMilestones from '../components/bottomsAndInput/LabelAndMilestones';
+import '../../.storybook/header.css';
 
 export default {
 	title: 'LabelAndMilestones',

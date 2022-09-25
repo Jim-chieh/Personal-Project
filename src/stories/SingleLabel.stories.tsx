@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import SingleLabel from '../pages/Label/SingleLabel';
+import '../../.storybook/header.css';
 
 export default {
 	title: 'SingleLabel',

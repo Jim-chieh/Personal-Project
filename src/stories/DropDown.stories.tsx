@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import Dropdown from '../components/Header/Repo/Dropdown';
+import '../../.storybook/header.css';
 
 export default {
 	title: 'List',
@@ -15,9 +16,7 @@ const Template: ComponentStory<typeof Dropdown> = args => (
 		style={{
 			width: '200px',
 			height: '500px',
-			backgroundColor: 'black',
-			position: 'relative',
-			overflow: 'hidden'
+			position: 'relative'
 		}}
 	>
 		<Dropdown {...args} />

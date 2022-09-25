@@ -61,7 +61,7 @@ export const createLabelApi = createApi({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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'
+					Authorization: 'token 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'
 				})
 			}),
 			providesTags: ['labels']
@@ -78,7 +78,7 @@ export const createLabelApi = createApi({
 				method: 'POST',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: 'token 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',
 					Accept: 'application/vnd.github+json'
 				}),
 				body: {
@@ -102,7 +102,7 @@ export const createLabelApi = createApi({
 				method: 'PATCH',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: 'token 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',
 					Accept: 'application/vnd.github+json'
 				}),
 				body: {
@@ -119,7 +119,7 @@ export const createLabelApi = createApi({
 				method: 'DELETE',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: 'token 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',
 					Accept: 'application/vnd.github+json'
 				})
 			}),

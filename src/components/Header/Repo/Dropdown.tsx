@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 
-// type Click = { $isActive: boolean };
-// 	/* display: ${props => (props.$isActive ? 'block' : 'none')}; */
-
 type Click = { $active: boolean; bottom: string; right: string };
 
 type Display = { $firstElementDisplay?: string };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 import LabelAndMilestones from '../components/bottomsAndInput/LabelAndMilestones';
-import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
 
 export default {
 	title: 'LabelAndMilestones',

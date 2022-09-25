@@ -105,7 +105,6 @@ const ControlDisplay = styled.div<Display>`
 	width: 100%;
 	margin-top: 28px;
 	display: ${props => (props.$display ? 'block' : 'none')};
-	/* padding: 16px 0; */
 `;
 
 const buttonArr = ['Edit', 'Delete'];
@@ -134,10 +133,6 @@ function LabelList({
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
 		setColorCode('#' + randomColor);
-	}
-
-	function handleDeleteClick() {
-		console.log('Delete');
 	}
 
 	function handleDropdownListClick(item: string) {

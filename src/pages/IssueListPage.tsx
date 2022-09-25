@@ -8,7 +8,6 @@ function IssuePage() {
 	const dispatch = useDispatch();
 
 	console.log(counter);
-	// if (!labels) return null;
 
 	return <div>1</div>;
 }

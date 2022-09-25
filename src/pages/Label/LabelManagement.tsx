@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
@@ -8,8 +8,7 @@ import Sort from '../../components/Sort';
 import LabelList from './LabelList';
 import {
 	useGetAllLabelsQuery,
-	useCreateLabelsMutation,
-	useDeleteLabelsMutation
+	useCreateLabelsMutation
 } from '../../redux/LabelCreateApi';
 import { GetLebal } from '../../redux/LabelCreateApi';
 import SingleLabel from './SingleLabel';
@@ -127,7 +126,6 @@ const labelArr = [
 function LabelManagement() {
 	const [createLabelDisplay, setCreateLabelDisplay] = useState(false);
 	const [createLabels] = useCreateLabelsMutation();
-	const [deleteLabels] = useDeleteLabelsMutation();
 
 	const [colorCode, setColorCode] = useState(
 		'#' + Math.floor(Math.random() * 16777215).toString(16)
@@ -140,14 +138,6 @@ function LabelManagement() {
 		name: 'Jim-chieh',
 		repo: 'Personal-Project'
 	});
-
-	// useEffect(() => {
-	// 	const token = JSON.parse(
-	// 		window.localStorage.getItem('supabase.auth.token') as string
-	// 	);
-	// 	if (token === null) return;
-	// 	setUserToken(token.currentSession.provider_token);
-	// }, [userToken]);
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);

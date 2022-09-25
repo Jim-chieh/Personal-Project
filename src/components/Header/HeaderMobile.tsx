@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import ProfileImg from './images.jpg';
 import { SignOutIcon } from '@primer/octicons-react';
 
 const SearchBarContainer = styled.div`

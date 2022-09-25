@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import { useState } from 'react';
 import BlurEffect from '../../components/BlurEffect';
-import SingleLabel from './SingleLabel';
 
 type Color = { $textColor?: string; $inputTextColor?: string };
 

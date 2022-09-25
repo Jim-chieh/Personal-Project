@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import { useState } from 'react';
 import BlurEffect from '../../components/BlurEffect';
+import SingleLabel from './SingleLabel';
 
 type Color = { $textColor?: string; $inputTextColor?: string };
 
@@ -194,7 +195,8 @@ type CreateLabelProps = {
 	onClick?: () => void;
 	getColorFn: () => void;
 	$backgroundColor: string;
-	$onChange: (e: string) => void;
+	$buttonName: string;
+	$onNameInputChange: (e: string) => void;
 	$onColorChange: (e: string) => void;
 	$textColor: string;
 	$checkInputLength: string;
@@ -202,6 +204,9 @@ type CreateLabelProps = {
 	$dataLabelName?: string;
 	$handleCancelBtnClick?: () => void;
 	$colorPickerClick: (e: string) => void;
+	$onDescriptionChange: (e: string) => void;
+	$createLabelClick?: () => void;
+	$descriptionValue?: string;
 };
 
 const colorPickerArr = [
@@ -226,12 +231,16 @@ const colorPickerArr = [
 function CreateLabelComponent({
 	onClick,
 	getColorFn,
-	$onChange,
+	$onNameInputChange,
+	$buttonName,
 	$onColorChange,
 	$textColor,
 	$checkInputLength,
 	$dataLabelName,
-	$colorPickerClick
+	$colorPickerClick,
+	$onDescriptionChange,
+	$createLabelClick,
+	$descriptionValue
 }: CreateLabelProps) {
 	const [colorPickerDisplay, setColorPickerDisplay] = useState(false);
 	function lightOrDark(bgcolor: string) {
@@ -246,10 +255,6 @@ function CreateLabelComponent({
 		}
 	}
 
-	function handleCreateLableClick() {
-		console.log('create clicked');
-	}
-
 	return (
 		<LabelContainer>
 			<SingleLabelContainer>
@@ -257,13 +262,26 @@ function CreateLabelComponent({
 				<LabelInput
 					id="label"
 					placeholder="Label name"
-					onChange={$onChange ? e => $onChange(e.target.value) : () => {}}
+					onChange={
+						$onNameInputChange
+							? e => $onNameInputChange(e.target.value)
+							: () => {}
+					}
 					value={$dataLabelName}
 				/>
 			</SingleLabelContainer>
 			<DescriptionContainer>
 				<LabelText htmlFor="description">Description</LabelText>
-				<LabelInput id="description" placeholder="Description (optional)" />
+				<LabelInput
+					id="description"
+					placeholder="Description (optional)"
+					value={$descriptionValue}
+					onChange={
+						$onDescriptionChange
+							? e => $onDescriptionChange(e.target.value)
+							: () => {}
+					}
+				/>
 			</DescriptionContainer>
 			<ColorContainer>
 				<LabelText htmlFor="color">Color</LabelText>
@@ -339,11 +357,11 @@ function CreateLabelComponent({
 				</ButtonContainer>
 				<ButtonContainer>
 					<NewIssueAndLabel
-						buttonName={'Save changes'}
+						buttonName={$buttonName}
 						backgroundColor={
 							$checkInputLength.length > 0 ? '#2da44e' : '#94d3a2'
 						}
-						onClick={handleCreateLableClick}
+						onClick={$createLabelClick ? $createLabelClick : () => {}}
 						textColor={'#ffffff'}
 						$border={'#8ac297'}
 						$hoverColor={'#2c974b'}

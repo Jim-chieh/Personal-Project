@@ -1,24 +1,28 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import CreateLabelComponent from '../pages/Label/CreateLabelComponent';
+import LabelList from '../pages/Label/LabelList';
+import { Provider } from 'react-redux';
+import { store } from '../redux/store';
 
 export default {
 	title: 'CreateLabelComponent',
-	component: CreateLabelComponent,
+	component: LabelList,
 	parameters: {
 		layout: 'fullscreen'
 	}
-} as ComponentMeta<typeof CreateLabelComponent>;
+} as ComponentMeta<typeof LabelList>;
 
-const Template: ComponentStory<typeof CreateLabelComponent> = args => (
-	<div style={{ margin: '20px', width: '100%', display: 'flex' }}>
-		<CreateLabelComponent {...args} />
-	</div>
+const Template: ComponentStory<typeof LabelList> = args => (
+	<Provider store={store}>
+		<div style={{ margin: '20px', width: '80%' }}>
+			<LabelList {...args} />
+		</div>
+	</Provider>
 );
 
 export const CreateLabelComponentStories = Template.bind({});
 CreateLabelComponentStories.args = {
-	$textColor: 'red',
-	$checkInputLength: '5',
-	$dataLabelName: ''
+	$dataBackgroundColor: `${'#ff0000'.split('#')[1]}`,
+	$dataLabelName: 'label name',
+	$dataDescription: 'test'
 };

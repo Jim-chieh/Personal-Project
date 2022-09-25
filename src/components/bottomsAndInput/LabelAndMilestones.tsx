@@ -1,4 +1,9 @@
 import styled from 'styled-components';
+import { useState } from 'react';
+
+type Active = {
+	$isActive: boolean;
+};
 
 const Wrapper = styled.div`
 	display: flex;
@@ -8,22 +13,19 @@ const Wrapper = styled.div`
 	overflow: hidden;
 `;
 
-const LabelContainer = styled.div`
+const LabelContainer = styled.div<Active>`
 	height: 100%;
 	display: flex;
 	align-items: center;
 	border-right: 1px solid #d0d7de;
 	padding: 5px 16px;
 	font-size: 14px;
+	color: ${props => (props.$isActive ? '#ffffff' : 'black')};
 	:hover {
-		background-color: #f6f8fa;
+		background-color: ${props => (props.$isActive ? 'transprant' : '#f6f8fa')};
 		cursor: pointer;
 	}
-
-	:first-child {
-		background-color: #0969da;
-		color: #ffffff;
-	}
+	background-color: ${props => (props.$isActive ? '#0969da' : '#ffffff')};
 
 	:last-child {
 		border-right: none;
@@ -48,10 +50,18 @@ const Circle = styled.div`
 type arrayProps = { array: (string | JSX.Element)[][] };
 
 function LabelAndMilestones({ array }: arrayProps) {
+	const [currentClick, setCurrentClick] = useState('Labels');
+
 	return (
 		<Wrapper>
 			{array.map((label, index) => (
-				<LabelContainer key={index}>
+				<LabelContainer
+					key={index}
+					$isActive={label[0] === currentClick}
+					onClick={() => {
+						setCurrentClick(label[0] as string);
+					}}
+				>
 					{label[1]}
 					<TextFeild>{label[0]}</TextFeild>
 					{label[2] === undefined ? null : <Circle>{label[2]}</Circle>}

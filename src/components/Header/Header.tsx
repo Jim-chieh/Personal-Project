@@ -319,8 +319,6 @@ function Header() {
 		setUser(undefined);
 	}
 
-	console.log(user);
-
 	return (
 		<>
 			<Wrapper>
@@ -386,11 +384,7 @@ function Header() {
 					</>
 				)}
 			</Wrapper>
-			{user === null ? (
-				<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
-			) : user === undefined ? (
-				<SighinButton onClick={signInWithGitHub}>Sign in</SighinButton>
-			) : (
+			{user === null || user === undefined ? null : (
 				<MobileMenu $isActive={menuClick}>
 					<HeaderMobile
 						$userFullName={user.identities[0].identity_data.preferred_username}

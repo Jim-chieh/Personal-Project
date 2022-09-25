@@ -6,7 +6,11 @@ import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import Sort from '../../components/Sort';
 import LabelList from './LabelList';
-import { createLabelApi } from '../../redux/LabelCreateApi';
+import {
+	useGetAllLabelsQuery,
+	useCreateLabelsMutation,
+	useDeleteLabelsMutation
+} from '../../redux/LabelCreateApi';
 import { GetLebal } from '../../redux/LabelCreateApi';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
@@ -122,17 +126,28 @@ const labelArr = [
 
 function LabelManagement() {
 	const [createLabelDisplay, setCreateLabelDisplay] = useState(false);
+	const [createLabels] = useCreateLabelsMutation();
+	const [deleteLabels] = useDeleteLabelsMutation();
+
 	const [colorCode, setColorCode] = useState(
 		'#' + Math.floor(Math.random() * 16777215).toString(16)
 	);
 	const [labelNameChange, setLabelNameChange] = useState('');
+	const [descriptionChange, setDescriptionChange] = useState('');
 	const colorRef = useRef(colorCode);
 
-	const { data, isError, isSuccess, isLoading } =
-		createLabelApi.useGetAllLabelsQuery({
-			name: 'Jim-chieh',
-			repo: 'Personal-Project'
-		});
+	const { data, isError, isSuccess, isLoading } = useGetAllLabelsQuery({
+		name: 'Jim-chieh',
+		repo: 'Personal-Project'
+	});
+
+	// useEffect(() => {
+	// 	const token = JSON.parse(
+	// 		window.localStorage.getItem('supabase.auth.token') as string
+	// 	);
+	// 	if (token === null) return;
+	// 	setUserToken(token.currentSession.provider_token);
+	// }, [userToken]);
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -144,7 +159,6 @@ function LabelManagement() {
 		setLabelNameChange('');
 		setColorCode(colorRef.current);
 	}
-	console.log(colorCode);
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -172,7 +186,6 @@ function LabelManagement() {
 				</HeaderContainer>
 				<ControlDisplay $display={createLabelDisplay}>
 					<SingleLabel
-						// $width={'100%'}
 						$backgroundColor={colorCode}
 						text={
 							labelNameChange.length === 0 ? 'Label preview' : labelNameChange
@@ -182,14 +195,26 @@ function LabelManagement() {
 						<CreateLabelComponent
 							onClick={cancelBtnClick}
 							getColorFn={getRandomColor}
+							$buttonName={'Create label'}
 							$backgroundColor={colorCode}
-							$onChange={e => setLabelNameChange(e)}
+							$onNameInputChange={e => setLabelNameChange(e)}
 							$onColorChange={e => setColorCode(e)}
 							$textColor={colorCode}
 							$checkInputLength={labelNameChange}
 							$dataLabelName={labelNameChange}
 							$colorPickerClick={e => {
 								setColorCode(e);
+							}}
+							$onDescriptionChange={e => setDescriptionChange(e)}
+							$createLabelClick={() => {
+								createLabels({
+									name: 'Jim-chieh',
+									repo: 'Personal-Project',
+									createLabelName: `${labelNameChange}`,
+									createLabelColor: `${colorCode.split('#')[1]}`,
+									createLabelDescription: `${descriptionChange}`
+								});
+								setCreateLabelDisplay(false);
 							}}
 						/>
 					</CreateLabelComponentContainer>

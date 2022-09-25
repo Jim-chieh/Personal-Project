@@ -13,7 +13,7 @@ export default {
 const Template: ComponentStory<typeof Dropdown> = args => (
 	<div
 		style={{
-			width: '178px',
+			width: '200px',
 			height: '500px',
 			backgroundColor: 'black',
 			position: 'relative',
@@ -28,7 +28,7 @@ export const DropdownStories = Template.bind({});
 DropdownStories.args = {
 	array: ['list1', 'list2', 'list3', 'list4'],
 	$isActive: true,
-	bottom: '0px',
-	right: '-20px',
+	bottom: '350px',
+	right: '0px',
 	$firstElementShouldhide: 'none'
 };

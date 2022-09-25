@@ -1,7 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { createLabelApi } from './LabelCreateApi';
 
-import counterReducer from './rootReducer';
+export const store = configureStore({
+	reducer: {
+		[createLabelApi.reducerPath]: createLabelApi.reducer
+	},
+	middleware: getDefaultMiddleware => {
+		return getDefaultMiddleware().concat(createLabelApi.middleware);
+	}
+});
 
-const store = configureStore({ reducer: counterReducer });
+export type RootState = ReturnType<typeof store.getState>;
 
-export default store;
+export type AppDispatch = typeof store.dispatch;

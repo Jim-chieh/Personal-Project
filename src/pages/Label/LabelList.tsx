@@ -5,6 +5,10 @@ import CreateLabelComponent from './CreateLabelComponent';
 import { KebabHorizontalIcon } from '@primer/octicons-react';
 import Dropdown from '../../components/Header/Repo/Dropdown';
 import BlurEffect from '../../components/BlurEffect';
+import {
+	useUpdateLabelsMutation,
+	useDeleteLabelsMutation
+} from '../../redux/LabelCreateApi';
 
 type Display = { $display: boolean };
 type DisplayAndIndex = { $display: boolean; $index: number };
@@ -123,6 +127,9 @@ function LabelList({
 	const [mobileIconClick, setMobileIconClick] = useState(false);
 	const [colorCode, setColorCode] = useState('#' + $dataBackgroundColor);
 	const [nameChange, setNameChange] = useState($dataLabelName);
+	const [descriptionChange, setDescriptionChange] = useState($dataDescription);
+	const [updateLabels] = useUpdateLabelsMutation();
+	const [deleteLabels] = useDeleteLabelsMutation();
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -136,8 +143,12 @@ function LabelList({
 	function handleDropdownListClick(item: string) {
 		if (item === 'Edit') {
 			setEditClick(true);
-		} else {
-			console.log('Delete');
+		} else if (item === 'Delete') {
+			deleteLabels({
+				name: 'Jim-chieh',
+				repo: 'Personal-Project',
+				labelName: `${nameChange}`
+			});
 		}
 	}
 
@@ -175,7 +186,13 @@ function LabelList({
 								onClick={
 									button === 'Edit'
 										? () => setEditClick(!editClick)
-										: handleDeleteClick
+										: () => {
+												deleteLabels({
+													name: 'Jim-chieh',
+													repo: 'Personal-Project',
+													labelName: `${nameChange}`
+												});
+										  }
 								}
 								$display={index === 0 ? editClick : true}
 								$index={index}
@@ -208,12 +225,27 @@ function LabelList({
 						onClick={handleCancelBtnClick}
 						getColorFn={getRandomColor}
 						$backgroundColor={colorCode}
-						$onChange={handleInputChange}
+						$onNameInputChange={handleInputChange}
+						$buttonName={'Save changes'}
 						$onColorChange={handleColorInputChange}
 						$textColor={colorCode}
 						$checkInputLength={nameChange}
 						$dataLabelName={nameChange}
 						$colorPickerClick={e => setColorCode(e)}
+						$onDescriptionChange={e => setDescriptionChange(e)}
+						$descriptionValue={$dataDescription}
+						$createLabelClick={() => {
+							updateLabels({
+								name: 'Jim-chieh',
+								repo: 'Personal-Project',
+								labelName: `${$dataLabelName}`,
+								createLabelName: `${nameChange}`,
+								createLabelColor: `${colorCode.split('#')[1]}`,
+								createLabelDescription: `${descriptionChange}`
+							});
+							setEditClick(false);
+							setMobileIconClick(false);
+						}}
 					/>
 				</ControlDisplay>
 			</LabelWrapper>

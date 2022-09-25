@@ -14,6 +14,7 @@ import RepoDetail from './Repo/RepoDetail';
 import Dropdown from './Repo/Dropdown';
 import { supabase } from '../../OAuth/Clients';
 import BlurEffect from '../BlurEffect';
+import { redirect } from 'react-router-dom';
 
 type Click = { $isActive: boolean };
 
@@ -301,6 +302,14 @@ function Header() {
 	async function checkUser() {
 		const user = supabase.auth.user() as UserType;
 		setUser(user);
+		if (user) {
+			const token = JSON.parse(
+				localStorage.getItem('supabase.auth.token') as string
+			);
+			JSON.stringify(
+				localStorage.setItem('token', token.currentSession.provider_token)
+			);
+		}
 	}
 
 	async function signInWithGitHub() {
@@ -317,6 +326,8 @@ function Header() {
 	async function signOut() {
 		await supabase.auth.signOut();
 		setUser(undefined);
+		localStorage.removeItem('token');
+		window.location.reload();
 	}
 
 	return (

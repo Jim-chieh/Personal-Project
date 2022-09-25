@@ -13,6 +13,7 @@ export type GetLebal = {
 type Parameter = {
 	name: string;
 	repo: string;
+	token: string;
 };
 
 interface CreateLabel {
@@ -28,6 +29,7 @@ interface CreateLabel {
 type CreateLabelParameter = {
 	name: string;
 	repo: string;
+	token: string;
 	createLabelName: string;
 	createLabelColor: string;
 	createLabelDescription: string;
@@ -36,6 +38,7 @@ type CreateLabelParameter = {
 type UpdateLabelParameter = {
 	name: string;
 	repo: string;
+	token: string;
 	labelName: string;
 	createLabelName: string;
 	createLabelColor: string;
@@ -45,6 +48,7 @@ type UpdateLabelParameter = {
 type DeleteLabelParameter = {
 	name: string;
 	repo: string;
+	token: string;
 	labelName: string;
 };
 
@@ -56,12 +60,12 @@ export const createLabelApi = createApi({
 	tagTypes: ['labels'],
 	endpoints: builder => ({
 		getAllLabels: builder.query<GetLebal[], Parameter>({
-			query: ({ name, repo }) => ({
+			query: ({ name, repo, token }) => ({
 				url: `/${name}/${repo}/labels`,
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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'
+					Authorization: `token ${token}`
 				})
 			}),
 			providesTags: ['labels']
@@ -70,6 +74,7 @@ export const createLabelApi = createApi({
 			query: ({
 				name,
 				repo,
+				token,
 				createLabelName,
 				createLabelColor,
 				createLabelDescription
@@ -78,7 +83,7 @@ export const createLabelApi = createApi({
 				method: 'POST',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: `token ${token}`,
 					Accept: 'application/vnd.github+json'
 				}),
 				body: {
@@ -93,6 +98,7 @@ export const createLabelApi = createApi({
 			query: ({
 				name,
 				repo,
+				token,
 				labelName,
 				createLabelName,
 				createLabelColor,
@@ -102,7 +108,7 @@ export const createLabelApi = createApi({
 				method: 'PATCH',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: `token ${token}`,
 					Accept: 'application/vnd.github+json'
 				}),
 				body: {
@@ -114,12 +120,12 @@ export const createLabelApi = createApi({
 			invalidatesTags: ['labels']
 		}),
 		deleteLabels: builder.mutation<CreateLabel, DeleteLabelParameter>({
-			query: ({ name, repo, labelName }) => ({
+			query: ({ name, repo, labelName, token }) => ({
 				url: `/${name}/${repo}/labels/${labelName}`,
 				method: 'DELETE',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: 'token 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',
+					Authorization: `token ${token}`,
 					Accept: 'application/vnd.github+json'
 				})
 			}),

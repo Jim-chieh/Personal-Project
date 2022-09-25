@@ -129,6 +129,7 @@ function LabelList({
 	const [descriptionChange, setDescriptionChange] = useState($dataDescription);
 	const [updateLabels] = useUpdateLabelsMutation();
 	const [deleteLabels] = useDeleteLabelsMutation();
+	const token = localStorage.getItem('token') as string;
 
 	function getRandomColor() {
 		let randomColor = Math.floor(Math.random() * 16777215).toString(16);
@@ -142,6 +143,7 @@ function LabelList({
 			deleteLabels({
 				name: 'Jim-chieh',
 				repo: 'Personal-Project',
+				token: token,
 				labelName: `${nameChange}`
 			});
 		}
@@ -185,6 +187,7 @@ function LabelList({
 												deleteLabels({
 													name: 'Jim-chieh',
 													repo: 'Personal-Project',
+													token: token,
 													labelName: `${nameChange}`
 												});
 										  }
@@ -233,6 +236,7 @@ function LabelList({
 							updateLabels({
 								name: 'Jim-chieh',
 								repo: 'Personal-Project',
+								token: token,
 								labelName: `${$dataLabelName}`,
 								createLabelName: `${nameChange}`,
 								createLabelColor: `${colorCode.split('#')[1]}`,

@@ -13,6 +13,7 @@ import {
 import { GetLebal } from '../../redux/LabelCreateApi';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
+import PleaseLogin from '../../components/PleaseLogin';
 
 type Display = { $display: boolean };
 
@@ -133,10 +134,12 @@ function LabelManagement() {
 	const [labelNameChange, setLabelNameChange] = useState('');
 	const [descriptionChange, setDescriptionChange] = useState('');
 	const colorRef = useRef(colorCode);
+	const token = localStorage.getItem('token') as string;
 
 	const { data, isError, isSuccess, isLoading } = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
-		repo: 'Personal-Project'
+		repo: 'Personal-Project',
+		token: localStorage.getItem('token') as string
 	});
 
 	function getRandomColor() {
@@ -149,6 +152,8 @@ function LabelManagement() {
 		setLabelNameChange('');
 		setColorCode(colorRef.current);
 	}
+
+	if (!token) return <PleaseLogin />;
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -200,6 +205,7 @@ function LabelManagement() {
 								createLabels({
 									name: 'Jim-chieh',
 									repo: 'Personal-Project',
+									token: token,
 									createLabelName: `${labelNameChange}`,
 									createLabelColor: `${colorCode.split('#')[1]}`,
 									createLabelDescription: `${descriptionChange}`

@@ -202,6 +202,7 @@ function LabelManagement() {
 							}}
 							$onDescriptionChange={e => setDescriptionChange(e)}
 							$createLabelClick={() => {
+								console.log('fetch start');
 								createLabels({
 									name: 'Jim-chieh',
 									repo: 'Personal-Project',
@@ -210,6 +211,7 @@ function LabelManagement() {
 									createLabelColor: `${colorCode.split('#')[1]}`,
 									createLabelDescription: `${descriptionChange}`
 								});
+								console.log('fetch end');
 								setCreateLabelDisplay(false);
 							}}
 						/>

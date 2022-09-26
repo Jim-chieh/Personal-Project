@@ -14,9 +14,10 @@ export default {
 const Template: ComponentStory<typeof Dropdown> = args => (
 	<div
 		style={{
-			width: '200px',
+			width: '500px',
 			height: '500px',
-			position: 'relative'
+			position: 'relative',
+			backgroundColor: 'black'
 		}}
 	>
 		<Dropdown {...args} />
@@ -28,6 +29,6 @@ DropdownStories.args = {
 	array: ['list1', 'list2', 'list3', 'list4'],
 	$isActive: true,
 	bottom: '350px',
-	right: '0px',
+	right: '250px',
 	$firstElementShouldhide: 'none'
 };

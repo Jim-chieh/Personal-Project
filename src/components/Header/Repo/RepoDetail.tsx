@@ -19,9 +19,14 @@ import {
 	TriangleDownIcon
 } from '@primer/octicons-react';
 
-const Wrapper = styled.div`
+type Display = {
+	$display: string;
+};
+
+const Wrapper = styled.div<Display>`
 	width: 100%;
 	background-color: #f6f8fa;
+	display: ${props => props.$display};
 `;
 
 const RepoNameContainer = styled.div`
@@ -106,8 +111,11 @@ function RepoDetail() {
 		[<GraphIcon fill="#6b737c" />, 'Insights'],
 		[<GearIcon fill="#6b737c" />, 'Settings']
 	];
+
+	const token = localStorage.getItem('token');
+
 	return (
-		<Wrapper>
+		<Wrapper $display={token === null ? 'none' : 'block'}>
 			<RepoNameContainer>
 				<RepoInner>
 					<RepoIconComponent size={16} fill="#57606a" />

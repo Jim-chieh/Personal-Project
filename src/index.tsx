@@ -19,10 +19,10 @@ root.render(
 		<Provider store={store}>
 			<Routes>
 				<Route path="/" element={<App />}>
-					<Route path="issuelist" element={<IssueListPage />} />
+					<Route index element={<IssueListPage />} />
 					<Route path="issue/:id" element={<IssuePage />} />
 					<Route path="newissue" element={<NewIssuePage />} />
-					<Route index element={<LabelManagement />} />
+					<Route path="labelmanagement" element={<LabelManagement />} />
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
 			</Routes>

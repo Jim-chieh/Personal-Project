@@ -116,6 +116,16 @@ type LabelProps = {
 	$dataUrl?: string;
 };
 
+type UpdateLabelParameter = {
+	name: string;
+	repo: string;
+	token: string;
+	labelName: string;
+	createLabelName: string;
+	createLabelColor: string;
+	createLabelDescription: string;
+};
+
 function LabelList({
 	$dataBackgroundColor,
 	$dataLabelName,
@@ -127,6 +137,7 @@ function LabelList({
 	const [colorCode, setColorCode] = useState('#' + $dataBackgroundColor);
 	const [nameChange, setNameChange] = useState($dataLabelName);
 	const [descriptionChange, setDescriptionChange] = useState($dataDescription);
+	const [isFteching, setIsFetching] = useState(false);
 	const [updateLabels] = useUpdateLabelsMutation();
 	const [deleteLabels] = useDeleteLabelsMutation();
 	const token = localStorage.getItem('token') as string;
@@ -141,12 +152,18 @@ function LabelList({
 		if (item === 'Edit') {
 			setEditClick(true);
 		} else if (item === 'Delete') {
-			deleteLabels({
-				name: 'Jim-chieh',
-				repo: 'Personal-Project',
-				token: token,
-				labelName: `${nameChange}`
-			});
+			if (
+				window.confirm(
+					'Are you sure? Deleting a label will remove it from all issues and pull requests.'
+				)
+			) {
+				deleteLabels({
+					name: 'Jim-chieh',
+					repo: 'Personal-Project',
+					token: token,
+					labelName: `${nameChange}`
+				});
+			}
 		}
 	}
 
@@ -165,12 +182,24 @@ function LabelList({
 		setDescriptionChange(descriptionRef.current);
 	}
 
+	async function upadteLabel(values: UpdateLabelParameter) {
+		try {
+			setIsFetching(true);
+			await updateLabels({ ...values }).unwrap();
+			setIsFetching(false);
+			setEditClick(false);
+			setMobileIconClick(false);
+		} catch (err) {
+			console.log(err);
+			setIsFetching(false);
+		}
+	}
+
 	return (
 		<>
 			<LabelWrapper>
 				<LabelInfoContainer>
 					<SingleLabel
-						// $width={'15%'}
 						$backgroundColor={colorCode}
 						text={nameChange.length === 0 ? 'Label preview' : nameChange}
 					/>
@@ -186,12 +215,18 @@ function LabelList({
 									button === 'Edit'
 										? () => setEditClick(!editClick)
 										: () => {
-												deleteLabels({
-													name: 'Jim-chieh',
-													repo: 'Personal-Project',
-													token: token,
-													labelName: `${nameChange}`
-												});
+												if (
+													window.confirm(
+														'Are you sure? Deleting a label will remove it from all issues and pull requests.'
+													)
+												) {
+													deleteLabels({
+														name: 'Jim-chieh',
+														repo: 'Personal-Project',
+														token: token,
+														labelName: `${nameChange}`
+													});
+												}
 										  }
 								}
 								$display={index === 0 ? editClick : true}
@@ -226,16 +261,16 @@ function LabelList({
 						getColorFn={getRandomColor}
 						$backgroundColor={colorCode}
 						$onNameInputChange={handleInputChange}
-						$buttonName={'Save changes'}
+						$buttonName={isFteching ? 'Saving...' : 'Save changes'}
 						$onColorChange={handleColorInputChange}
 						$textColor={colorCode}
-						$checkInputLength={nameChange}
+						$checkInputLength={isFteching ? '' : nameChange}
 						$dataLabelName={nameChange}
 						$colorPickerClick={e => setColorCode(e)}
 						$onDescriptionChange={e => setDescriptionChange(e)}
 						$descriptionValue={descriptionChange}
 						$createLabelClick={() => {
-							updateLabels({
+							upadteLabel({
 								name: 'Jim-chieh',
 								repo: 'Personal-Project',
 								token: token,
@@ -244,8 +279,6 @@ function LabelList({
 								createLabelColor: `${colorCode.split('#')[1]}`,
 								createLabelDescription: `${descriptionChange}`
 							});
-							setEditClick(false);
-							setMobileIconClick(false);
 						}}
 					/>
 				</ControlDisplay>

@@ -25,14 +25,12 @@ const SortContainer = styled.div`
 	}
 `;
 
-const array = [
-	['Alphabetically', <CheckIcon />],
-	['Reverse alphabetically'],
-	['Most issues'],
-	['Fewest issues']
-];
+type SortProps = {
+	$labeltext: string[];
+	array: (string | JSX.Element)[][];
+};
 
-function Sort() {
+function Sort({ $labeltext, array }: SortProps) {
 	const [sortClick, setSortClick] = useState(false);
 
 	return (
@@ -42,7 +40,7 @@ function Sort() {
 			}}
 		>
 			<SortContainer>
-				<Text>Sort</Text>
+				<Text>{$labeltext}</Text>
 				<TriangleDownIcon />
 			</SortContainer>
 			<SortDropDown

@@ -309,6 +309,7 @@ function Header() {
 			JSON.stringify(
 				localStorage.setItem('token', token.currentSession.provider_token)
 			);
+			if (localStorage.getItem('token') === undefined) signOut();
 		}
 	}
 

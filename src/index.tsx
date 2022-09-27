@@ -6,7 +6,7 @@ import { store } from './redux/store';
 import './index.css';
 
 import App from './App';
-import IssueListPage from './pages/IssueListPage';
+import IssueListPage from './pages/IssueList/IssueListPage';
 import IssuePage from './pages/IssuePage';
 import NewIssuePage from './pages/NewIssuePage';
 import LabelManagement from './pages/Label/LabelManagement';

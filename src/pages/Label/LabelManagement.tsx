@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { TagIcon, MilestoneIcon } from '@primer/octicons-react';
+import { TagIcon, MilestoneIcon, CheckIcon } from '@primer/octicons-react';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
@@ -119,15 +119,33 @@ const CreateLabelComponentContainer = styled.div`
 	}
 `;
 
+interface CreateLabel {
+	name: string;
+	repo: string;
+	token: string;
+	createLabelName: string;
+	createLabelColor: string;
+	createLabelDescription: string;
+}
+
 const labelArr = [
 	['Labels', <TagIcon size={14} />],
 	['Milestones', <MilestoneIcon size={14} />]
 ];
 
+const textArray = ['Sort'];
+
+const array = [
+	['Alphabetically', <CheckIcon />],
+	['Reverse alphabetically'],
+	['Most issues'],
+	['Fewest issues']
+];
+
 function LabelManagement() {
 	const [createLabelDisplay, setCreateLabelDisplay] = useState(false);
 	const [createLabels] = useCreateLabelsMutation();
-
+	const [isFetching, setIsfetching] = useState(false);
 	const [colorCode, setColorCode] = useState(
 		'#' + Math.floor(Math.random() * 16777215).toString(16)
 	);
@@ -135,6 +153,8 @@ function LabelManagement() {
 	const [descriptionChange, setDescriptionChange] = useState('');
 	const colorRef = useRef(colorCode);
 	const token = localStorage.getItem('token') as string;
+
+	// console.log('toekn', token);
 
 	const { data, isError, isSuccess, isLoading } = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
@@ -150,7 +170,20 @@ function LabelManagement() {
 	function cancelBtnClick() {
 		setCreateLabelDisplay(false);
 		setLabelNameChange('');
+		setDescriptionChange('');
 		setColorCode(colorRef.current);
+	}
+
+	async function createLabel(values: CreateLabel) {
+		try {
+			setIsfetching(true);
+			await createLabels({ ...values }).unwrap();
+			setIsfetching(false);
+			setCreateLabelDisplay(false);
+		} catch (err) {
+			console.log(err);
+			setIsfetching(false);
+		}
 	}
 
 	if (!token) return <PleaseLogin />;
@@ -190,20 +223,20 @@ function LabelManagement() {
 						<CreateLabelComponent
 							onClick={cancelBtnClick}
 							getColorFn={getRandomColor}
-							$buttonName={'Create label'}
+							$buttonName={isFetching ? 'Saving...' : 'Create label'}
 							$backgroundColor={colorCode}
 							$onNameInputChange={e => setLabelNameChange(e)}
 							$onColorChange={e => setColorCode(e)}
 							$textColor={colorCode}
-							$checkInputLength={labelNameChange}
+							$checkInputLength={isFetching ? '' : labelNameChange}
 							$dataLabelName={labelNameChange}
+							$descriptionValue={descriptionChange}
 							$colorPickerClick={e => {
 								setColorCode(e);
 							}}
 							$onDescriptionChange={e => setDescriptionChange(e)}
 							$createLabelClick={() => {
-								console.log('fetch start');
-								createLabels({
+								createLabel({
 									name: 'Jim-chieh',
 									repo: 'Personal-Project',
 									token: token,
@@ -211,8 +244,6 @@ function LabelManagement() {
 									createLabelColor: `${colorCode.split('#')[1]}`,
 									createLabelDescription: `${descriptionChange}`
 								});
-								console.log('fetch end');
-								setCreateLabelDisplay(false);
 							}}
 						/>
 					</CreateLabelComponentContainer>
@@ -222,7 +253,7 @@ function LabelManagement() {
 						{data.length}
 						<Text>labels</Text>
 					</TextContainer>
-					<Sort />
+					<Sort $labeltext={textArray} array={array} />
 				</LabelListHeader>
 				{data.map((item: GetLebal) => (
 					<LabelList

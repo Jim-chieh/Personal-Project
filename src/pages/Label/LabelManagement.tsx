@@ -129,7 +129,7 @@ interface CreateLabel {
 }
 
 const labelArr = [
-	['Labels', <TagIcon size={14} />],
+	['Labels', <TagIcon size={14} />, '', 'Labels'],
 	['Milestones', <MilestoneIcon size={14} />]
 ];
 
@@ -186,7 +186,8 @@ function LabelManagement() {
 		}
 	}
 
-	if (!token) return <PleaseLogin />;
+	if (token === 'undefined') return <PleaseLogin />;
+	console.log(typeof token);
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -253,7 +254,13 @@ function LabelManagement() {
 						{data.length}
 						<Text>labels</Text>
 					</TextContainer>
-					<Sort $labeltext={textArray} array={array} />
+					<Sort
+						$labeltext={textArray}
+						array={array}
+						$headerText={'Sort'}
+						$top={'22px'}
+						$right={' 6px'}
+					/>
 				</LabelListHeader>
 				{data.map((item: GetLebal) => (
 					<LabelList

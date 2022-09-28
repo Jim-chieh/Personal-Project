@@ -236,7 +236,7 @@ const MobileMenu = styled.div<Click>`
 
 const ProfileDrop = styled.div<Click>`
 	position: absolute;
-	bottom: -474px;
+	bottom: -530px;
 	right: 0px;
 	width: 178px;
 	background-color: #ffffff;
@@ -309,7 +309,6 @@ function Header() {
 			JSON.stringify(
 				localStorage.setItem('token', token.currentSession.provider_token)
 			);
-			if (localStorage.getItem('token') === undefined) signOut();
 		}
 	}
 
@@ -366,7 +365,7 @@ function Header() {
 							<Dropdown
 								array={plusArr}
 								$isActive={plusClick}
-								bottom={'-138px'}
+								bottom={'-158px'}
 								right={'0px'}
 							/>
 							<BlurEffect
@@ -399,8 +398,12 @@ function Header() {
 			{user === null || user === undefined ? null : (
 				<MobileMenu $isActive={menuClick}>
 					<HeaderMobile
-						$userFullName={user.identities[0].identity_data.preferred_username}
-						$userProfileUrl={user.identities[0].identity_data.avatar_url}
+						$userFullName={
+							(user as UserType).identities[0].identity_data.preferred_username
+						}
+						$userProfileUrl={
+							(user as UserType).identities[0].identity_data.avatar_url
+						}
 						$signoutClick={signOut}
 					/>
 				</MobileMenu>

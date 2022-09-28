@@ -57,14 +57,16 @@ function LabelAndMilestones({ array }: arrayProps) {
 			{array.map((label, index) => (
 				<LabelContainer
 					key={index}
-					$isActive={label[0] === currentClick}
+					$isActive={label[3] === currentClick}
 					onClick={() => {
 						setCurrentClick(label[0] as string);
 					}}
 				>
 					{label[1]}
 					<TextFeild>{label[0]}</TextFeild>
-					{label[2] === undefined ? null : <Circle>{label[2]}</Circle>}
+					{label[2] === undefined || label[2] === '' ? null : (
+						<Circle>{label[2]}</Circle>
+					)}
 				</LabelContainer>
 			))}
 		</Wrapper>

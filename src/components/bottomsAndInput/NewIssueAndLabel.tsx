@@ -9,7 +9,7 @@ type Label = {
 };
 
 const NewIssue = styled.button<Label>`
-	height: 100%;
+	height: 33px;
 	padding: 0 8px;
 	background-color: ${props => props.$color};
 	outline: none;

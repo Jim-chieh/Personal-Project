@@ -9,8 +9,6 @@ const key =
 		? process.env.REACT_APP_SUPABASE_TOKEN
 		: process.env.REACT_APP_SUPABASE_DEV_TOKEN;
 
-console.log(Url);
-
 const supabase = createClient(Url as string, key as string);
 
 export { supabase };

@@ -6,7 +6,7 @@ type Background = {
 };
 
 const Wrapper = styled.div`
-	width: 15%;
+	/* width: 15%; */
 	height: 24px;
 	display: flex;
 	align-items: center;
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 
 const LabelContent = styled.span<Background>`
 	background-color: ${props => props.$backgroundColor};
-	height: 100%;
+	/* height: 100%; */
 	color: ${props => props.textColor};
 	padding: 0 10px;
 	border-radius: 30px;

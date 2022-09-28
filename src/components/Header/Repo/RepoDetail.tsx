@@ -115,7 +115,9 @@ function RepoDetail() {
 	const token = localStorage.getItem('token');
 
 	return (
-		<Wrapper $display={token === null ? 'none' : 'block'}>
+		<Wrapper
+			$display={token === null || token === undefined ? 'none' : 'block'}
+		>
 			<RepoNameContainer>
 				<RepoInner>
 					<RepoIconComponent size={16} fill="#57606a" />

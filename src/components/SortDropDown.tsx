@@ -4,14 +4,14 @@ import { useState } from 'react';
 import BlurEffect from './BlurEffect';
 
 type State = { $isActive: number; $index: number };
-type Click = { $isClicked: boolean };
+type Click = { $isClicked: boolean; $top: string; $right: string };
 
 const Wrapper = styled.div<Click>`
 	width: 298px;
 	background-color: #ffffff;
 	position: absolute;
-	top: 22px;
-	right: 6px;
+	top: ${props => props.$top};
+	right: ${props => props.$right};
 	border-radius: 10px;
 	border: 1px solid #d0d7de;
 	display: ${props => (props.$isClicked ? 'block' : 'none')};
@@ -51,13 +51,17 @@ type ArrayProps = {
 	$isActive: boolean;
 	$checkBlur: () => void;
 	$HeaderText: string;
+	$top: string;
+	$right: string;
 };
 
 function SortDropDown({
 	array,
 	$isActive,
 	$checkBlur,
-	$HeaderText
+	$HeaderText,
+	$top,
+	$right
 }: ArrayProps) {
 	const [sortClick, setSortClick] = useState(0);
 	return (
@@ -66,7 +70,7 @@ function SortDropDown({
 				open={$isActive ? 'fixed' : 'none'}
 				onClick={() => $checkBlur()}
 			/>
-			<Wrapper $isClicked={$isActive}>
+			<Wrapper $isClicked={$isActive} $top={$top} $right={$right}>
 				<Header>{$HeaderText}</Header>
 				{array.map((item, index) => (
 					<Inner key={index} onClick={() => setSortClick(index)}>

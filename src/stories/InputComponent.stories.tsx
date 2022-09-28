@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof InputComponent> = args => (
 			position: 'relative'
 		}}
 	>
-		<InputComponent />
+		<InputComponent $onChange={() => {}} />
 	</div>
 );
 

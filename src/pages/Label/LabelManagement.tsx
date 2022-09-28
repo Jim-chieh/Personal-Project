@@ -10,7 +10,7 @@ import {
 	useGetAllLabelsQuery,
 	useCreateLabelsMutation
 } from '../../redux/LabelCreateApi';
-import { GetLebal } from '../../redux/LabelCreateApi';
+import { GetLabel } from '../../redux/LabelCreateApi';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
 import PleaseLogin from '../../components/PleaseLogin';
@@ -187,7 +187,6 @@ function LabelManagement() {
 	}
 
 	if (token === 'undefined') return <PleaseLogin />;
-	console.log(typeof token);
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -199,7 +198,7 @@ function LabelManagement() {
 						<LabelAndMilestones array={labelArr} />
 					</LabelInnerContainer>
 					<InputContainer>
-						<InputComponent />
+						<InputComponent $onChange={() => {}} />
 					</InputContainer>
 					<NewButton>
 						<NewIssueAndLabel
@@ -262,7 +261,7 @@ function LabelManagement() {
 						$right={' 6px'}
 					/>
 				</LabelListHeader>
-				{data.map((item: GetLebal) => (
+				{data.map((item: GetLabel) => (
 					<LabelList
 						key={item.id}
 						$dataBackgroundColor={item.color}

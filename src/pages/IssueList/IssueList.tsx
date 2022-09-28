@@ -1,44 +1,73 @@
 import { IssueOpenedIcon, CommentIcon } from '@primer/octicons-react';
 import SingleLabel from '../Label/SingleLabel';
+import { Issues } from '../../redux/IssueListProps';
 
-function IssueList() {
+type IssuesListProps = {
+	$data: Issues;
+};
+
+function IssueList({ $data }: IssuesListProps) {
+	const { title, labels, assignees, comments } = $data;
+	if ($data.pull_request !== undefined) return null;
 	return (
-		<div className="flex border-b-[1px] border-gray-300 sm:border-x-[1px] sm:last:rounded-b">
-			<div className="hidden md:pt-2 md:pl-4 md:block">
+		<div className="flex justify-between border-b-[1px] border-gray-300 sm:border-x-[1px] sm:last:rounded-b">
+			<div className="hidden md:block md:pt-2 md:pl-4">
 				<input type="checkbox" />
 			</div>
 			<div className="flex w-full">
 				<div className="pt-2 pl-4">
 					<IssueOpenedIcon size={16} fill="#1a7f37" />
 				</div>
-				<div className="flex justify-between w-full">
-					<div className="pt-2 pr-4 pb-2 pl-2 w-7/12">
+				<div className="flex w-full justify-between">
+					<div className="w-7/12 pt-2 pr-4 pb-2 pl-2">
 						<div className="flex flex-wrap ">
 							<div className="flex w-full md:w-fit">
-								<p className="font-semibold text-sm mr-1">TEST</p>
+								<p className="mr-1 text-sm font-semibold">{title}</p>
 							</div>
-							<SingleLabel text={'test'} $backgroundColor={'#ff0000'} />
+							{labels === undefined
+								? null
+								: labels.map(label => (
+										<SingleLabel
+											key={label.id}
+											text={label.name}
+											$backgroundColor={'#' + label.color}
+										/>
+								  ))}
 						</div>
 						<div>
-							<p className="text-xs mt-1">{`#${1} opend ${4} days ago by Jim-chieh`}</p>
+							<p className="mt-1 text-xs">{`#${1} opend ${4} days ago by Jim-chieh`}</p>
 						</div>
 					</div>
-					<div className="pt-2 pr-4 flex">
-						<div className="hidden h-fit sm:flex sm:ml-2 group cursor-pointer">
-							<div className="h-fit w-5 mr-[-12px] group-hover:mr-[2px] transition-all">
-								{/* <img src={img} className="h-full rounded-[50%]" /> */}
-							</div>
-							<div className="h-fit w-5 mr-[-12px] group-hover:mr-[2px] transition-all">
-								{/* <img src={img} className="h-full rounded-[50%] " /> */}
-							</div>
-							<div className="h-fit w-5">
-								{/* <img src={img} className="h-full rounded-[50%] " /> */}
-							</div>
+					<div className="flex w-[40%] justify-end pt-2 pr-4">
+						<div className="group hidden h-fit cursor-pointer last:group-hover:mr-0 sm:ml-2 sm:flex sm:w-[15%] sm:justify-end">
+							{assignees.length === 0
+								? null
+								: assignees.map((assignee, index) => (
+										<div
+											className={`${
+												index === assignees.length - 1 ? '' : 'mr-[-12px]'
+											} h-fit w-5 transition-all ${
+												index === assignees.length - 1
+													? ''
+													: 'group-hover:mr-[2px]'
+											} `}
+										>
+											<img
+												src={assignee.avatar_url}
+												className="h-full rounded-[50%]"
+												alt="abc"
+											/>
+										</div>
+								  ))}
 						</div>
-						<div className="hidden sm:flex  sm:ml-5 ">
-							<a className="flex h-fit items-center hover:text-[#0969da] cursor-pointer">
+						<div
+							className={`hidden justify-end sm:ml-5 sm:flex  sm:w-[16%] sm:${
+								comments === 0 ? 'hidden' : 'flex'
+							}`}
+						>
+							<a className="flex h-fit cursor-pointer items-center hover:text-[#0969da]">
 								<CommentIcon />
-								<p className="ml-1 ">{`${1}`}</p>
+								<p className="ml-1 ">{`${comments}`}</p>
 							</a>
 						</div>
 					</div>

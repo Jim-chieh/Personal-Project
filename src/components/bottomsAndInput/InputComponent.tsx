@@ -20,6 +20,8 @@ const Input = styled.input`
 	border-radius: 0 5px 5px 0;
 	outline: none;
 	font-size: 16px;
+	color: #6e7781;
+	font-size: 14px;
 	::placeholder {
 		color: #6e7781;
 		font-size: 14px;
@@ -39,10 +41,19 @@ const Search = styled(SearchIcon)`
 	}
 `;
 
-function InputComponent() {
+type InputComponent = {
+	$value?: string;
+	$onChange: (e: string) => void;
+};
+
+function InputComponent({ $value, $onChange }: InputComponent) {
 	return (
 		<Wrapper>
-			<Input placeholder="Search all labels" />
+			<Input
+				placeholder="Search all labels"
+				value={$value}
+				onChange={e => $onChange(e.target.value)}
+			/>
 			<Search size={16} fill="#57606a" />
 		</Wrapper>
 	);

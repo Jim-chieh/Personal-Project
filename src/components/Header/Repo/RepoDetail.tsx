@@ -1,6 +1,7 @@
 import ActionList from './ActionList';
 import RepoAction from './RepoAction';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
 import {
 	BookIcon,
 	CodeIcon,
@@ -100,6 +101,9 @@ const actionArr = [
 ];
 
 function RepoDetail() {
+	const result = useSelector(store => store);
+	console.log(result);
+
 	const pageActionArr = [
 		[<CodeIcon fill="#6b737c" />, 'Pin'],
 		[<IssueOpenedIcon fill="#6b737c" />, 'Issues', 1],

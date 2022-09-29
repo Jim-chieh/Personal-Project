@@ -9,7 +9,6 @@ import {
 } from '@primer/octicons-react';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
-import Sort from '../../components/Sort';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import IssuePopup from './IssuePopup';
 import { useRef, useState } from 'react';
@@ -58,7 +57,6 @@ function IssuePage() {
 		['Labels', <TagIcon size={14} />, '9'],
 		['Milestones', <MilestoneIcon size={14} />, '0']
 	];
-
 	if (!data) return <div>loading</div>;
 
 	return (
@@ -94,19 +92,10 @@ function IssuePage() {
 							$checkMouseEvent
 						/>
 					</div>
-					<div className="mt-6 mb-4 flex w-full grow items-center md:order-1 md:mt-0 md:mb-0 md:w-fit">
+					<div className="mt-6 mb-4 flex w-full grow items-center sm:relative md:order-1 md:mt-0 md:mb-0 md:w-fit">
 						<div className="flex h-full items-center rounded-l border-[1px] border-r-0 border-gray-300 px-4 text-sm md:h-[32px]">
-							<div className="hidden sm:block">
-								<Sort
-									$labeltext={'Filters'}
-									array={array}
-									$headerText={'Filter Issues'}
-									$top={'35px'}
-									$right={'-227px'}
-								/>
-							</div>
 							<div
-								className="flex items-center sm:hidden md:hidden lg:hidden"
+								className="flex items-center"
 								onClick={() => setFilterPopupDisplay(true)}
 							>
 								<p className="text-[14px] font-medium">Filters</p>
@@ -164,46 +153,41 @@ function IssuePage() {
 							</a>
 						</div>
 					</div>
-					<div className="flex w-full justify-between sm:justify-start lg:w-fit ">
-						{filterArr.map((filterArr, index) => (
-							<div key={index}>
+					<div className="flex w-full justify-between sm:relative sm:justify-start lg:w-fit">
+						{filterArr.map((text, index) => (
+							<div key={`${index}-${text}`}>
 								<div
-									className="flex cursor-pointer items-center px-4 text-[14px] text-[#6a727b] sm:hidden"
+									className="flex cursor-pointer items-center px-4 text-[14px] text-[#6a727b]"
 									onClick={() => {
 										setDisplay(true);
-										currentClick.current = filterArr;
+										currentClick.current = text as string;
 									}}
 								>
-									{filterArr}
-								</div>
-								<div className="hidden items-center px-4 text-[14px] text-[#6a727b] sm:flex">
-									<Sort
-										$labeltext={filterArr}
-										array={array}
-										$headerText={filterArr}
-										$top={'35px'}
-										$right={'-33px'}
-									/>
+									{text}
+									<div className="hidden sm:flex">
+										<TriangleDownIcon />
+									</div>
 								</div>
 							</div>
 						))}
+						<IssuePopup
+							$display={display}
+							$currentClick={currentClick.current}
+							$onClick={() => setDisplay(false)}
+							$labelData={labelData.data}
+							$assigneeData={data[0]}
+						/>
 					</div>
 				</div>
 			</div>
 			<div className="sm:px-4">
-				{data.map((item: Issues) => (
-					<IssueList key={item.id} $data={item} />
+				{data.map((item: Issues, index) => (
+					<IssueList key={item.id} $data={item} $index={index} />
 				))}
 			</div>
 			<div className="mt-4 px-4">
 				<LightBulbIcon size={16} />
 			</div>
-			<IssuePopup
-				$display={display}
-				$currentClick={currentClick.current}
-				$onClick={() => setDisplay(false)}
-				$data={labelData.data}
-			/>
 		</div>
 	);
 }

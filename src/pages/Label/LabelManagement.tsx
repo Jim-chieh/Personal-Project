@@ -154,8 +154,6 @@ function LabelManagement() {
 	const colorRef = useRef(colorCode);
 	const token = localStorage.getItem('token') as string;
 
-	// console.log('toekn', token);
-
 	const { data, isError, isSuccess, isLoading } = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',

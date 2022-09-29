@@ -40,6 +40,10 @@ const LabelContent = styled.span<Display>`
 	}
 `;
 
+const SingleLabelContainer = styled.div`
+	width: 20%;
+`;
+
 const LabelRelate = styled.span<Display>`
 	width: 25%;
 	display: ${props => (props.$display ? 'none' : 'flex')};
@@ -199,10 +203,12 @@ function LabelList({
 		<>
 			<LabelWrapper>
 				<LabelInfoContainer>
-					<SingleLabel
-						$backgroundColor={colorCode}
-						text={nameChange.length === 0 ? 'Label preview' : nameChange}
-					/>
+					<SingleLabelContainer>
+						<SingleLabel
+							$backgroundColor={colorCode}
+							text={nameChange.length === 0 ? 'Label preview' : nameChange}
+						/>
+					</SingleLabelContainer>
 					<LabelContent $display={editClick}>{$dataDescription}</LabelContent>
 					<LabelRelate $display={editClick}>
 						{$dataUrl ? '1 open issues and pull requests' : ''}

@@ -17,12 +17,12 @@ function FilterPopup({ $display, $onClick }: FilterPopupProps) {
 	return (
 		<div className={`${$display ? 'block' : 'hidden'}`}>
 			<div
-				className="fixed top-0 left-0 z-10 h-full w-full bg-black opacity-40"
+				className="fixed top-0 left-0 z-10 h-full w-full bg-black opacity-40 sm:opacity-0"
 				onClick={$onClick}
 			></div>
-			<div className="group absolute top-[25%] left-4 right-4 z-30 rounded-lg bg-white">
+			<div className="group absolute top-[25%] left-4 right-4 z-30 rounded-lg bg-white sm:top-[40px] sm:left-[0px] sm:w-[300px] sm:border-y-[1px] sm:border-x-[1px]">
 				<div>
-					<div className="flex items-center justify-between p-4 ">
+					<div className="flex items-center justify-between p-4 sm:py-2 sm:text-xs	">
 						<div>Filter Issues</div>
 						<div className="cursor-pointer" onClick={$onClick}>
 							<XIcon />
@@ -31,13 +31,13 @@ function FilterPopup({ $display, $onClick }: FilterPopupProps) {
 					{filterArr.map((filter, index) => {
 						return (
 							<div
-								className="flex items-center justify-start border-t-[1px] p-4"
+								className="flex items-center justify-start border-t-[1px] p-4 sm:py-2"
 								key={index}
 							>
 								<div className="absolute">
 									<CheckIcon />
 								</div>
-								<div className="pl-8 text-[14px]">{filter}</div>
+								<div className="pl-8 text-sm sm:text-xs">{filter}</div>
 							</div>
 						);
 					})}
@@ -46,11 +46,11 @@ function FilterPopup({ $display, $onClick }: FilterPopupProps) {
 						target="_blank"
 						rel="noreferrer"
 					>
-						<div className="flex items-center justify-start border-t-[1px] p-4">
+						<div className="flex items-center justify-start border-t-[1px] p-4 sm:py-2">
 							<div className="absolute">
 								<RepoIcon />
 							</div>
-							<div className="pl-8 text-[14px] font-semibold">
+							<div className="pl-8 text-sm font-semibold sm:text-xs">
 								View advanced search syntax
 							</div>
 						</div>

@@ -82,7 +82,7 @@ function IssueList({ $data, $index }: IssuesListProps) {
 						</div>
 					</div>
 					<div className="hidden sm:flex sm:w-[40%] sm:justify-end sm:pt-2 sm:pr-4">
-						<div className="group hidden h-fit cursor-pointer last:group-hover:mr-0 sm:ml-2 sm:flex sm:w-[15%] sm:justify-end">
+						<div className="flex-warp group hidden h-fit cursor-pointer last:group-hover:mr-0 sm:ml-2 sm:flex sm:w-[19%] sm:justify-end">
 							{assignees.length === 0
 								? null
 								: assignees.map((assignee, index) => (

@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createLabelApi } from './LabelCreateApi';
+import issueListReducer from './issueSlice';
 
 export const store = configureStore({
 	reducer: {
+		issueListReducer: issueListReducer,
 		[createLabelApi.reducerPath]: createLabelApi.reducer
 	},
 	middleware: getDefaultMiddleware => {

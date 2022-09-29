@@ -11,23 +11,18 @@ import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilesto
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
 import IssuePopup from './IssuePopup';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import FilterPopup from './FilterPopup';
-import { useGetAllIssuesQuery } from '../../redux/IssueApi';
+import {
+	useGetAllIssuesQuery,
+	useGetAllAssigneesQuery
+} from '../../redux/IssueApi';
 import { Issues } from '../../redux/IssueListProps';
 import IssueList from './IssueList';
 import { useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
-
-const filter = [
-	['Open issues and pull requests', <CheckIcon />],
-	['Your issues'],
-	['Your pull requests'],
-	['Everything assigned to you'],
-	['Everything mentioning you'],
-	['View advanced search syntax']
-];
-
-const title = ['Filter by label', "Filter by who's assigned", 'Sort by'];
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { clearAll } from '../../redux/issueSlice';
 
 const filterArr = ['Label', 'Assignee', 'Sort'];
 function IssuePage() {
@@ -35,13 +30,24 @@ function IssuePage() {
 	const [filterPopupDisplay, setFilterPopupDisplay] = useState(false);
 	const [inputValue, setInputValue] = useState('is:issue is:open');
 	const currentClick = useRef('');
+	const result = useSelector((store: RootState) => store.issueListReducer);
+	const dispatch = useDispatch();
+
 	const { data } = useGetAllIssuesQuery({
+		name: 'Jim-chieh',
+		repo: 'Personal-Project',
+		token: localStorage.getItem('token') as string,
+		labels: result.labels.length === 0 ? '' : `labels=${result.labels.join()}`,
+		assignee: result.assignee === '' ? '' : `assignee=${result.assignee}`
+	});
+
+	const labelData = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',
 		token: localStorage.getItem('token') as string
 	});
 
-	const labelData = useGetAllLabelsQuery({
+	const assigness = useGetAllAssigneesQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',
 		token: localStorage.getItem('token') as string
@@ -53,6 +59,7 @@ function IssuePage() {
 		['Most issues'],
 		['Fewest issues']
 	];
+
 	const labelArr = [
 		['Labels', <TagIcon size={14} />, '9'],
 		['Milestones', <MilestoneIcon size={14} />, '0']
@@ -114,7 +121,17 @@ function IssuePage() {
 						/>
 					</div>
 				</div>
-				<div className="group mb-4 flex hidden w-fit items-center">
+				<div
+					className={`group mb-4 flex w-fit items-center ${
+						result.labels.length !== 0 || result.assignee !== ''
+							? 'block'
+							: 'hidden'
+					}`}
+					onClick={() => {
+						dispatch(clearAll());
+						console.log('click');
+					}}
+				>
 					<div className=" mr-2 flex cursor-pointer items-center rounded bg-[#6e7781] group-hover:bg-[#0969da]">
 						<XIcon fill="#ffffff" size={16} />
 					</div>
@@ -175,7 +192,7 @@ function IssuePage() {
 							$currentClick={currentClick.current}
 							$onClick={() => setDisplay(false)}
 							$labelData={labelData.data}
-							$assigneeData={data[0]}
+							$assigneeData={assigness.data}
 						/>
 					</div>
 				</div>

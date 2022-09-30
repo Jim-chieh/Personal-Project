@@ -7,7 +7,11 @@ type GetLabelProps = {
 	token: string;
 	labels: string;
 	assignee: string;
+	sort: string;
+	filterText: string;
+	state: string;
 };
+
 type GetAssigneeProps = {
 	name: string;
 	repo: string;
@@ -17,8 +21,17 @@ type GetAssigneeProps = {
 const issueListapi = createLabelApi.injectEndpoints({
 	endpoints: builder => ({
 		getAllIssues: builder.query<IssueLists, GetLabelProps>({
-			query: ({ name, repo, token, labels, assignee }) => ({
-				url: `/${name}/${repo}/issues?${labels}${assignee}`,
+			query: ({
+				name,
+				repo,
+				token,
+				labels,
+				assignee,
+				sort,
+				filterText,
+				state
+			}) => ({
+				url: `/${name}/${repo}/issues?${labels}${assignee}${sort}${filterText}${state}`,
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',

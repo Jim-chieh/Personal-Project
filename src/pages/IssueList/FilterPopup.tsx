@@ -1,19 +1,23 @@
 import { XIcon, CheckIcon, RepoIcon } from '@primer/octicons-react';
+import { useDispatch } from 'react-redux';
+import { addFilter } from '../../redux/issueSlice';
+import { useState } from 'react';
 
 const filterArr = [
-	'Open issues and pull requests',
-	'Your issues',
-	'Your pull requests',
-	'Everything assigned to you',
-	'Everything mentioning you'
+	{ showText: 'Your issues', action: `&creator=Jim-chieh` },
+	{ showText: 'Everything assigned to you', action: '&assignee=Jim-chieh' },
+	{ showText: 'Everything mentioning you', action: '&mentioned=Jim-chieh' }
 ];
 
 type FilterPopupProps = {
 	$display: boolean;
 	$onClick: () => void;
+	$current: string;
 };
 
-function FilterPopup({ $display, $onClick }: FilterPopupProps) {
+function FilterPopup({ $display, $onClick, $current }: FilterPopupProps) {
+	const dispatch = useDispatch();
+	const [currentIndex, setCurrentIndex] = useState();
 	return (
 		<div className={`${$display ? 'block' : 'hidden'}`}>
 			<div
@@ -31,13 +35,21 @@ function FilterPopup({ $display, $onClick }: FilterPopupProps) {
 					{filterArr.map((filter, index) => {
 						return (
 							<div
-								className="flex items-center justify-start border-t-[1px] p-4 sm:py-2"
+								className="flex cursor-pointer items-center justify-start border-t-[1px] p-4 hover:bg-gray-100 sm:py-2"
 								key={index}
+								onClick={() => {
+									dispatch(addFilter(filter.action));
+									$onClick();
+								}}
 							>
-								<div className="absolute">
+								<div
+									className={`absolute ${
+										filter.action === $current ? 'block' : 'hidden'
+									}`}
+								>
 									<CheckIcon />
 								</div>
-								<div className="pl-8 text-sm sm:text-xs">{filter}</div>
+								<div className="pl-8 text-sm sm:text-xs">{filter.showText}</div>
 							</div>
 						);
 					})}

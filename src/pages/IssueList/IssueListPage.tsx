@@ -22,25 +22,31 @@ import IssueList from './IssueList';
 import { useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
-import { clearAll } from '../../redux/issueSlice';
+import { clearAll, addState } from '../../redux/issueSlice';
+import { useNavigate } from 'react-router-dom';
 
 const filterArr = ['Label', 'Assignee', 'Sort'];
 function IssuePage() {
 	const [display, setDisplay] = useState(false);
 	const [filterPopupDisplay, setFilterPopupDisplay] = useState(false);
 	const [inputValue, setInputValue] = useState('is:issue is:open');
+	const [clearAllSearch, setClearAllSearch] = useState(false);
 	const currentClick = useRef('');
 	const result = useSelector((store: RootState) => store.issueListReducer);
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const { data } = useGetAllIssuesQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',
 		token: localStorage.getItem('token') as string,
 		labels: result.labels.length === 0 ? '' : `labels=${result.labels.join()}`,
-		assignee: result.assignee === '' ? '' : `assignee=${result.assignee}`
+		assignee: result.assignee === '' ? '' : `&assignee=${result.assignee}`,
+		sort: result.sort === '' ? '' : `&sort=${result.sort}`,
+		filterText: result.filterText === '' ? '' : `&filter=${result.filterText}`,
+		state: result.state === '' ? '' : `&state=${result.state}`
 	});
-
+	console.log(result);
 	const labelData = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',
@@ -53,13 +59,6 @@ function IssuePage() {
 		token: localStorage.getItem('token') as string
 	});
 
-	const array = [
-		['Alphabetically', <CheckIcon />],
-		['Reverse alphabetically'],
-		['Most issues'],
-		['Fewest issues']
-	];
-
 	const labelArr = [
 		['Labels', <TagIcon size={14} />, '9'],
 		['Milestones', <MilestoneIcon size={14} />, '0']
@@ -67,11 +66,14 @@ function IssuePage() {
 	if (!data) return <div>loading</div>;
 
 	return (
-		<div className="mb-[220px]">
+		<div className="mx-auto mb-[220px] max-w-[1280px] ">
 			<div className="mt-6 w-full px-4">
 				<div className="item-center mb-4 flex w-full flex-wrap justify-between">
 					<div className="md:order-2 md:ml-4">
-						<LabelAndMilestones array={labelArr} />
+						<LabelAndMilestones
+							array={labelArr}
+							$labelClick={() => navigate('/labelmanagement')}
+						/>
 					</div>
 					<div className="md:order-3  md:hidden">
 						<NewIssueAndLabel
@@ -100,11 +102,11 @@ function IssuePage() {
 						/>
 					</div>
 					<div className="mt-6 mb-4 flex w-full grow items-center sm:relative md:order-1 md:mt-0 md:mb-0 md:w-fit">
-						<div className="flex h-full items-center rounded-l border-[1px] border-r-0 border-gray-300 px-4 text-sm md:h-[32px]">
-							<div
-								className="flex items-center"
-								onClick={() => setFilterPopupDisplay(true)}
-							>
+						<div
+							className="flex h-full cursor-pointer items-center rounded-l border-[1px] border-r-0 border-gray-300 px-4 text-sm md:h-[32px]"
+							onClick={() => setFilterPopupDisplay(true)}
+						>
+							<div className="flex items-center">
 								<p className="text-[14px] font-medium">Filters</p>
 								<TriangleDownIcon />
 							</div>
@@ -112,6 +114,7 @@ function IssuePage() {
 						<FilterPopup
 							$display={filterPopupDisplay}
 							$onClick={() => setFilterPopupDisplay(false)}
+							$current={result.filterText}
 						/>
 						<InputComponent
 							$value={inputValue}
@@ -123,31 +126,75 @@ function IssuePage() {
 				</div>
 				<div
 					className={`group mb-4 flex w-fit items-center ${
-						result.labels.length !== 0 || result.assignee !== ''
+						result.labels.length !== 0 ||
+						result.assignee !== '' ||
+						result.filterText !== '' ||
+						result.state !== ''
 							? 'block'
 							: 'hidden'
 					}`}
 					onClick={() => {
 						dispatch(clearAll());
-						console.log('click');
+						setClearAllSearch(false);
 					}}
 				>
 					<div className=" mr-2 flex cursor-pointer items-center rounded bg-[#6e7781] group-hover:bg-[#0969da]">
 						<XIcon fill="#ffffff" size={16} />
 					</div>
-					<div className="flex cursor-pointer items-center text-[#6e7781] group-hover:text-[#0969da]">
+					<div className="flex cursor-pointer items-center text-sm text-[#6e7781] group-hover:text-[#0969da]">
 						Clear current search query, filters, and sorts
 					</div>
 				</div>
 				<div className="item-center flex lg:hidden">
-					<a className=" flex items-center" href="#">
-						<IssueOpenedIcon size={16} />
-						<div className="ml-1 text-[14px]">{`${1}`} Open</div>
-					</a>
-					<a className=" ml-[10px] flex items-center justify-center" href="#">
-						<CheckIcon size={16} />
-						<div className="ml-1 text-[14px]">{`${0} Closed`}</div>
-					</a>
+					<div
+						className=" flex cursor-pointer items-center"
+						onClick={() => dispatch(addState('open'))}
+					>
+						<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
+							<IssueOpenedIcon size={16} />
+						</div>
+						<div className={`${result.state === 'open' ? 'block' : 'hidden'}`}>
+							<IssueOpenedIcon size={16} />
+						</div>
+						<div
+							className={`${result.state === 'closed' ? 'block' : 'hidden'}`}
+						>
+							<IssueOpenedIcon size={16} fill={'#64748b'} />
+						</div>
+						<div
+							className={`ml-1 text-[14px] ${
+								result.state === 'open' || result.state === ''
+									? 'text-black'
+									: 'text-slate-500'
+							}`}
+						>
+							Open
+						</div>
+					</div>
+					<div
+						className=" ml-[10px] flex cursor-pointer items-center justify-center"
+						onClick={() => dispatch(addState('closed'))}
+					>
+						<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
+							<CheckIcon size={16} />
+						</div>
+						<div
+							className={`${result.state === 'closed' ? 'block' : 'hidden'}`}
+						>
+							<CheckIcon size={16} />
+						</div>
+						<div className={`${result.state === 'open' ? 'block' : 'hidden'}`}>
+							<CheckIcon size={16} fill={'#64748b'} />
+						</div>
+						<div
+							className={`ml-1 text-[14px] ${
+								result.state === 'closed' ? 'text-black' : 'text-slate-500'
+							}`}
+						>
+							{' '}
+							Closed
+						</div>
+					</div>
 				</div>
 			</div>
 			<div className="sm:px-4">
@@ -157,17 +204,60 @@ function IssuePage() {
 							<input type="checkbox" />
 						</div>
 						<div className="hidden lg:ml-4 lg:block lg:flex">
-							<a className=" flex items-center" href="#">
-								<IssueOpenedIcon size={16} />
-								<div className="ml-1 text-[14px]">{`${1}`} Open</div>
-							</a>
-							<a
-								className=" ml-[10px] flex items-center justify-center"
-								href="#"
+							<button
+								className=" flex cursor-pointer items-center"
+								onClick={() => dispatch(addState('open'))}
 							>
-								<CheckIcon size={16} />
-								<div className="ml-1 text-[14px]">{`${0} Closed`}</div>
-							</a>
+								<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
+									<IssueOpenedIcon size={16} />
+								</div>
+								<div
+									className={`${result.state === 'open' ? 'block' : 'hidden'}`}
+								>
+									<IssueOpenedIcon size={16} />
+								</div>
+								<div
+									className={`${
+										result.state === 'closed' ? 'block' : 'hidden'
+									}`}
+								>
+									<IssueOpenedIcon size={16} fill={'#64748b'} />
+								</div>
+								<div
+									className={`ml-1 text-[14px]  ${
+										result.state === 'open' || result.state === ''
+											? 'text-block'
+											: 'text-slate-500'
+									}`}
+								>
+									Open
+								</div>
+							</button>
+							<button className=" ml-[10px] flex items-center justify-center">
+								<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
+									<CheckIcon size={16} fill={'#64748b'} />
+								</div>
+								<div
+									className={`${
+										result.state === 'closed' ? 'block' : 'hidden'
+									}`}
+								>
+									<CheckIcon size={16} />
+								</div>
+								<div
+									className={`${result.state === 'open' ? 'block' : 'hidden'}`}
+								>
+									<CheckIcon size={16} fill={'#64748b'} />
+								</div>
+								<div
+									className={`ml-1 cursor-pointer text-[14px] ${
+										result.state === 'closed' ? 'text-block' : 'text-slate-500'
+									}`}
+									onClick={() => dispatch(addState('closed'))}
+								>
+									Closed
+								</div>
+							</button>
 						</div>
 					</div>
 					<div className="flex w-full justify-between sm:relative sm:justify-start lg:w-fit">

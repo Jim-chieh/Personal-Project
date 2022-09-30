@@ -8,7 +8,8 @@ import {
 	clearLabel,
 	removeLabel,
 	addAssignee,
-	clearAssignee
+	clearAssignee,
+	addSort
 } from '../../redux/issueSlice';
 import { RootState } from '../../redux/store';
 
@@ -21,12 +22,12 @@ type IssuePopupProps = {
 };
 
 const SortbyArr = [
-	'Newest',
-	'Oldest',
-	'Most commented',
-	'Least commented',
-	'Recently updated',
-	'Least recently updated'
+	{ showText: 'Newest', action: 'created-desc' },
+	{ showText: 'Oldest', action: 'created-asc' },
+	{ showText: 'Most commented', action: 'comments-desc' },
+	{ showText: 'Least commented', action: 'comments-asc' },
+	{ showText: 'Recently updated', action: 'updated-desc' },
+	{ showText: 'Least recently updated', action: 'updated-asc' }
 ];
 
 function IssuePopup({
@@ -39,7 +40,6 @@ function IssuePopup({
 	const [checkIconActive, setCheckIconActive] = useState(0);
 	const result = useSelector((store: RootState) => store);
 	const dispatch = useDispatch();
-	console.log(result.issueListReducer);
 
 	if ($currentClick === 'Label')
 		return (
@@ -146,7 +146,7 @@ function IssuePopup({
 							className="relative flex cursor-pointer items-center justify-between p-4 text-[14px] sm:py-[7px] sm:px-[16px] sm:pl-[30px] sm:text-[12px]"
 							onClick={() => {
 								$onClick();
-								dispatch(clearAssignee('*'));
+								dispatch(clearAssignee('none'));
 							}}
 						>
 							<div className="pl-5 hover:bg-gray-100 sm:pl-3">
@@ -154,7 +154,7 @@ function IssuePopup({
 							</div>
 							<div
 								className={`absolute sm:left-[12px] ${
-									result.issueListReducer.assignee === '*'
+									result.issueListReducer.assignee === 'none'
 										? 'visible'
 										: 'invisible'
 								}`}
@@ -222,20 +222,28 @@ function IssuePopup({
 									className="flex  cursor-pointer  border-t-[1px] p-4 pl-[50px] hover:bg-gray-100 sm:py-[7px] sm:pl-[38px] sm:text-xs"
 									key={index}
 									onClick={() => {
-										setCheckIconActive(index);
 										$onClick();
+										dispatch(addSort(sort.action));
 									}}
 								>
 									<div className="relative flex">
-										<span className="text-sm font-semibold sm:font-normal">
-											{sort}
+										<span
+											className={`text-sm  ${
+												result.issueListReducer.sort === sort.action
+													? 'sm:font-semibold'
+													: 'sm:font-normal'
+											}`}
+										>
+											{sort.showText}
 										</span>
 										<div
 											className={`${
-												checkIconActive === index ? 'block' : 'hidden'
+												result.issueListReducer.sort === sort.action
+													? 'block'
+													: 'hidden'
 											} top- absolute left-[-30px] top-[-3px]`}
 										>
-											<div className="absolute sm:left-[5px] sm:top-[5px]">
+											<div className={`absolute sm:left-[5px] sm:top-[5px] `}>
 												<CheckIcon />
 											</div>
 										</div>

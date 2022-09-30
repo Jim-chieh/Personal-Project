@@ -1,4 +1,9 @@
-import { IssueOpenedIcon, CommentIcon } from '@primer/octicons-react';
+import {
+	IssueOpenedIcon,
+	CommentIcon,
+	CheckCircleIcon,
+	CircleSlashIcon
+} from '@primer/octicons-react';
 import SingleLabel from '../Label/SingleLabel';
 import { Issues } from '../../redux/IssueListProps';
 import IssueTitleHoverPopup from './IssueTitleHoverPopup';
@@ -9,8 +14,17 @@ type IssuesListProps = {
 };
 
 function IssueList({ $data, $index }: IssuesListProps) {
-	const { title, labels, assignees, comments, number, created_at, user } =
-		$data;
+	const {
+		title,
+		labels,
+		assignees,
+		comments,
+		number,
+		created_at,
+		user,
+		state,
+		state_reason
+	} = $data;
 
 	function checkTime() {
 		const createAt = new Date(created_at).getTime();
@@ -32,6 +46,9 @@ function IssueList({ $data, $index }: IssuesListProps) {
 			} else {
 				showDay = 'days';
 			}
+		} else if (days !== 0 && hours >= 12) {
+			result = days + 1;
+			showDay = 'days';
 		} else if (days === 0 && hours === 0 && minutes === 0 && seconds < 60) {
 			result = seconds;
 			showDay = 'seconds';
@@ -45,7 +62,7 @@ function IssueList({ $data, $index }: IssuesListProps) {
 			result = days + 1;
 			showDay = 'day';
 		}
-		return `#${number} opened ${result} ${showDay} ago by ${user.login}`;
+		return `#${number} ${state} ${result} ${showDay} ago by ${user.login}`;
 	}
 
 	if ($data.pull_request !== undefined) return null;
@@ -55,7 +72,23 @@ function IssueList({ $data, $index }: IssuesListProps) {
 				<input type="checkbox" />
 			</div>
 			<div className="flex w-full">
-				<div className="pt-2 pl-4">
+				<div
+					className={`pt-2 pl-4 ${
+						state_reason === 'completed' ? 'block' : 'hidden'
+					}`}
+				>
+					<CheckCircleIcon size={16} fill="#8250df" />
+				</div>
+				<div
+					className={`pt-2 pl-4 ${
+						state_reason === 'not_planned' ? 'block' : 'hidden'
+					}`}
+				>
+					<CircleSlashIcon size={16} fill="#57606a" />
+				</div>
+				<div
+					className={`pt-2 pl-4 ${state_reason === null ? 'block' : 'hidden'}`}
+				>
 					<IssueOpenedIcon size={16} fill="#1a7f37" />
 				</div>
 				<div className="flex w-full justify-between">
@@ -70,11 +103,12 @@ function IssueList({ $data, $index }: IssuesListProps) {
 							{labels === undefined
 								? null
 								: labels.map(label => (
-										<SingleLabel
-											key={label.id}
-											text={label.name}
-											$backgroundColor={'#' + label.color}
-										/>
+										<div key={label.id} className="ml-1">
+											<SingleLabel
+												text={label.name}
+												$backgroundColor={'#' + label.color}
+											/>
+										</div>
 								  ))}
 						</div>
 						<div>

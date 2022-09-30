@@ -47,10 +47,17 @@ const Circle = styled.div`
 	align-items: center;
 	margin: 0 4px;
 `;
-type arrayProps = { array: (string | JSX.Element)[][] };
+type arrayProps = {
+	array: (string | JSX.Element)[][];
+	$labelClick?: () => void;
+};
 
-function LabelAndMilestones({ array }: arrayProps) {
+function LabelAndMilestones({ array, $labelClick }: arrayProps) {
 	const [currentClick, setCurrentClick] = useState('Labels');
+	function fasley() {
+		{
+		}
+	}
 
 	return (
 		<Wrapper>
@@ -60,6 +67,11 @@ function LabelAndMilestones({ array }: arrayProps) {
 					$isActive={label[3] === currentClick}
 					onClick={() => {
 						setCurrentClick(label[0] as string);
+						label[0] === 'Labels'
+							? $labelClick
+								? $labelClick()
+								: fasley()
+							: fasley();
 					}}
 				>
 					{label[1]}

@@ -5,11 +5,17 @@ import type { RootState } from './store';
 interface CounterState {
 	labels: string[];
 	assignee: string;
+	sort: string;
+	filterText: string;
+	state: string;
 }
 
 const initialState: CounterState = {
 	labels: [],
-	assignee: ''
+	assignee: '',
+	sort: 'created-desc',
+	filterText: '',
+	state: ''
 };
 
 export const issueListSlice = createSlice({
@@ -31,9 +37,23 @@ export const issueListSlice = createSlice({
 		clearAssignee: (state, action: PayloadAction<string>) => {
 			state.assignee = action.payload;
 		},
+		addSort: (state, action: PayloadAction<string>) => {
+			state.sort = action.payload;
+		},
+		addFilter: (state, action: PayloadAction<string>) => {
+			state.labels = [];
+			state.assignee = '';
+			state.sort = 'created-desc';
+			state.filterText = action.payload;
+		},
+		addState: (state, action: PayloadAction<string>) => {
+			state.state = action.payload;
+		},
 		clearAll: state => {
 			state.labels = [];
 			state.assignee = '';
+			state.sort = 'created-desc';
+			state.filterText = '';
 		}
 	}
 });
@@ -44,7 +64,10 @@ export const {
 	removeLabel,
 	addAssignee,
 	clearAssignee,
-	clearAll
+	clearAll,
+	addSort,
+	addFilter,
+	addState
 } = issueListSlice.actions;
 
 export default issueListSlice.reducer;

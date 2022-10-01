@@ -1,3 +1,27 @@
+import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
+import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
+import InputComponent from '../../components/bottomsAndInput/InputComponent';
+import IssuePopup from './IssuePopup';
+import NoResultMatched from './NoResultMatched';
+import IssueList from './IssueList';
+import NoIssuePage from './NoIssuePage';
+import FilterPopup from './FilterPopup';
+import { Issues } from '../../redux/IssueListProps';
+import { useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
+import {
+	useGetAllIssuesQuery,
+	useGetAllAssigneesQuery
+} from '../../redux/IssueApi';
+import { RootState } from '../../redux/store';
+import {
+	clearAll,
+	addState,
+	switchPerPage,
+	switchPage
+} from '../../redux/issueSlice';
 import {
 	TagIcon,
 	MilestoneIcon,
@@ -7,23 +31,6 @@ import {
 	LightBulbIcon,
 	TriangleDownIcon
 } from '@primer/octicons-react';
-import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
-import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
-import InputComponent from '../../components/bottomsAndInput/InputComponent';
-import IssuePopup from './IssuePopup';
-import { useRef, useState, useEffect } from 'react';
-import FilterPopup from './FilterPopup';
-import {
-	useGetAllIssuesQuery,
-	useGetAllAssigneesQuery
-} from '../../redux/IssueApi';
-import { Issues } from '../../redux/IssueListProps';
-import IssueList from './IssueList';
-import { useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { clearAll, addState } from '../../redux/issueSlice';
-import { useNavigate } from 'react-router-dom';
 
 const filterArr = ['Label', 'Assignee', 'Sort'];
 function IssuePage() {
@@ -31,6 +38,7 @@ function IssuePage() {
 	const [filterPopupDisplay, setFilterPopupDisplay] = useState(false);
 	const [inputValue, setInputValue] = useState('is:issue is:open');
 	const [clearAllSearch, setClearAllSearch] = useState(false);
+	const [perPage, setPerPage] = useState('30');
 	const currentClick = useRef('');
 	const result = useSelector((store: RootState) => store.issueListReducer);
 	const dispatch = useDispatch();
@@ -44,9 +52,12 @@ function IssuePage() {
 		assignee: result.assignee === '' ? '' : `&assignee=${result.assignee}`,
 		sort: result.sort === '' ? '' : `&sort=${result.sort}`,
 		filterText: result.filterText === '' ? '' : `&filter=${result.filterText}`,
-		state: result.state === '' ? '' : `&state=${result.state}`
+		state: result.state === '' ? '' : `&state=${result.state}`,
+		per_page:
+			result.per_page === '' ? '&per_page=30' : `&per_page=${result.per_page}`,
+		page: result.page === '' ? '&page=1' : `&page=${result.page}`
 	});
-	console.log(result);
+
 	const labelData = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
 		repo: 'Personal-Project',
@@ -63,6 +74,14 @@ function IssuePage() {
 		['Labels', <TagIcon size={14} />, '9'],
 		['Milestones', <MilestoneIcon size={14} />, '0']
 	];
+
+	let noPR = [] as Issues[];
+	data?.map(issue =>
+		issue.pull_request === undefined ? noPR.push(issue) : () => {}
+	);
+
+	function changeSearchInputValue() {}
+
 	if (!data) return <div>loading</div>;
 
 	return (
@@ -86,6 +105,7 @@ function IssuePage() {
 							$border={'none'}
 							$hoverColor={'#2c974b'}
 							$checkMouseEvent
+							$hoverBorderColor={'transprant'}
 						/>
 					</div>
 					<div className="hidden md:order-3 md:ml-4 md:block">
@@ -99,6 +119,7 @@ function IssuePage() {
 							$border={'none'}
 							$hoverColor={'#2c974b'}
 							$checkMouseEvent
+							$hoverBorderColor={'transprant'}
 						/>
 					</div>
 					<div className="mt-6 mb-4 flex w-full grow items-center sm:relative md:order-1 md:mt-0 md:mb-0 md:w-fit">
@@ -191,7 +212,6 @@ function IssuePage() {
 								result.state === 'closed' ? 'text-black' : 'text-slate-500'
 							}`}
 						>
-							{' '}
 							Closed
 						</div>
 					</div>
@@ -291,6 +311,106 @@ function IssuePage() {
 				{data.map((item: Issues, index) => (
 					<IssueList key={item.id} $data={item} $index={index} />
 				))}
+				<div
+					className={`${
+						(result.labels.length !== 0 ||
+							result.assignee !== '' ||
+							result.filterText !== '' ||
+							result.state !== '') &&
+						noPR.length === 0
+							? 'flex'
+							: 'hidden'
+					} `}
+				>
+					<NoResultMatched />
+				</div>
+				<div
+					className={`${
+						result.labels.length === 0 &&
+						result.assignee === '' &&
+						result.filterText === '' &&
+						result.state === '' &&
+						noPR.length === 0
+							? 'flex'
+							: 'hidden'
+					} `}
+				>
+					<NoIssuePage />
+				</div>
+			</div>
+			<div className=" mt-4 flex justify-center">
+				<div className="flex w-4/12 justify-between">
+					<NewIssueAndLabel
+						buttonName={'< Previous'}
+						backgroundColor={'transparent'}
+						onClick={() =>
+							dispatch(
+								switchPage(
+									`${(result.page === ''
+										? () => {}
+										: parseInt(result.page[result.page.length - 1]) - 1
+									).toString()}`
+								)
+							)
+						}
+						textColor={
+							result.page === '' || result.page === '1' ? 'gray' : '#287cdf'
+						}
+						$border={'none'}
+						$hoverColor={'none'}
+						$checkMouseEvent={
+							result.page !== '' || result.page !== ''
+								? result.page[result.page.length - 1] !== '1'
+								: false
+						}
+						$hoverBorderColor={'#d0d7de'}
+					/>
+					<NewIssueAndLabel
+						buttonName={'Next >'}
+						backgroundColor={'transparent'}
+						onClick={() =>
+							dispatch(
+								switchPage(
+									`${(result.page === ''
+										? 2
+										: parseInt(result.page[result.page.length - 1]) + 1
+									).toString()}`
+								)
+							)
+						}
+						textColor={noPR.length >= parseInt(perPage) ? '#287cdf' : 'gray'}
+						$border={'none'}
+						$hoverColor={'none'}
+						$checkMouseEvent={noPR.length >= parseInt(perPage)}
+						$hoverBorderColor={'#d0d7de'}
+					/>
+				</div>
+			</div>
+			<div className="flex justify-center">
+				<p>每個頁面有:</p>
+				<input
+					className="border-[1px] border-black"
+					onChange={e => setPerPage(e.target.value)}
+					value={perPage}
+				/>
+				<p>篇issues</p>
+			</div>
+			<div className="mt-3 flex justify-center">
+				<button
+					className="border-[1px] border-black"
+					onClick={() => dispatch(switchPerPage(perPage))}
+				>
+					確定
+				</button>
+				<button
+					className="ml-2 border-[1px] border-black"
+					onClick={() => {
+						dispatch(switchPerPage(''));
+						setPerPage('30');
+					}}
+				>
+					重設
+				</button>
 			</div>
 			<div className="mt-4 px-4">
 				<LightBulbIcon size={16} />

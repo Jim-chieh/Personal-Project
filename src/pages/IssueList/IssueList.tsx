@@ -39,15 +39,15 @@ function IssueList({ $data, $index }: IssuesListProps) {
 		const seconds = Math.round(leave3 / 1000);
 		let result;
 		let showDay = '';
-		if (days !== 0) {
-			result = days;
+		if (days !== 0 && hours >= 5) {
+			result = days + 1;
 			if (days === 1) {
 				showDay = 'day';
 			} else {
 				showDay = 'days';
 			}
-		} else if (days !== 0 && hours >= 12) {
-			result = days + 1;
+		} else if (days !== 0 && hours < 5) {
+			result = days;
 			showDay = 'days';
 		} else if (days === 0 && hours === 0 && minutes === 0 && seconds < 60) {
 			result = seconds;

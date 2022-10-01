@@ -207,6 +207,7 @@ function LabelManagement() {
 							$border={'#2a9048'}
 							$hoverColor={'#2c974b'}
 							$checkMouseEvent
+							$hoverBorderColor={'transprant'}
 						/>
 					</NewButton>
 				</HeaderContainer>

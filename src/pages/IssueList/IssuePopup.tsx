@@ -37,7 +37,8 @@ function IssuePopup({
 	$labelData,
 	$assigneeData
 }: IssuePopupProps) {
-	const [checkIconActive, setCheckIconActive] = useState(0);
+	const [inputValue, setInputValue] = useState('');
+	const [assigneeInputValue, setAssigneeInputValue] = useState('');
 	const result = useSelector((store: RootState) => store);
 	const dispatch = useDispatch();
 
@@ -46,13 +47,22 @@ function IssuePopup({
 			<div className={`${$display ? 'block' : 'hidden'} `}>
 				<div
 					className=" fixed top-0 left-0 h-full w-full bg-black opacity-40 sm:opacity-0"
-					onClick={$onClick}
+					onClick={() => {
+						$onClick();
+						setInputValue('');
+					}}
 				></div>
 				<div className="group	absolute top-[2%] left-4 right-4 max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[12px] sm:z-10 sm:h-[400px] sm:max-h-fit sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-245px]">
 					<div>
 						<div className="flex items-center justify-between  border-b-[1px] p-4 text-sm sm:h-[33px] sm:text-xs">
 							<div>Filter by label</div>
-							<div className="cursor-pointer" onClick={$onClick}>
+							<div
+								className="cursor-pointer"
+								onClick={() => {
+									$onClick();
+									setInputValue('');
+								}}
+							>
 								<XIcon />
 							</div>
 						</div>
@@ -60,6 +70,8 @@ function IssuePopup({
 							<input
 								className="h-8 w-full rounded-md border-[1px] border-[#d0d7de] pl-3 text-sm focus:outline-blue-600 sm:h-8"
 								placeholder="Filter labels"
+								onChange={e => setInputValue(e.target.value)}
+								value={inputValue}
 							/>
 						</div>
 						<div
@@ -67,6 +79,7 @@ function IssuePopup({
 							onClick={() => {
 								$onClick();
 								dispatch(clearLabel());
+								setInputValue('');
 							}}
 						>
 							<div className="pl-[32px] sm:pl-[25px] ">Unlabeled</div>
@@ -74,10 +87,22 @@ function IssuePopup({
 						<ul>
 							{$labelData?.map(label => (
 								<li
-									className="relative flex cursor-pointer  border-t-[1px] p-4 pl-[50px] hover:bg-gray-100 sm:py-[7px] sm:pl-[40px]"
+									className={`relative  cursor-pointer  border-t-[1px] p-4 pl-[50px] hover:bg-gray-100 sm:py-[7px] sm:pl-[40px] ${
+										inputValue.trim().length === 0
+											? 'flex'
+											: label.name
+													.toLocaleLowerCase()
+													.includes(inputValue.toLocaleLowerCase()) ||
+											  label.description
+													.toLocaleLowerCase()
+													.includes(inputValue.toLocaleLowerCase())
+											? 'flex'
+											: 'hidden'
+									}`}
 									key={label.id}
 									onClick={() => {
 										$onClick();
+										setInputValue('');
 										if (result.issueListReducer.labels.includes(label.name)) {
 											const hadClicked = (e: string) => e === label.name;
 											const newLabelList = [...result.issueListReducer.labels];
@@ -126,13 +151,22 @@ function IssuePopup({
 			<div className={`${$display ? 'block' : 'hidden'}`}>
 				<div
 					className="fixed top-0 left-0 h-full w-full bg-black opacity-40 sm:opacity-0"
-					onClick={$onClick}
+					onClick={() => {
+						$onClick();
+						setAssigneeInputValue('');
+					}}
 				></div>
 				<div className="group absolute top-[2%] left-4 right-4 h-[700px] max-h-[700px] max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[95px] sm:z-10 sm:h-fit sm:max-h-[500px] sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-140px]">
 					<div>
 						<div className="flex items-center justify-between border-b-[1px] p-4 text-sm sm:h-[33px] sm:text-[12px] ">
 							<div>Filter by Assignee</div>
-							<div className="cursor-pointer" onClick={$onClick}>
+							<div
+								className="cursor-pointer"
+								onClick={() => {
+									$onClick();
+									setAssigneeInputValue('');
+								}}
+							>
 								<XIcon />
 							</div>
 						</div>
@@ -140,12 +174,15 @@ function IssuePopup({
 							<input
 								className="h-8 w-full rounded-md border-[1px] border-[#d0d7de] pl-3 text-sm focus:outline-blue-600 "
 								placeholder="Filter users"
+								onChange={e => setAssigneeInputValue(e.target.value)}
+								value={assigneeInputValue}
 							/>
 						</div>
 						<div
 							className="relative flex cursor-pointer items-center justify-between p-4 text-[14px] sm:py-[7px] sm:px-[16px] sm:pl-[30px] sm:text-[12px]"
 							onClick={() => {
 								$onClick();
+								setAssigneeInputValue('');
 								dispatch(clearAssignee('none'));
 							}}
 						>
@@ -167,9 +204,18 @@ function IssuePopup({
 								? $assigneeData.map((data: Assignee) => (
 										<li
 											key={data.id}
-											className="relative  flex cursor-pointer border-y-[1px] p-4 pl-[26px] hover:bg-gray-100 sm:py-[7px] sm:pl-[38px]"
+											className={`relative flex cursor-pointer border-y-[1px] p-4 pl-[26px] hover:bg-gray-100 sm:py-[7px] sm:pl-[38px] ${
+												assigneeInputValue.trim().length === 0
+													? () => {}
+													: data.login
+															.toLocaleLowerCase()
+															.includes(assigneeInputValue)
+													? 'flex'
+													: 'hidden'
+											}`}
 											onClick={() => {
 												$onClick();
+												setAssigneeInputValue('');
 												dispatch(addAssignee(data.login));
 											}}
 										>

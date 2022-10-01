@@ -8,6 +8,8 @@ interface CounterState {
 	sort: string;
 	filterText: string;
 	state: string;
+	per_page: string;
+	page: string;
 }
 
 const initialState: CounterState = {
@@ -15,7 +17,9 @@ const initialState: CounterState = {
 	assignee: '',
 	sort: 'created-desc',
 	filterText: '',
-	state: ''
+	state: '',
+	per_page: '',
+	page: ''
 };
 
 export const issueListSlice = createSlice({
@@ -24,36 +28,52 @@ export const issueListSlice = createSlice({
 	reducers: {
 		addLabel: (state, action: PayloadAction<string>) => {
 			state.labels = [...state.labels, action.payload];
+			state.page = '';
 		},
 		removeLabel: (state, action: PayloadAction<string[]>) => {
 			state.labels = action.payload;
+			state.page = '';
 		},
 		clearLabel: state => {
 			state.labels = [];
+			state.page = '';
 		},
 		addAssignee: (state, action: PayloadAction<string>) => {
 			state.assignee = action.payload;
+			state.page = '';
 		},
 		clearAssignee: (state, action: PayloadAction<string>) => {
 			state.assignee = action.payload;
+			state.page = '';
 		},
 		addSort: (state, action: PayloadAction<string>) => {
 			state.sort = action.payload;
+			state.page = '';
 		},
 		addFilter: (state, action: PayloadAction<string>) => {
 			state.labels = [];
 			state.assignee = '';
 			state.sort = 'created-desc';
 			state.filterText = action.payload;
+			state.page = '';
 		},
 		addState: (state, action: PayloadAction<string>) => {
 			state.state = action.payload;
+			state.page = '';
+		},
+		switchPerPage: (state, action: PayloadAction<string>) => {
+			state.per_page = action.payload;
+		},
+		switchPage: (state, action: PayloadAction<string>) => {
+			state.page = action.payload;
 		},
 		clearAll: state => {
 			state.labels = [];
 			state.assignee = '';
 			state.sort = 'created-desc';
 			state.filterText = '';
+			state.state = '';
+			state.page = '';
 		}
 	}
 });
@@ -67,7 +87,9 @@ export const {
 	clearAll,
 	addSort,
 	addFilter,
-	addState
+	addState,
+	switchPage,
+	switchPerPage
 } = issueListSlice.actions;
 
 export default issueListSlice.reducer;

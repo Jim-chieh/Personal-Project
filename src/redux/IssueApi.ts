@@ -10,6 +10,8 @@ type GetLabelProps = {
 	sort: string;
 	filterText: string;
 	state: string;
+	per_page: string;
+	page: string;
 };
 
 type GetAssigneeProps = {
@@ -29,9 +31,11 @@ const issueListapi = createLabelApi.injectEndpoints({
 				assignee,
 				sort,
 				filterText,
-				state
+				state,
+				per_page,
+				page
 			}) => ({
-				url: `/${name}/${repo}/issues?${labels}${assignee}${sort}${filterText}${state}`,
+				url: `/${name}/${repo}/issues?${labels}${assignee}${sort}${filterText}${state}${per_page}${page}`,
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',

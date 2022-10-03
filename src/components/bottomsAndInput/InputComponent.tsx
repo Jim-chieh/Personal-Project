@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 import { SearchIcon } from '@primer/octicons-react';
 
-const Wrapper = styled.div`
-	/* padding: 0px 8px; */
-	/* padding-left: 8px; */
+type WrapperProps = {
+	$padding: boolean;
+};
+
+const Wrapper = styled.div<WrapperProps>`
+	padding: ${props => (props.$padding ? '0px 8px' : '0px')};
+	padding-left: ${props => (props.$padding ? '8px' : '0px')};
 	position: relative;
 	flex-grow: 1;
 	@media screen and (max-width: 767px) {
@@ -11,13 +15,13 @@ const Wrapper = styled.div`
 	}
 `;
 
-const Input = styled.input`
+const Input = styled.input<WrapperProps>`
 	width: 100%;
 	height: 32px;
 	padding: 5px 12px 5px 32px;
 	background-color: #f6f8fa;
 	border: 1px solid #d0d7de;
-	border-radius: 0 5px 5px 0;
+	border-radius: ${props => (props.$padding ? ' 5px ' : '0 5px 5px 0')};
 	outline: none;
 	font-size: 16px;
 	color: #6e7781;
@@ -32,29 +36,35 @@ const Input = styled.input`
 	}
 `;
 
-const Search = styled(SearchIcon)`
+const Search = styled(SearchIcon)<WrapperProps>`
 	position: absolute;
-	left: 11px;
+	left: ${props => (props.$padding ? ' 19px ' : '11px')};
 	top: 8px;
 	@media screen and (max-width: 767px) {
 		left: 12px;
 	}
 `;
 
-type InputComponent = {
+type InputComponents = {
 	$value?: string;
 	$onChange: (e: string) => void;
+	$shouldHasPadding: boolean;
 };
 
-function InputComponent({ $value, $onChange }: InputComponent) {
+function InputComponent({
+	$value,
+	$onChange,
+	$shouldHasPadding
+}: InputComponents) {
 	return (
-		<Wrapper>
+		<Wrapper $padding={$shouldHasPadding}>
 			<Input
 				placeholder="Search all labels"
 				value={$value}
 				onChange={e => $onChange(e.target.value)}
+				$padding={$shouldHasPadding}
 			/>
-			<Search size={16} fill="#57606a" />
+			<Search size={16} fill="#57606a" $padding={$shouldHasPadding} />
 		</Wrapper>
 	);
 }

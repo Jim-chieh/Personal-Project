@@ -18,8 +18,8 @@ const initialState: CounterState = {
 	sort: 'created-desc',
 	filterText: '',
 	state: '',
-	per_page: '',
-	page: ''
+	per_page: '&per_page=3',
+	page: '&page=1'
 };
 
 export const issueListSlice = createSlice({
@@ -65,7 +65,7 @@ export const issueListSlice = createSlice({
 			state.per_page = action.payload;
 		},
 		switchPage: (state, action: PayloadAction<string>) => {
-			state.page = action.payload;
+			state.page = `&page=${action.payload}`;
 		},
 		clearAll: state => {
 			state.labels = [];

@@ -14,7 +14,14 @@ import RepoDetail from './Repo/RepoDetail';
 import Dropdown from './Repo/Dropdown';
 import { supabase } from '../../OAuth/Clients';
 import BlurEffect from '../BlurEffect';
-import { redirect } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+	addToken,
+	deleteToken,
+	addLoginUser,
+	deleteLoginUser
+} from '../../redux/loginSlice';
+import { RootState } from '../../redux/store';
 
 type Click = { $isActive: boolean };
 
@@ -291,6 +298,8 @@ function Header() {
 	const [profileClick, setProfileClick] = useState(false);
 	const [plusClick, setPlusClick] = useState(false);
 	const [user, setUser] = useState<UserType>();
+	const dispatch = useDispatch();
+	const token = useSelector((store: RootState) => store.loginReducer);
 
 	useEffect(() => {
 		checkUser();
@@ -308,6 +317,13 @@ function Header() {
 			);
 			JSON.stringify(
 				localStorage.setItem('token', token.currentSession.provider_token)
+			);
+			dispatch(addToken(localStorage.getItem('token') as string));
+			dispatch(
+				addLoginUser(
+					token.currentLoginUser.currentSession.user.identities[0].identity_data
+						.user_name
+				)
 			);
 		}
 	}
@@ -327,6 +343,8 @@ function Header() {
 		await supabase.auth.signOut();
 		setUser(undefined);
 		localStorage.removeItem('token');
+		dispatch(deleteToken());
+		dispatch(deleteLoginUser());
 		window.location.reload();
 	}
 
@@ -408,7 +426,7 @@ function Header() {
 					/>
 				</MobileMenu>
 			)}
-			<RepoDetail />
+			{token ? <RepoDetail /> : null}
 		</>
 	);
 }

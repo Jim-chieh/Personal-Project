@@ -4,7 +4,7 @@ import Dropdown from '../components/Header/Repo/Dropdown';
 import '../../.storybook/header.css';
 
 export default {
-	title: 'List',
+	title: 'LabelManagement/List',
 	component: Dropdown,
 	parameters: {
 		layout: 'fullscreen'

@@ -6,7 +6,7 @@ import { store } from '../redux/store';
 import '../../.storybook/header.css';
 
 export default {
-	title: 'CreateLabelComponent',
+	title: 'LabelManagement/CreateLabelComponent',
 	component: LabelList,
 	parameters: {
 		layout: 'fullscreen'

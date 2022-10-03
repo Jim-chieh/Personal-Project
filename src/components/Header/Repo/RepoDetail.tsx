@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import ActionList from './ActionList';
 import RepoAction from './RepoAction';
 import styled from 'styled-components';
@@ -19,6 +20,8 @@ import {
 	TableIcon,
 	TriangleDownIcon
 } from '@primer/octicons-react';
+import { useGetAllIssuesWithoutConditionQuery } from '../../../redux/IssueApi';
+import { RootState } from '../../../redux/store';
 
 type Display = {
 	$display: string;
@@ -101,9 +104,15 @@ const actionArr = [
 ];
 
 function RepoDetail() {
+	const { data } = useGetAllIssuesWithoutConditionQuery({
+		name: 'Jim-chieh',
+		repo: 'webpack',
+		token: localStorage.getItem('token') as string
+	});
+
 	const pageActionArr = [
 		[<CodeIcon fill="#6b737c" />, 'Pin'],
-		[<IssueOpenedIcon fill="#6b737c" />, 'Issues', 1],
+		[<IssueOpenedIcon fill="#6b737c" />, 'Issues', data?.length as number],
 		[<GitPullRequestIcon fill="#6b737c" />, 'Pull requests'],
 		[<PlayIcon fill="#6b737c" />, 'Actions'],
 		[<TableIcon fill="#6b737c" />, 'Projects'],

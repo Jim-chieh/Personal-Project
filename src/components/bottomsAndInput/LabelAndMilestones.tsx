@@ -14,11 +14,10 @@ const Wrapper = styled.div`
 `;
 
 const LabelContainer = styled.div<Active>`
-	height: 100%;
 	display: flex;
 	align-items: center;
 	border-right: 1px solid #d0d7de;
-	padding: 5px 16px;
+	padding: 4px 16px;
 	font-size: 14px;
 	color: ${props => (props.$isActive ? '#ffffff' : 'black')};
 	:hover {

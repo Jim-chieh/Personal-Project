@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 type NumberProps = { $isActive: boolean };
 
@@ -57,13 +58,27 @@ type arrayProps = { array: (string | number | JSX.Element)[][] };
 
 function ActionList({ array }: arrayProps) {
 	const [currentClickAction, setCurrentClickAction] = useState('Issues');
+	const navigate = useNavigate();
+
+	function handleNavigate() {
+		navigate('/');
+		return {};
+	}
+
+	function returnNothing() {
+		return {};
+	}
+
 	return (
 		<Wrapper>
 			{array.map((action, index) => (
 				<ActionContainer
 					key={index}
 					$isActive={action[1] === currentClickAction}
-					onClick={() => setCurrentClickAction(action[1].toString())}
+					onClick={() => {
+						setCurrentClickAction(action[1].toString());
+						action[1] === 'Issues' ? handleNavigate() : returnNothing();
+					}}
 				>
 					<Container>
 						<IconContainer>{action[0]}</IconContainer>

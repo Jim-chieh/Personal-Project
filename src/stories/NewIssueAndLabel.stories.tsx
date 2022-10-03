@@ -4,7 +4,7 @@ import NewIssueAndLabel from '../components/bottomsAndInput/NewIssueAndLabel';
 import '../../.storybook/header.css';
 
 export default {
-	title: 'NewIssueButton',
+	title: 'LabelManagement/NewIssueButton',
 	component: NewIssueAndLabel,
 	parameters: {
 		layout: 'fullscreen'

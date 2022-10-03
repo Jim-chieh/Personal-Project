@@ -2,14 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ApiProvider } from '@reduxjs/toolkit/query/react';
 import { store } from './redux/store';
-import { createLabelApi } from './redux/LabelCreateApi';
+import './index.css';
 
-// import { Provider } from 'react-redux';
-// import { store } from './app/store';
 import App from './App';
-import IssueListPage from './pages/IssueListPage';
+import IssueListPage from './pages/IssueList/IssueListPage';
 import IssuePage from './pages/IssuePage';
 import NewIssuePage from './pages/NewIssuePage';
 import LabelManagement from './pages/Label/LabelManagement';
@@ -22,10 +19,10 @@ root.render(
 		<Provider store={store}>
 			<Routes>
 				<Route path="/" element={<App />}>
-					<Route path="labelmanagement" element={<IssueListPage />} />
+					<Route index element={<IssueListPage />} />
 					<Route path="issue/:id" element={<IssuePage />} />
 					<Route path="newissue" element={<NewIssuePage />} />
-					<Route index element={<LabelManagement />} />
+					<Route path="labelmanagement" element={<LabelManagement />} />
 					<Route path="*" element={<Navigate to="/" replace />} />
 				</Route>
 			</Routes>

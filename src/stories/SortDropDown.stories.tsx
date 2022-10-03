@@ -3,7 +3,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import SortDropDown from '../components/SortDropDown';
 
 export default {
-	title: 'SortDropDown',
+	title: 'LabelManagement/SortDropDown',
 	component: SortDropDown
 } as ComponentMeta<typeof SortDropDown>;
 

@@ -4,7 +4,7 @@ import SingleLabel from '../pages/Label/SingleLabel';
 import '../../.storybook/header.css';
 
 export default {
-	title: 'SingleLabel',
+	title: 'LabelManagement/SingleLabel',
 	component: SingleLabel
 } as ComponentMeta<typeof SingleLabel>;
 

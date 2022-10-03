@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-export type GetLebal = {
+export type GetLabel = {
 	color: string;
 	default: boolean;
 	description: string;
@@ -57,9 +57,9 @@ export const createLabelApi = createApi({
 	baseQuery: fetchBaseQuery({
 		baseUrl: 'https://api.github.com/repos'
 	}),
-	tagTypes: ['labels'],
+	tagTypes: ['labels', 'issues'],
 	endpoints: builder => ({
-		getAllLabels: builder.query<GetLebal[], Parameter>({
+		getAllLabels: builder.query<GetLabel[], Parameter>({
 			query: ({ name, repo, token }) => ({
 				url: `/${name}/${repo}/labels`,
 				method: 'GET',

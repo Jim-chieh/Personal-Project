@@ -14,11 +14,10 @@ const Wrapper = styled.div`
 `;
 
 const LabelContainer = styled.div<Active>`
-	height: 100%;
 	display: flex;
 	align-items: center;
 	border-right: 1px solid #d0d7de;
-	padding: 5px 16px;
+	padding: 4px 16px;
 	font-size: 14px;
 	color: ${props => (props.$isActive ? '#ffffff' : 'black')};
 	:hover {
@@ -47,24 +46,38 @@ const Circle = styled.div`
 	align-items: center;
 	margin: 0 4px;
 `;
-type arrayProps = { array: (string | JSX.Element)[][] };
+type arrayProps = {
+	array: (string | JSX.Element)[][];
+	$labelClick?: () => void;
+};
 
-function LabelAndMilestones({ array }: arrayProps) {
+function LabelAndMilestones({ array, $labelClick }: arrayProps) {
 	const [currentClick, setCurrentClick] = useState('Labels');
+	function fasley() {
+		{
+		}
+	}
 
 	return (
 		<Wrapper>
 			{array.map((label, index) => (
 				<LabelContainer
 					key={index}
-					$isActive={label[0] === currentClick}
+					$isActive={label[3] === currentClick}
 					onClick={() => {
 						setCurrentClick(label[0] as string);
+						label[0] === 'Labels'
+							? $labelClick
+								? $labelClick()
+								: fasley()
+							: fasley();
 					}}
 				>
 					{label[1]}
 					<TextFeild>{label[0]}</TextFeild>
-					{label[2] === undefined ? null : <Circle>{label[2]}</Circle>}
+					{label[2] === undefined || label[2] === '' ? null : (
+						<Circle>{label[2]}</Circle>
+					)}
 				</LabelContainer>
 			))}
 		</Wrapper>

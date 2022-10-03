@@ -294,6 +294,7 @@ function CreateLabelComponent({
 							$border={'transparent'}
 							$hoverColor={''}
 							$checkMouseEvent
+							$hoverBorderColor={'transprant'}
 						/>
 					</ColorButtonContainer>
 					<LabelInput
@@ -352,6 +353,7 @@ function CreateLabelComponent({
 						$border={'#d5d8da'}
 						$hoverColor={'#d5d8da'}
 						$checkMouseEvent
+						$hoverBorderColor={'transprant'}
 					/>
 				</ButtonContainer>
 				<ButtonContainer>
@@ -365,6 +367,7 @@ function CreateLabelComponent({
 						$border={'#8ac297'}
 						$hoverColor={'#2c974b'}
 						$checkMouseEvent={$checkInputLength.length > 0 ? true : false}
+						$hoverBorderColor={'transprant'}
 					/>
 				</ButtonContainer>
 			</ButtonWrapper>

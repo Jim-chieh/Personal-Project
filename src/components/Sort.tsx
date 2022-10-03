@@ -13,26 +13,26 @@ const TextContainer = styled.div`
 const Text = styled.p`
 	${TextContainer}:hover & {
 		cursor: pointer;
-		text-decoration: underline;
 	}
 `;
 
 const SortContainer = styled.div`
 	display: flex;
-
+	align-items: center;
 	:hover {
 		cursor: pointer;
 	}
 `;
 
-const array = [
-	['Alphabetically', <CheckIcon />],
-	['Reverse alphabetically'],
-	['Most issues'],
-	['Fewest issues']
-];
+type SortProps = {
+	$labeltext: string[] | string;
+	array: (string | JSX.Element)[][];
+	$headerText: string;
+	$top: string;
+	$right: string;
+};
 
-function Sort() {
+function Sort({ $labeltext, array, $headerText, $top, $right }: SortProps) {
 	const [sortClick, setSortClick] = useState(false);
 
 	return (
@@ -42,14 +42,16 @@ function Sort() {
 			}}
 		>
 			<SortContainer>
-				<Text>Sort</Text>
+				<Text>{$labeltext}</Text>
 				<TriangleDownIcon />
 			</SortContainer>
 			<SortDropDown
 				array={array}
 				$isActive={sortClick}
 				$checkBlur={() => setSortClick(false)}
-				$HeaderText={'Sort'}
+				$HeaderText={$headerText}
+				$top={$top}
+				$right={$right}
 			/>
 		</TextContainer>
 	);

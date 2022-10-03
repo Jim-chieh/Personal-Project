@@ -4,7 +4,7 @@ import LabelAndMilestones from '../components/bottomsAndInput/LabelAndMilestones
 import '../../.storybook/header.css';
 
 export default {
-	title: 'LabelAndMilestones',
+	title: 'LabelManagement/LabelAndMilestones',
 	component: LabelAndMilestones,
 	parameters: {
 		layout: 'fullscreen'

@@ -4,7 +4,7 @@ import InputComponent from '../components/bottomsAndInput/InputComponent';
 import '../../.storybook/header.css';
 
 export default {
-	title: 'InputComponent',
+	title: 'LabelManagement/InputComponent',
 	component: InputComponent,
 	parameters: {
 		layout: 'fullscreen'
@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof InputComponent> = args => (
 			position: 'relative'
 		}}
 	>
-		<InputComponent />
+		<InputComponent $onChange={() => {}} $shouldHasPadding />
 	</div>
 );
 

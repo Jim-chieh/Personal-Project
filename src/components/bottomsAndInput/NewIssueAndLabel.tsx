@@ -6,10 +6,11 @@ type Label = {
 	$border: string;
 	$hoverColor: string;
 	$checkHasMouseEvent: boolean;
+	$hoverBorderColor: string;
 };
 
 const NewIssue = styled.button<Label>`
-	height: 100%;
+	height: 33px;
 	padding: 0 8px;
 	background-color: ${props => props.$color};
 	outline: none;
@@ -23,6 +24,7 @@ const NewIssue = styled.button<Label>`
 	:hover {
 		background-color: ${props => (props ? props.$hoverColor : 'unset')};
 		cursor: pointer;
+		border: 1px solid ${props => props.$hoverBorderColor};
 	}
 `;
 
@@ -34,6 +36,7 @@ type buttonProps = {
 	$border: string;
 	$hoverColor: string;
 	$checkMouseEvent: boolean;
+	$hoverBorderColor: string;
 };
 
 function NewIssueAndLabel({
@@ -43,7 +46,8 @@ function NewIssueAndLabel({
 	textColor,
 	$border,
 	$hoverColor,
-	$checkMouseEvent
+	$checkMouseEvent,
+	$hoverBorderColor
 }: buttonProps) {
 	return (
 		<NewIssue
@@ -53,6 +57,7 @@ function NewIssueAndLabel({
 			$border={$border}
 			$hoverColor={$hoverColor}
 			$checkHasMouseEvent={$checkMouseEvent}
+			$hoverBorderColor={$hoverBorderColor}
 		>
 			{buttonName}
 		</NewIssue>

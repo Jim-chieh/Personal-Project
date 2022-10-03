@@ -5,27 +5,38 @@ import {
 	CircleSlashIcon
 } from '@primer/octicons-react';
 import SingleLabel from '../Label/SingleLabel';
-import { Issues } from '../../redux/IssueListProps';
+import { Label, Assignee2, User } from '../../redux/IssueListProps';
 import IssueTitleHoverPopup from './IssueTitleHoverPopup';
 
 type IssuesListProps = {
-	$data: Issues;
+	title: string;
+	labels: Label[];
+	assignees: Assignee2[];
+	comments: number;
+	number: number;
+	created_at: string;
+	user: User;
+	state: string;
+	state_reason: string;
+	body: string;
 	$index: number;
+	currentUser: string;
 };
 
-function IssueList({ $data, $index }: IssuesListProps) {
-	const {
-		title,
-		labels,
-		assignees,
-		comments,
-		number,
-		created_at,
-		user,
-		state,
-		state_reason
-	} = $data;
-
+function IssueList({
+	title,
+	labels,
+	assignees,
+	comments,
+	number,
+	created_at,
+	user,
+	state,
+	state_reason,
+	body,
+	$index,
+	currentUser
+}: IssuesListProps) {
 	function checkTime() {
 		const createAt = new Date(created_at).getTime();
 		const currentTimeStamp = new Date().getTime();
@@ -65,9 +76,8 @@ function IssueList({ $data, $index }: IssuesListProps) {
 		return `#${number} ${state} ${result} ${showDay} ago by ${user.login}`;
 	}
 
-	if ($data.pull_request !== undefined) return null;
 	return (
-		<div className="flex justify-between border-b-[1px] border-gray-300 sm:border-x-[1px] sm:last:rounded-b">
+		<div className="flex justify-between border-b-[1px] border-gray-300 sm:min-h-[61px] sm:border-x-[1px] sm:last:rounded-b">
 			<div className="hidden md:block md:pt-2 md:pl-4">
 				<input type="checkbox" />
 			</div>
@@ -93,11 +103,25 @@ function IssueList({ $data, $index }: IssuesListProps) {
 				</div>
 				<div className="flex w-full justify-between">
 					<div className="pt-2 pr-4 pb-2 pl-2 sm:w-7/12">
-						<div className="flex flex-wrap md:relative">
-							<div className="group flex w-full cursor-pointer md:w-fit">
-								<p className="mr-1 text-sm font-semibold">{title}</p>
-								<div className="z-10 hidden group-hover:block">
-									<IssueTitleHoverPopup />
+						<div className="flex flex-wrap ">
+							<div className="group relative flex w-full cursor-pointer md:w-fit">
+								<p className=" mr-1 text-sm font-semibold group-hover:text-[#0969da]">
+									{title}
+								</p>
+								<div className=" z-10 hidden group-hover:block">
+									<IssueTitleHoverPopup
+										title={title}
+										labels={labels}
+										assignees={assignees}
+										comments={comments}
+										number={number}
+										created_at={created_at}
+										user={user}
+										state={state}
+										state_reason={state_reason}
+										body={body}
+										currentLogin={currentUser}
+									/>
 								</div>
 							</div>
 							{labels === undefined

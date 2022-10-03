@@ -11,9 +11,11 @@ import {
 	useCreateLabelsMutation
 } from '../../redux/LabelCreateApi';
 import { GetLabel } from '../../redux/LabelCreateApi';
+import { useSelector } from 'react-redux';
 import SingleLabel from './SingleLabel';
 import CreateLabelComponent from './CreateLabelComponent';
 import PleaseLogin from '../../components/PleaseLogin';
+import { RootState } from '../../redux/store';
 
 type Display = { $display: boolean };
 
@@ -152,12 +154,12 @@ function LabelManagement() {
 	const [labelNameChange, setLabelNameChange] = useState('');
 	const [descriptionChange, setDescriptionChange] = useState('');
 	const colorRef = useRef(colorCode);
-	const token = localStorage.getItem('token') as string;
+	const token = useSelector((store: RootState) => store.loginReducer);
 
 	const { data, isError, isSuccess, isLoading } = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
-		repo: 'Personal-Project',
-		token: localStorage.getItem('token') as string
+		repo: 'webpack',
+		token: token.token
 	});
 
 	function getRandomColor() {
@@ -184,7 +186,7 @@ function LabelManagement() {
 		}
 	}
 
-	if (token === 'undefined') return <PleaseLogin />;
+	if (token.token === '') return <PleaseLogin />;
 
 	if (!isSuccess) return <>Loading...</>;
 
@@ -196,7 +198,7 @@ function LabelManagement() {
 						<LabelAndMilestones array={labelArr} />
 					</LabelInnerContainer>
 					<InputContainer>
-						<InputComponent $onChange={() => {}} />
+						<InputComponent $onChange={() => {}} $shouldHasPadding />
 					</InputContainer>
 					<NewButton>
 						<NewIssueAndLabel
@@ -237,8 +239,8 @@ function LabelManagement() {
 							$createLabelClick={() => {
 								createLabel({
 									name: 'Jim-chieh',
-									repo: 'Personal-Project',
-									token: token,
+									repo: 'webpack',
+									token: token.token,
 									createLabelName: `${labelNameChange}`,
 									createLabelColor: `${colorCode.split('#')[1]}`,
 									createLabelDescription: `${descriptionChange}`

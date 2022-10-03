@@ -10,6 +10,9 @@ import {
 	useDeleteLabelsMutation
 } from '../../redux/LabelCreateApi';
 
+import { useSelector } from 'react-redux';
+import { RootState, store } from '../../redux/store';
+
 type Display = { $display: boolean };
 type DisplayAndIndex = { $display: boolean; $index: number };
 type Active = { $isActive: boolean };
@@ -144,7 +147,7 @@ function LabelList({
 	const [isFteching, setIsFetching] = useState(false);
 	const [updateLabels] = useUpdateLabelsMutation();
 	const [deleteLabels] = useDeleteLabelsMutation();
-	const token = localStorage.getItem('token') as string;
+	const token = useSelector((store: RootState) => store.loginReducer);
 	const descriptionRef = useRef($dataDescription);
 
 	function getRandomColor() {
@@ -163,8 +166,8 @@ function LabelList({
 			) {
 				deleteLabels({
 					name: 'Jim-chieh',
-					repo: 'Personal-Project',
-					token: token,
+					repo: 'webpack',
+					token: token.token,
 					labelName: `${nameChange}`
 				});
 			}
@@ -229,7 +232,7 @@ function LabelList({
 													deleteLabels({
 														name: 'Jim-chieh',
 														repo: 'Personal-Project',
-														token: token,
+														token: token.token,
 														labelName: `${nameChange}`
 													});
 												}
@@ -278,8 +281,8 @@ function LabelList({
 						$createLabelClick={() => {
 							upadteLabel({
 								name: 'Jim-chieh',
-								repo: 'Personal-Project',
-								token: token,
+								repo: 'webpack',
+								token: token.token,
 								labelName: `${$dataLabelName}`,
 								createLabelName: `${nameChange}`,
 								createLabelColor: `${colorCode.split('#')[1]}`,

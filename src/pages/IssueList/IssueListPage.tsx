@@ -1,27 +1,21 @@
-import { useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import LabelAndMilestones from '../../components/bottomsAndInput/LabelAndMilestones';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
 import InputComponent from '../../components/bottomsAndInput/InputComponent';
-import IssuePopup from './IssuePopup';
 import NoResultMatched from './NoResultMatched';
 import IssueList from './IssueList';
 import NoIssuePage from './NoIssuePage';
 import FilterPopup from './FilterPopup';
-import { Issues } from '../../redux/IssueListProps';
-import { useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
+import { Assignee, Issues } from '../../redux/IssueListProps';
+import { GetLabel, useGetAllLabelsQuery } from '../../redux/LabelCreateApi';
 import {
 	useGetAllIssuesQuery,
 	useGetAllAssigneesQuery
 } from '../../redux/IssueApi';
 import { RootState } from '../../redux/store';
-import {
-	clearAll,
-	addState,
-	switchPerPage,
-	switchPage
-} from '../../redux/issueSlice';
+import { clearAll, addState, switchPage } from '../../redux/issueSlice';
 import {
 	TagIcon,
 	MilestoneIcon,
@@ -31,47 +25,70 @@ import {
 	LightBulbIcon,
 	TriangleDownIcon
 } from '@primer/octicons-react';
+import FilterListNav from './FilterListNav';
+import PleaseLogin from '../../components/PleaseLogin';
 
 const filterArr = ['Label', 'Assignee', 'Sort'];
+
+const SortbyArr = [
+	{ showText: 'Newest', action: 'created-desc' },
+	{ showText: 'Oldest', action: 'created-asc' },
+	{ showText: 'Most commented', action: 'comments-desc' },
+	{ showText: 'Least commented', action: 'comments-asc' },
+	{ showText: 'Recently updated', action: 'updated-desc' },
+	{ showText: 'Least recently updated', action: 'updated-asc' }
+];
+
+const protipsArr = [
+	'Notify someone on an issue with a mention, like: @Jim-chieh.',
+	'Mix and match filters to narrow down what you’re looking for.',
+	' no:milestone will show everything without a milestone.',
+	'Find everything you created by searching author:Jim-chieh.',
+	'What’s not been updated in a month: updated:<2022-09-02.'
+];
+
 function IssuePage() {
 	const [display, setDisplay] = useState(false);
 	const [filterPopupDisplay, setFilterPopupDisplay] = useState(false);
 	const [inputValue, setInputValue] = useState('is:issue is:open');
 	const [clearAllSearch, setClearAllSearch] = useState(false);
-	const [perPage, setPerPage] = useState('30');
-	const currentClick = useRef('');
+	const [page, setPage] = useState('1');
+	const [currentClick, setCurrentClick] = useState('');
 	const result = useSelector((store: RootState) => store.issueListReducer);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const token = useSelector((store: RootState) => store.loginReducer);
 
 	const { data } = useGetAllIssuesQuery({
 		name: 'Jim-chieh',
-		repo: 'Personal-Project',
-		token: localStorage.getItem('token') as string,
+		repo: 'webpack',
+		token: token.token,
 		labels: result.labels.length === 0 ? '' : `labels=${result.labels.join()}`,
 		assignee: result.assignee === '' ? '' : `&assignee=${result.assignee}`,
 		sort: result.sort === '' ? '' : `&sort=${result.sort}`,
 		filterText: result.filterText === '' ? '' : `&filter=${result.filterText}`,
 		state: result.state === '' ? '' : `&state=${result.state}`,
-		per_page:
-			result.per_page === '' ? '&per_page=30' : `&per_page=${result.per_page}`,
-		page: result.page === '' ? '&page=1' : `&page=${result.page}`
+		per_page: `&per_page=4`,
+		page: `&page=${page}`
 	});
-
 	const labelData = useGetAllLabelsQuery({
 		name: 'Jim-chieh',
-		repo: 'Personal-Project',
-		token: localStorage.getItem('token') as string
+		repo: 'webpack',
+		token: token.token
 	});
 
 	const assigness = useGetAllAssigneesQuery({
 		name: 'Jim-chieh',
-		repo: 'Personal-Project',
-		token: localStorage.getItem('token') as string
+		repo: 'webpack',
+		token: token.token
 	});
 
 	const labelArr = [
-		['Labels', <TagIcon size={14} />, '9'],
+		[
+			'Labels',
+			<TagIcon size={14} />,
+			labelData.data?.length.toString() as string
+		],
 		['Milestones', <MilestoneIcon size={14} />, '0']
 	];
 
@@ -80,13 +97,39 @@ function IssuePage() {
 		issue.pull_request === undefined ? noPR.push(issue) : () => {}
 	);
 
-	function changeSearchInputValue() {}
+	let value = '';
 
-	if (!data) return <div>loading</div>;
+	function changeSearchInputValue() {
+		value = '';
+		if (result.state === '') {
+			value += `is:open `;
+		} else if (result.state !== '') {
+			value += `is:${result.state} `;
+		}
+		value += 'is:issue ';
+		if (result.labels.length !== 0) {
+			result.labels.forEach(label => (value += `label:${label} `));
+		}
+		if (result.assignee !== '') value += `assignee:${result.assignee} `;
+		if (result.sort !== '') value += `sort:${result.sort} `;
+		if (result.filterText === '&creator=Jim-chieh') value += 'author:@me ';
+		if (result.filterText === '&assignee=Jim-chieh') value += 'assignee:@me ';
+		if (result.filterText === '&mentioned=Jim-chieh') value += 'mentions:@me ';
+	}
+	changeSearchInputValue();
+	useEffect(() => {
+		setInputValue(value);
+	}, [value]);
+
+	changeSearchInputValue();
+
+	if (token.token === '') return <PleaseLogin />;
+
+	if (!noPR) return <div>loading</div>;
 
 	return (
 		<div className="mx-auto mb-[220px] max-w-[1280px] ">
-			<div className="mt-6 w-full px-4">
+			<div className="mt-6 w-full px-4 md:px-6  lg:px-8">
 				<div className="item-center mb-4 flex w-full flex-wrap justify-between">
 					<div className="md:order-2 md:ml-4">
 						<LabelAndMilestones
@@ -139,9 +182,10 @@ function IssuePage() {
 						/>
 						<InputComponent
 							$value={inputValue}
-							$onChange={(e: string) => {
-								setInputValue(e);
+							$onChange={(value: string) => {
+								setInputValue(value);
 							}}
+							$shouldHasPadding={false}
 						/>
 					</div>
 				</div>
@@ -169,7 +213,10 @@ function IssuePage() {
 				<div className="item-center flex lg:hidden">
 					<div
 						className=" flex cursor-pointer items-center"
-						onClick={() => dispatch(addState('open'))}
+						onClick={() => {
+							dispatch(addState('open'));
+							setPage('1');
+						}}
 					>
 						<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
 							<IssueOpenedIcon size={16} />
@@ -194,7 +241,10 @@ function IssuePage() {
 					</div>
 					<div
 						className=" ml-[10px] flex cursor-pointer items-center justify-center"
-						onClick={() => dispatch(addState('closed'))}
+						onClick={() => {
+							dispatch(addState('closed'));
+							setPage('1');
+						}}
 					>
 						<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
 							<CheckIcon size={16} />
@@ -217,7 +267,7 @@ function IssuePage() {
 					</div>
 				</div>
 			</div>
-			<div className="sm:px-4">
+			<div className="sm:px-4 md:px-6  lg:px-8">
 				<div className="mt-4 flex justify-between border-y-[1px] border-gray-300 bg-[#f6f8fa] p-4 sm:justify-start sm:rounded-t sm:border-[1px] lg:justify-between">
 					<div className="flex">
 						<div className="hidden md:block">
@@ -226,7 +276,10 @@ function IssuePage() {
 						<div className="hidden lg:ml-4 lg:block lg:flex">
 							<button
 								className=" flex cursor-pointer items-center"
-								onClick={() => dispatch(addState('open'))}
+								onClick={() => {
+									dispatch(addState('open'));
+									setPage('1');
+								}}
 							>
 								<div className={`${result.state === '' ? 'block' : 'hidden'}`}>
 									<IssueOpenedIcon size={16} />
@@ -273,43 +326,46 @@ function IssuePage() {
 									className={`ml-1 cursor-pointer text-[14px] ${
 										result.state === 'closed' ? 'text-block' : 'text-slate-500'
 									}`}
-									onClick={() => dispatch(addState('closed'))}
+									onClick={() => {
+										dispatch(addState('closed'));
+										setPage('1');
+									}}
 								>
 									Closed
 								</div>
 							</button>
 						</div>
 					</div>
-					<div className="flex w-full justify-between sm:relative sm:justify-start lg:w-fit">
-						{filterArr.map((text, index) => (
-							<div key={`${index}-${text}`}>
-								<div
-									className="flex cursor-pointer items-center px-4 text-[14px] text-[#6a727b]"
-									onClick={() => {
-										setDisplay(true);
-										currentClick.current = text as string;
-									}}
-								>
-									{text}
-									<div className="hidden sm:flex">
-										<TriangleDownIcon />
-									</div>
-								</div>
-							</div>
-						))}
-						<IssuePopup
-							$display={display}
-							$currentClick={currentClick.current}
-							$onClick={() => setDisplay(false)}
-							$labelData={labelData.data}
-							$assigneeData={assigness.data}
-						/>
-					</div>
+					<FilterListNav
+						filterArr={filterArr}
+						$setDisplayFalse={() => setDisplay(false)}
+						$setDisplayTrue={() => setDisplay(true)}
+						$display={display}
+						$setCurrentClick={(e: string) => setCurrentClick(e)}
+						$labelData={labelData.data as GetLabel[]}
+						$assigneeData={assigness.data as Assignee[]}
+						SortbyArr={SortbyArr}
+						$currentClick={currentClick}
+					/>
 				</div>
 			</div>
-			<div className="sm:px-4">
-				{data.map((item: Issues, index) => (
-					<IssueList key={item.id} $data={item} $index={index} />
+			<div className="sm:px-4 md:px-6 lg:px-8">
+				{noPR.map((item: Issues, index) => (
+					<IssueList
+						key={item.id}
+						$index={index}
+						title={item.title}
+						labels={item.labels}
+						assignees={item.assignees}
+						comments={item.comments}
+						number={item.number}
+						created_at={item.created_at}
+						user={item.user}
+						state={item.state}
+						body={item.body}
+						state_reason={item.state_reason}
+						currentUser={token.loginUser}
+					/>
 				))}
 				<div
 					className={`${
@@ -343,77 +399,43 @@ function IssuePage() {
 					<NewIssueAndLabel
 						buttonName={'< Previous'}
 						backgroundColor={'transparent'}
-						onClick={() =>
-							dispatch(
-								switchPage(
-									`${(result.page === ''
-										? () => {}
-										: parseInt(result.page[result.page.length - 1]) - 1
-									).toString()}`
-								)
-							)
-						}
-						textColor={
-							result.page === '' || result.page === '1' ? 'gray' : '#287cdf'
-						}
+						onClick={() => {
+							setPage((parseInt(page) - 1).toString());
+							dispatch(switchPage(page));
+						}}
+						textColor={parseInt(page) === 1 ? 'gray' : '#287cdf'}
 						$border={'none'}
 						$hoverColor={'none'}
-						$checkMouseEvent={
-							result.page !== '' || result.page !== ''
-								? result.page[result.page.length - 1] !== '1'
-								: false
-						}
+						$checkMouseEvent={parseInt(page) !== 1}
 						$hoverBorderColor={'#d0d7de'}
 					/>
 					<NewIssueAndLabel
 						buttonName={'Next >'}
 						backgroundColor={'transparent'}
-						onClick={() =>
-							dispatch(
-								switchPage(
-									`${(result.page === ''
-										? 2
-										: parseInt(result.page[result.page.length - 1]) + 1
-									).toString()}`
-								)
-							)
-						}
-						textColor={noPR.length >= parseInt(perPage) ? '#287cdf' : 'gray'}
+						onClick={() => {
+							setPage((parseInt(page) + 1).toString());
+							dispatch(switchPage(`${noPR.length < 3 ? page : () => {}}`));
+						}}
+						textColor={noPR.length >= 4 ? '#287cdf' : 'gray'}
 						$border={'none'}
 						$hoverColor={'none'}
-						$checkMouseEvent={noPR.length >= parseInt(perPage)}
+						$checkMouseEvent={noPR.length >= 4}
 						$hoverBorderColor={'#d0d7de'}
 					/>
 				</div>
 			</div>
-			<div className="flex justify-center">
-				<p>每個頁面有:</p>
-				<input
-					className="border-[1px] border-black"
-					onChange={e => setPerPage(e.target.value)}
-					value={perPage}
-				/>
-				<p>篇issues</p>
-			</div>
-			<div className="mt-3 flex justify-center">
-				<button
-					className="border-[1px] border-black"
-					onClick={() => dispatch(switchPerPage(perPage))}
-				>
-					確定
-				</button>
-				<button
-					className="ml-2 border-[1px] border-black"
-					onClick={() => {
-						dispatch(switchPerPage(''));
-						setPerPage('30');
-					}}
-				>
-					重設
-				</button>
-			</div>
-			<div className="mt-4 px-4">
-				<LightBulbIcon size={16} />
+			<div className="flex w-full justify-center">
+				<div className=" mt-4 flex items-start  px-4">
+					<div className="flex h-full items-center">
+						<LightBulbIcon size={14} />
+					</div>
+					<strong className="ml-1 text-sm font-semibold">ProTip!</strong>
+					{
+						<p className="ml-1 break-all text-center text-sm">
+							{protipsArr[Math.floor(Math.random() * protipsArr.length)]}
+						</p>
+					}
+				</div>
 			</div>
 		</div>
 	);

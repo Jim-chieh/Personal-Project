@@ -14,6 +14,12 @@ type GetLabelProps = {
 	page: string;
 };
 
+type GetIssueProps = {
+	name: string;
+	repo: string;
+	token: string;
+};
+
 type GetAssigneeProps = {
 	name: string;
 	repo: string;
@@ -44,6 +50,17 @@ const issueListapi = createLabelApi.injectEndpoints({
 			}),
 			providesTags: ['issues']
 		}),
+		getAllIssuesWithoutCondition: builder.query<IssueLists, GetIssueProps>({
+			query: ({ name, repo, token }) => ({
+				url: `/${name}/${repo}/issues?`,
+				method: 'GET',
+				headers: new Headers({
+					'Content-Type': 'application/json',
+					Authorization: `token ${token}`
+				})
+			}),
+			providesTags: ['issues']
+		}),
 		getAllAssignees: builder.query<Assignee[], GetAssigneeProps>({
 			query: ({ name, repo, token }) => ({
 				url: `/${name}/${repo}/assignees`,
@@ -60,3 +77,4 @@ const issueListapi = createLabelApi.injectEndpoints({
 
 export const { useGetAllIssuesQuery } = issueListapi;
 export const { useGetAllAssigneesQuery } = issueListapi;
+export const { useGetAllIssuesWithoutConditionQuery } = issueListapi;

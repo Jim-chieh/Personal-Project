@@ -19,23 +19,19 @@ type IssuePopupProps = {
 	$currentClick: string;
 	$labelData?: GetLabel[];
 	$assigneeData?: Assignee[];
+	SortbyArr: {
+		showText: string;
+		action: string;
+	}[];
 };
-
-const SortbyArr = [
-	{ showText: 'Newest', action: 'created-desc' },
-	{ showText: 'Oldest', action: 'created-asc' },
-	{ showText: 'Most commented', action: 'comments-desc' },
-	{ showText: 'Least commented', action: 'comments-asc' },
-	{ showText: 'Recently updated', action: 'updated-desc' },
-	{ showText: 'Least recently updated', action: 'updated-asc' }
-];
 
 function IssuePopup({
 	$display,
 	$onClick,
 	$currentClick,
 	$labelData,
-	$assigneeData
+	$assigneeData,
+	SortbyArr
 }: IssuePopupProps) {
 	const [inputValue, setInputValue] = useState('');
 	const [assigneeInputValue, setAssigneeInputValue] = useState('');
@@ -52,7 +48,7 @@ function IssuePopup({
 						setInputValue('');
 					}}
 				></div>
-				<div className="group	absolute top-[2%] left-4 right-4 max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[12px] sm:z-10 sm:h-[400px] sm:max-h-fit sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-245px]">
+				<div className="group	absolute top-[2%] left-4 right-4 z-10 max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[12px] sm:z-10 sm:h-[400px] sm:max-h-fit sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-245px]">
 					<div>
 						<div className="flex items-center justify-between  border-b-[1px] p-4 text-sm sm:h-[33px] sm:text-xs">
 							<div>Filter by label</div>
@@ -156,7 +152,7 @@ function IssuePopup({
 						setAssigneeInputValue('');
 					}}
 				></div>
-				<div className="group absolute top-[2%] left-4 right-4 h-[700px] max-h-[700px] max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[95px] sm:z-10 sm:h-fit sm:max-h-[500px] sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-140px]">
+				<div className="group absolute top-[2%] left-4 right-4 z-10 h-[700px] max-h-[700px] max-h-[700px] overflow-auto rounded-lg bg-white sm:top-[30px] sm:left-[95px] sm:z-10 sm:h-fit sm:max-h-[500px] sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-140px]">
 					<div>
 						<div className="flex items-center justify-between border-b-[1px] p-4 text-sm sm:h-[33px] sm:text-[12px] ">
 							<div>Filter by Assignee</div>
@@ -253,7 +249,7 @@ function IssuePopup({
 					className="sm: fixed top-0 left-0 h-full w-full bg-black opacity-40 sm:opacity-0"
 					onClick={$onClick}
 				></div>
-				<div className="group absolute top-[2%] left-4 right-4 rounded-lg bg-white sm:top-[30px] sm:left-[12px] sm:left-[210px] sm:z-10  sm:h-fit sm:max-h-[500px] sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-65px]">
+				<div className="group absolute top-[2%] left-4 right-4 z-10 rounded-lg bg-white sm:top-[30px] sm:left-[12px] sm:left-[210px]  sm:z-10 sm:h-fit sm:max-h-[500px] sm:w-[300px] sm:w-[300px] sm:border-x-[1px] sm:border-y-[1px] lg:left-[-65px]">
 					<div>
 						<div className="flex items-center justify-between border-b-[1px] p-4 sm:h-[33px] sm:text-[12px]">
 							<div>Sort by</div>

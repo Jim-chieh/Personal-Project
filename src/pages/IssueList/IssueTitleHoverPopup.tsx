@@ -62,7 +62,7 @@ function IssueTitleHoverPopup({
 				}`
 			}}
 		>
-			<div className="  w-[320px] rounded-md border-[1px] bg-white">
+			<div className="  min-w-[320px] rounded-md border-[1px] bg-white">
 				<div className="absolute bottom-[-11px] left-7 z-10 h-0 w-0 border-l-[8px] border-t-[12px] border-r-[8px] border-x-transparent border-t-white"></div>
 				<div className=" absolute bottom-[-12px] left-[27px] h-0 w-0 border-l-[9px] border-t-[13px] border-r-[10px] border-x-transparent border-t-gray-300"></div>
 				<div
@@ -91,7 +91,7 @@ function IssueTitleHoverPopup({
 					</div>
 					<div>
 						<span
-							className={`ml-6 mt-2 text-xs text-gray-500 ${
+							className={`ml-6 mt-2 h-[15px] overflow-hidden text-xs text-gray-500 ${
 								body === null ? 'hidden' : 'block'
 							}`}
 						>

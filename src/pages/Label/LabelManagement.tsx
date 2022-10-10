@@ -131,7 +131,7 @@ interface CreateLabel {
 }
 
 const labelArr = [
-	['Labels', <TagIcon size={14} />, '', 'Labels'],
+	['Labels', <TagIcon size={14} />, ''],
 	['Milestones', <MilestoneIcon size={14} />]
 ];
 
@@ -195,7 +195,7 @@ function LabelManagement() {
 			<Container>
 				<HeaderContainer>
 					<LabelInnerContainer>
-						<LabelAndMilestones array={labelArr} />
+						<LabelAndMilestones array={labelArr} $shouldHasBckground />
 					</LabelInnerContainer>
 					<InputContainer>
 						<InputComponent $onChange={() => {}} $shouldHasPadding />
@@ -219,6 +219,7 @@ function LabelManagement() {
 						text={
 							labelNameChange.length === 0 ? 'Label preview' : labelNameChange
 						}
+						$height={'24px'}
 					/>
 					<CreateLabelComponentContainer>
 						<CreateLabelComponent

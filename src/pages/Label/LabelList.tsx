@@ -210,6 +210,7 @@ function LabelList({
 						<SingleLabel
 							$backgroundColor={colorCode}
 							text={nameChange.length === 0 ? 'Label preview' : nameChange}
+							$height={'24px'}
 						/>
 					</SingleLabelContainer>
 					<LabelContent $display={editClick}>{$dataDescription}</LabelContent>

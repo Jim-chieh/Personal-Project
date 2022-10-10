@@ -89,7 +89,7 @@ IssueListStories.args = {
 	comments: 1,
 	number: 5,
 	title: 'storybook標題',
-	created_at: '2022-10-01T08:54:53Z',
+	created_at: '2022-10-01T08:54:53',
 	state: 'open',
 	state_reason: 'not_planned',
 	$index: 0

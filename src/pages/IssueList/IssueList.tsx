@@ -50,18 +50,17 @@ function IssueList({
 		const seconds = Math.round(leave3 / 1000);
 		let result;
 		let showDay = '';
-		if (days !== 0 && hours >= 5) {
-			result = days + 1;
-			if (days === 1) {
-				showDay = 'day';
-			} else {
-				showDay = 'days';
-			}
-		} else if (days !== 0 && hours < 5) {
-			result = days;
-			showDay = 'days';
-		} else if (days === 0 && hours === 0 && minutes === 0 && seconds < 60) {
+		if (
+			days === 0 &&
+			hours === 0 &&
+			minutes === 0 &&
+			seconds >= 0 &&
+			seconds < 60
+		) {
 			result = seconds;
+			showDay = 'seconds';
+		} else if (days === -1) {
+			result = 1;
 			showDay = 'seconds';
 		} else if (days === 0 && hours === 0 && minutes < 60) {
 			result = minutes;
@@ -69,6 +68,10 @@ function IssueList({
 		} else if (days === 0 && hours + 1 < 24) {
 			result = hours;
 			showDay = 'hours';
+			console.log('here1');
+		} else if (days !== 0) {
+			result = days;
+			showDay = 'days';
 		} else if (days === 0 && hours + 1 >= 24) {
 			result = days + 1;
 			showDay = 'day';
@@ -105,7 +108,7 @@ function IssueList({
 					<div className="pt-2 pr-4 pb-2 pl-2 sm:w-7/12">
 						<div className="flex flex-wrap ">
 							<div className="group relative flex w-full cursor-pointer md:w-fit">
-								<p className=" mr-1 text-sm font-semibold group-hover:text-[#0969da]">
+								<p className=" mr-1 flex items-end text-sm font-semibold group-hover:text-[#0969da]">
 									{title}
 								</p>
 								<div className=" z-10 hidden group-hover:block">
@@ -163,14 +166,15 @@ function IssueList({
 								  ))}
 						</div>
 						<div
-							className={`hidden justify-end sm:ml-5 sm:flex  sm:w-[16%] sm:${
-								comments === 0 ? 'hidden' : 'flex'
-							}`}
+							className={`s } sm:ml- hidden justify-end
+							sm:flex  sm:w-[16%] `}
 						>
-							<a className="flex h-fit cursor-pointer items-center hover:text-[#0969da]">
-								<CommentIcon />
-								<p className="ml-1 ">{`${comments}`}</p>
-							</a>
+							{comments > 0 ? (
+								<div className="flex h-fit cursor-pointer items-center hover:text-[#0969da]">
+									<CommentIcon />
+									<p className="ml-1 ">{`${comments}`}</p>
+								</div>
+							) : null}
 						</div>
 					</div>
 				</div>

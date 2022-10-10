@@ -7,9 +7,11 @@ type Label = {
 	$hoverColor: string;
 	$checkHasMouseEvent: boolean;
 	$hoverBorderColor: string;
+	$width: string;
 };
 
 const NewIssue = styled.button<Label>`
+	width: ${props => (props.$width ? props.$width : 'auto')};
 	height: 33px;
 	padding: 0 8px;
 	background-color: ${props => props.$color};
@@ -37,6 +39,7 @@ type buttonProps = {
 	$hoverColor: string;
 	$checkMouseEvent: boolean;
 	$hoverBorderColor: string;
+	$width?: string;
 };
 
 function NewIssueAndLabel({
@@ -47,7 +50,8 @@ function NewIssueAndLabel({
 	$border,
 	$hoverColor,
 	$checkMouseEvent,
-	$hoverBorderColor
+	$hoverBorderColor,
+	$width
 }: buttonProps) {
 	return (
 		<NewIssue
@@ -58,6 +62,7 @@ function NewIssueAndLabel({
 			$hoverColor={$hoverColor}
 			$checkHasMouseEvent={$checkMouseEvent}
 			$hoverBorderColor={$hoverBorderColor}
+			$width={$width as string}
 		>
 			{buttonName}
 		</NewIssue>

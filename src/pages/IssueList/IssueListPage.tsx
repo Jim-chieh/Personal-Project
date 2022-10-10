@@ -15,7 +15,16 @@ import {
 	useGetAllAssigneesQuery
 } from '../../redux/IssueApi';
 import { RootState } from '../../redux/store';
-import { clearAll, addState, switchPage } from '../../redux/issueSlice';
+import {
+	clearAll,
+	addState,
+	switchPage,
+	addLabel,
+	removeLabel,
+	clearLabel,
+	addAssignee,
+	addSort
+} from '../../redux/issueSlice';
 import {
 	TagIcon,
 	MilestoneIcon,
@@ -25,8 +34,8 @@ import {
 	LightBulbIcon,
 	TriangleDownIcon
 } from '@primer/octicons-react';
-import FilterListNav from './FilterListNav';
 import PleaseLogin from '../../components/PleaseLogin';
+import IssuePopup from './IssuePopup';
 
 const filterArr = ['Label', 'Assignee', 'Sort'];
 
@@ -47,19 +56,45 @@ const protipsArr = [
 	'What’s not been updated in a month: updated:<2022-09-02.'
 ];
 
+export type PopupDataProps = {
+	title: string;
+	placeholder?: string;
+	secondTitle?: string;
+	basicAction?: string;
+	navigateFn?: void;
+	content?: {
+		$background?: string;
+		title?: string;
+		description?: string;
+		header?: string;
+		picture?: string;
+		showText?: string;
+		action?: string;
+	}[];
+	smTop?: string;
+	smLeft?: string;
+	lgTop?: string;
+	lgLeft?: string;
+	autoHeight: boolean;
+	activeList?: string[] | string;
+	$stillShowOnMdSize?: boolean;
+	$shouldhasXIcon?: boolean;
+	addDispatch: (e: string) => void;
+};
+
 function IssuePage() {
 	const [display, setDisplay] = useState(false);
+	const [currentClick, setCurrentClick] = useState();
 	const [filterPopupDisplay, setFilterPopupDisplay] = useState(false);
 	const [inputValue, setInputValue] = useState('is:issue is:open');
-	const [clearAllSearch, setClearAllSearch] = useState(false);
 	const [page, setPage] = useState('1');
-	const [currentClick, setCurrentClick] = useState('');
-	const result = useSelector((store: RootState) => store.issueListReducer);
+	const [popupMenuData, setPopupMenuData] = useState<PopupDataProps>();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+	const result = useSelector((store: RootState) => store.issueListReducer);
 	const token = useSelector((store: RootState) => store.loginReducer);
 
-	const { data } = useGetAllIssuesQuery({
+	const { data, isLoading } = useGetAllIssuesQuery({
 		name: 'Jim-chieh',
 		repo: 'webpack',
 		token: token.token,
@@ -68,27 +103,115 @@ function IssuePage() {
 		sort: result.sort === '' ? '' : `&sort=${result.sort}`,
 		filterText: result.filterText === '' ? '' : `&filter=${result.filterText}`,
 		state: result.state === '' ? '' : `&state=${result.state}`,
-		per_page: `&per_page=4`,
+		per_page: `&per_page=10`,
 		page: `&page=${page}`
 	});
-	const labelData = useGetAllLabelsQuery({
-		name: 'Jim-chieh',
-		repo: 'webpack',
-		token: token.token
-	});
 
-	const assigness = useGetAllAssigneesQuery({
-		name: 'Jim-chieh',
-		repo: 'webpack',
-		token: token.token
-	});
+	const { data: labelsData, isLoading: isLabelsLoading } = useGetAllLabelsQuery(
+		{
+			name: 'Jim-chieh',
+			repo: 'webpack',
+			token: token.token
+		}
+	);
+
+	function dispatchAddLabel(e: string) {
+		if (result.labels.includes(e)) {
+			const newLabels = [...result.labels];
+			const index = newLabels.findIndex(label => label === e);
+			newLabels.splice(index, 1);
+			dispatch(removeLabel(newLabels));
+			setDisplay(false);
+		} else if (e === 'Unlabeled') {
+			dispatch(clearLabel());
+		} else {
+			dispatch(addLabel(e));
+			setDisplay(false);
+		}
+	}
+
+	function labelPopupData() {
+		const labelData = labelsData?.map(item => {
+			return {
+				$background: `${item.color}`,
+				title: `${item.name}`,
+				description: `${item.description}`
+			};
+		});
+		const showLabelPopup = {
+			title: 'Filter by label',
+			placeholder: 'Filter labels',
+			basicAction: 'Unlabeled',
+			content: labelData,
+			smTop: 'sm:top-[30px]',
+			smLeft: 'sm:left-[12px]',
+			lgLeft: 'lg:left-[-245px]',
+			autoHeight: false,
+			activeList: result.labels,
+			addDispatch: dispatchAddLabel
+		};
+		setPopupMenuData(showLabelPopup);
+	}
+
+	const { data: assigness, isLoading: isAssigneeLoading } =
+		useGetAllAssigneesQuery({
+			name: 'Jim-chieh',
+			repo: 'webpack',
+			token: token.token
+		});
+
+	function addAssigneeDispatch(e: string) {
+		if (e === 'Assigned to nobody') {
+			dispatch(addAssignee('none'));
+			setDisplay(false);
+		} else if (result.assignee.includes(e)) {
+			dispatch(addAssignee(''));
+			setDisplay(false);
+		} else {
+			dispatch(addAssignee(e));
+			setDisplay(false);
+		}
+	}
+	function assigneePopupData() {
+		const assigneeData = assigness?.map(item => {
+			return { picture: item.avatar_url, header: item.login };
+		});
+		const showAssigneePopup = {
+			title: 'Filter by who’s assigned',
+			placeholder: 'Filter users',
+			basicAction: 'Assigned to nobody',
+			content: assigneeData,
+			smTop: 'sm:top-[30px]',
+			smLeft: 'sm:left-[95px]',
+			lgLeft: 'lg:left-[-135px]',
+			autoHeight: true,
+			activeList: result.assignee,
+			addDispatch: addAssigneeDispatch
+		};
+		setPopupMenuData(showAssigneePopup);
+	}
+
+	function addSortDispatch(e: string) {
+		dispatch(addSort(e));
+		setDisplay(false);
+	}
+	function sortPopupData() {
+		const showSortPopup = {
+			title: 'Sort by',
+			content: SortbyArr,
+			smTop: 'sm:top-[30px]',
+			smLeft: 'sm:left-[200px]',
+			lgLeft: 'lg:left-[-65px]',
+			autoHeight: true,
+			activeList: result.sort,
+			addDispatch: addSortDispatch
+		};
+
+		setPopupMenuData(showSortPopup);
+	}
 
 	const labelArr = [
-		[
-			'Labels',
-			<TagIcon size={14} />,
-			labelData.data?.length.toString() as string
-		],
+		['Labels', <TagIcon size={14} />, labelsData?.length.toString() as string],
 		['Milestones', <MilestoneIcon size={14} />, '0']
 	];
 
@@ -117,15 +240,16 @@ function IssuePage() {
 		if (result.filterText === '&mentioned=Jim-chieh') value += 'mentions:@me ';
 	}
 	changeSearchInputValue();
+
 	useEffect(() => {
 		setInputValue(value);
+		changeSearchInputValue();
 	}, [value]);
-
-	changeSearchInputValue();
 
 	if (token.token === '') return <PleaseLogin />;
 
-	if (!noPR) return <div>loading</div>;
+	if (isLoading || isAssigneeLoading || isLabelsLoading)
+		return <div>loading</div>;
 
 	return (
 		<div className="mx-auto mb-[220px] max-w-[1280px] ">
@@ -135,15 +259,17 @@ function IssuePage() {
 						<LabelAndMilestones
 							array={labelArr}
 							$labelClick={() => navigate('/labelmanagement')}
+							$shouldHasBckground={false}
 						/>
 					</div>
-					<div className="md:order-3  md:hidden">
+					<div
+						className="md:order-3  md:hidden"
+						onClick={() => navigate('newissue')}
+					>
 						<NewIssueAndLabel
 							buttonName={'New'}
 							backgroundColor={'#2da44e'}
-							onClick={() => {
-								console.log('click');
-							}}
+							onClick={() => {}}
 							textColor={'#ffffff'}
 							$border={'none'}
 							$hoverColor={'#2c974b'}
@@ -151,13 +277,14 @@ function IssuePage() {
 							$hoverBorderColor={'transprant'}
 						/>
 					</div>
-					<div className="hidden md:order-3 md:ml-4 md:block">
+					<div
+						className="hidden md:order-3 md:ml-4 md:block"
+						onClick={() => navigate('newissue')}
+					>
 						<NewIssueAndLabel
 							buttonName={'New issue'}
 							backgroundColor={'#2da44e'}
-							onClick={() => {
-								console.log('click');
-							}}
+							onClick={() => {}}
 							textColor={'#ffffff'}
 							$border={'none'}
 							$hoverColor={'#2c974b'}
@@ -200,7 +327,6 @@ function IssuePage() {
 					}`}
 					onClick={() => {
 						dispatch(clearAll());
-						setClearAllSearch(false);
 					}}
 				>
 					<div className=" mr-2 flex cursor-pointer items-center rounded bg-[#6e7781] group-hover:bg-[#0969da]">
@@ -336,17 +462,39 @@ function IssuePage() {
 							</button>
 						</div>
 					</div>
-					<FilterListNav
-						filterArr={filterArr}
-						$setDisplayFalse={() => setDisplay(false)}
-						$setDisplayTrue={() => setDisplay(true)}
-						$display={display}
-						$setCurrentClick={(e: string) => setCurrentClick(e)}
-						$labelData={labelData.data as GetLabel[]}
-						$assigneeData={assigness.data as Assignee[]}
-						SortbyArr={SortbyArr}
-						$currentClick={currentClick}
-					/>
+					<div className="flex w-full justify-between sm:relative sm:justify-start lg:w-fit">
+						{filterArr.map((text, index) => (
+							<div key={`${index}-${text}`}>
+								<div
+									className={`flex cursor-pointer items-center ${
+										filterArr.length - 1 === index ? 'pl-4' : 'px-4'
+									} text-[14px] text-[#6a727b]`}
+									onClick={() => {
+										if (text === 'Label') {
+											labelPopupData();
+										} else if (text === 'Assignee') {
+											assigneePopupData();
+										} else if (text === 'Sort') {
+											sortPopupData();
+										}
+										setDisplay(true);
+									}}
+								>
+									{text}
+									<div className="hidden sm:flex">
+										<TriangleDownIcon />
+									</div>
+								</div>
+							</div>
+						))}
+						<IssuePopup
+							$display={display}
+							$onClick={() => {
+								setDisplay(false);
+							}}
+							$menuData={popupMenuData as PopupDataProps}
+						/>
+					</div>
 				</div>
 			</div>
 			<div className="sm:px-4 md:px-6 lg:px-8">
@@ -426,7 +574,7 @@ function IssuePage() {
 			</div>
 			<div className="flex w-full justify-center">
 				<div className=" mt-4 flex items-start  px-4">
-					<div className="flex h-full items-center">
+					<div className="flex h-full items-start pt-1 sm:items-center">
 						<LightBulbIcon size={14} />
 					</div>
 					<strong className="ml-1 text-sm font-semibold">ProTip!</strong>

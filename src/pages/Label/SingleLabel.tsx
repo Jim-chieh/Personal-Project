@@ -3,6 +3,7 @@ import styled from 'styled-components';
 type Background = {
 	$backgroundColor: string;
 	textColor: string;
+	$height: string;
 };
 
 const Wrapper = styled.div`
@@ -14,7 +15,7 @@ const Wrapper = styled.div`
 
 const LabelContent = styled.span<Background>`
 	background-color: ${props => props.$backgroundColor};
-	/* height: 100%; */
+	height: ${props => (props.$height ? props.$height : '')};
 	color: ${props => props.textColor};
 	padding: 0 10px;
 	border-radius: 30px;
@@ -34,9 +35,10 @@ const LabelContent = styled.span<Background>`
 type LabelProps = {
 	text: string;
 	$backgroundColor: string;
+	$height?: string;
 };
 
-function SingleLabel({ text, $backgroundColor }: LabelProps) {
+function SingleLabel({ text, $backgroundColor, $height }: LabelProps) {
 	function lightOrDark(bgcolor: string) {
 		const r = parseInt(bgcolor.slice(0, 2), 16);
 		const g = parseInt(bgcolor.slice(2, 4), 16);
@@ -53,6 +55,7 @@ function SingleLabel({ text, $backgroundColor }: LabelProps) {
 			<LabelContent
 				$backgroundColor={$backgroundColor.toLocaleUpperCase()}
 				textColor={lightOrDark($backgroundColor.substring(1, 7))}
+				$height={$height as string}
 			>
 				{text}
 			</LabelContent>

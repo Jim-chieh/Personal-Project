@@ -2,10 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { createLabelApi } from './LabelCreateApi';
 import issueListReducer from './issueSlice';
 import loginReducer from './loginSlice';
+import createIssueReducer from './createIssueSlice';
 
 export const store = configureStore({
 	reducer: {
 		issueListReducer: issueListReducer,
+		createIssueReducer: createIssueReducer,
 		loginReducer: loginReducer,
 		[createLabelApi.reducerPath]: createLabelApi.reducer
 	},

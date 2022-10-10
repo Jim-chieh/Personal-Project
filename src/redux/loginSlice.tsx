@@ -3,15 +3,17 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 interface CounterState {
 	token: string;
 	loginUser: string;
+	userAvatar: string;
 }
 
 const initialState: CounterState = {
 	token: '',
-	loginUser: ''
+	loginUser: '',
+	userAvatar: ''
 };
 
 export const loginSlice = createSlice({
-	name: 'issueListReducer',
+	name: 'loginReducer',
 	initialState,
 	reducers: {
 		addToken: (state, action: PayloadAction<string>) => {
@@ -25,11 +27,23 @@ export const loginSlice = createSlice({
 		},
 		deleteLoginUser: state => {
 			state.loginUser = '';
+		},
+		addAvatar: (state, action: PayloadAction<string>) => {
+			state.userAvatar = action.payload;
+		},
+		deleteAvatar: state => {
+			state.userAvatar = '';
 		}
 	}
 });
 
-export const { addToken, deleteToken, addLoginUser, deleteLoginUser } =
-	loginSlice.actions;
+export const {
+	addToken,
+	deleteToken,
+	addLoginUser,
+	deleteLoginUser,
+	addAvatar,
+	deleteAvatar
+} = loginSlice.actions;
 
 export default loginSlice.reducer;

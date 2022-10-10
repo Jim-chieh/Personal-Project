@@ -19,7 +19,9 @@ import {
 	addToken,
 	deleteToken,
 	addLoginUser,
-	deleteLoginUser
+	deleteLoginUser,
+	addAvatar,
+	deleteAvatar
 } from '../../redux/loginSlice';
 import { RootState } from '../../redux/store';
 
@@ -318,11 +320,16 @@ function Header() {
 			JSON.stringify(
 				localStorage.setItem('token', token.currentSession.provider_token)
 			);
+
 			dispatch(addToken(localStorage.getItem('token') as string));
 			dispatch(
 				addLoginUser(
-					token.currentLoginUser.currentSession.user.identities[0].identity_data
-						.user_name
+					token.currentSession.user.identities[0].identity_data.user_name
+				)
+			);
+			dispatch(
+				addAvatar(
+					token.currentSession.user.identities[0].identity_data.avatar_url
 				)
 			);
 		}
@@ -345,6 +352,7 @@ function Header() {
 		localStorage.removeItem('token');
 		dispatch(deleteToken());
 		dispatch(deleteLoginUser());
+		dispatch(deleteAvatar());
 		window.location.reload();
 	}
 

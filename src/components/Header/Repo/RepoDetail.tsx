@@ -104,14 +104,16 @@ const actionArr = [
 ];
 
 function RepoDetail() {
+	const token = useSelector((store: RootState) => store.loginReducer);
+
 	const { data } = useGetAllIssuesWithoutConditionQuery({
 		name: 'Jim-chieh',
 		repo: 'webpack',
-		token: localStorage.getItem('token') as string
+		token: token.token
 	});
 
 	const pageActionArr = [
-		[<CodeIcon fill="#6b737c" />, 'Pin'],
+		[<CodeIcon fill="#6b737c" />, 'Code'],
 		[<IssueOpenedIcon fill="#6b737c" />, 'Issues', data?.length as number],
 		[<GitPullRequestIcon fill="#6b737c" />, 'Pull requests'],
 		[<PlayIcon fill="#6b737c" />, 'Actions'],
@@ -121,8 +123,6 @@ function RepoDetail() {
 		[<GraphIcon fill="#6b737c" />, 'Insights'],
 		[<GearIcon fill="#6b737c" />, 'Settings']
 	];
-
-	const token = localStorage.getItem('token');
 
 	return (
 		<Wrapper

@@ -57,9 +57,10 @@ const InputContainer = styled.div`
 
 	margin-right: auto;
 	@media screen and (max-width: 767px) {
-		margin-right: 150px;
+		margin-right: 200px;
 		order: 3;
 		margin-top: 16px;
+		width: 500px;
 	}
 	@media screen and (max-width: 500px) {
 		margin-right: unset;
@@ -198,7 +199,11 @@ function LabelManagement() {
 						<LabelAndMilestones array={labelArr} $shouldHasBckground />
 					</LabelInnerContainer>
 					<InputContainer>
-						<InputComponent $onChange={() => {}} $shouldHasPadding />
+						<InputComponent
+							$onChange={() => {}}
+							$shouldHasPadding
+							$width={'300px'}
+						/>
 					</InputContainer>
 					<NewButton>
 						<NewIssueAndLabel

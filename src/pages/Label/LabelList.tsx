@@ -253,7 +253,7 @@ function LabelList({
 							<Dropdown
 								array={buttonArr}
 								$isActive={mobileIconClick}
-								bottom={editClick ? '-40px' : '-70px'}
+								top={editClick ? '10px' : '40px'}
 								right={'-4px'}
 								onClick={handleDropdownListClick}
 								$firstElementShouldhide={editClick ? 'none' : 'flex'}

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { addTitle, addBody } from '../../redux/createIssueSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -26,22 +26,55 @@ import {
 	LinkIcon,
 	MentionIcon,
 	QuoteIcon,
-	ReplyIcon
+	ReplyIcon,
+	CheckCircleIcon,
+	TriangleDownIcon,
+	IssueClosedIcon,
+	IssueReopenedIcon,
+	SkipIcon
 } from '@primer/octicons-react';
 import NewIssueAndLabel from '../../components/bottomsAndInput/NewIssueAndLabel';
+import IssueStateDropdown from '../IssuePage/IssueStateDropdown';
+import { useStateUpdateMutation } from '../../redux/singleIssueApi';
 
 type CreateCommentComponentProps = {
 	$avatarUrl: string;
 	$shouldHasTitle: boolean;
 	$createBtnClick: () => void;
 	$isFetching: boolean;
+	$shouldHasDescription: boolean;
+	$shouldHideOnMobile: boolean;
+	$shouldHasCloseBtn: boolean;
+	$checkTitleOrBodyIsEmpty: string;
+	$buttonName: string;
+	$shouldHasCancelBtn: boolean;
+	$cancelBtnClick?: () => void;
+	currentBody: string;
+	commentId?: number;
+	textInputOnCange?: (e: string) => void;
+	$isAuthor?: boolean;
+	currentState?: string;
+	issueId?: number;
 };
 
 function CreateCommentComponent({
 	$avatarUrl,
 	$shouldHasTitle,
 	$createBtnClick,
-	$isFetching
+	$isFetching,
+	$shouldHasDescription,
+	$shouldHideOnMobile,
+	$shouldHasCloseBtn,
+	$checkTitleOrBodyIsEmpty,
+	$buttonName,
+	$shouldHasCancelBtn,
+	$cancelBtnClick,
+	currentBody,
+	commentId,
+	textInputOnCange,
+	$isAuthor,
+	currentState,
+	issueId
 }: CreateCommentComponentProps) {
 	const [isFetching, setIsFetching] = useState(false);
 	const dispatch = useDispatch();
@@ -49,9 +82,33 @@ function CreateCommentComponent({
 	const createSlice = useSelector(
 		(store: RootState) => store.createIssueReducer
 	);
+	const userData = useSelector((store: RootState) => store.loginReducer);
 	const [currentClick, setCurrentClick] = useState('Write');
-	const [value, setValue] = useState('');
+	const [value, setValue] = useState(currentBody);
 	const ref = useRef<TextareaMarkdownRef>(null);
+	const [stateDropdownOpen, setStateDropdownOpen] = useState(false);
+	const [stateUpdate] = useStateUpdateMutation();
+	const [currentClickState, setCurrentClickState] = useState(
+		currentState === 'open'
+			? 'completed'
+			: currentState === 'completed'
+			? 'open'
+			: currentState === 'not_planned'
+			? 'open'
+			: ''
+	);
+	console.log(isFetching);
+	useEffect(() => {
+		setCurrentClickState(
+			currentState === 'open'
+				? 'completed'
+				: currentState === 'completed'
+				? 'open'
+				: currentState === 'not_planned'
+				? 'open'
+				: ''
+		);
+	}, [currentState]);
 
 	function autoAdjustTextArea(target: EventTarget) {
 		// @ts-ignore
@@ -59,6 +116,10 @@ function CreateCommentComponent({
 		// @ts-ignore
 		target.style.height = target.scrollHeight + 'px';
 	}
+
+	useEffect(() => {
+		setValue(currentBody);
+	}, [$avatarUrl]);
 
 	const hideOnDesktopArr = [
 		{ icon: <HeadingIcon />, text: 'Heading' },
@@ -147,7 +208,7 @@ function CreateCommentComponent({
 
 	function handleAlwaysDisplayArrClick(e: string) {
 		if (e === 'Mention') {
-			ref.current?.trigger('@');
+			setValue(value + '@');
 		} else if (e === 'Image') {
 			ref.current?.trigger('image');
 		} else if (e === 'CrossReference') {
@@ -157,14 +218,65 @@ function CreateCommentComponent({
 		}
 	}
 
+	async function handleStateChnage() {
+		setIsFetching(true);
+		await stateUpdate({
+			name: 'Jim-chieh',
+			repo: 'webpack',
+			token: userData.token,
+			id: issueId?.toString() as string,
+			state: currentClickState === 'open' ? 'open' : 'closed',
+			state_reason:
+				currentClickState === 'open' ? 'reopened' : currentClickState
+		});
+		setIsFetching(false);
+	}
+
+	function returnNoting() {
+		return null;
+	}
+
+	const stateArr = [
+		{
+			icon: <IssueReopenedIcon />,
+			colorCode: 'text-[#2da44e]',
+			state: 'open',
+			reason: 'open',
+			showText: 'Reopen issue'
+		},
+		{
+			icon: <IssueClosedIcon />,
+			colorCode: 'text-[#8250df]',
+			state: 'closed',
+			reason: 'completed',
+			showText: 'Close as completed',
+			description: 'Done, closed, fixed, resolved'
+		},
+		{
+			icon: <SkipIcon />,
+			colorCode: 'text-[#57606a]',
+			state: 'closed',
+			reason: 'not_planned',
+			showText: 'Close as not planned',
+			description: "Won't fix, can't repro, duplicate, stale"
+		}
+	];
+
 	return (
-		<div className="md:w-[68%] md:pl-[56px]">
-			<div className="relative mr-3 rounded-md md:border-[1px] md:border-[#dce1e6]">
+		<div className="">
+			<div className="relative rounded-md bg-white md:mr-3 md:border-[1px] md:border-[#dce1e6] ">
 				<div className="absolute left-[-60px] hidden h-10 w-10 md:block">
 					<img src={$avatarUrl} alt="userAvatar" className="rounded-[50%]" />
 				</div>
-				<div className="border-r-gray absolute left-[-9px] top-[10px] hidden border-y-[9px] border-r-[9px] border-l-0 border-solid border-y-transparent md:block"></div>
-				<div className="absolute left-[-6px] top-[11px] hidden border-y-8 border-r-8 border-l-0 border-solid border-y-transparent border-r-white md:block"></div>
+				<div
+					className={`${$isAuthor ? 'border-r-[#bbdfff]' : 'border-r-gray'}
+					}  absolute left-[-9px] top-[10px] hidden border-y-[9px] border-r-[9px] border-l-0 border-solid border-y-transparent md:block`}
+				></div>
+				<div
+					className={`absolute left-[-6px] top-[11px] hidden border-y-8 border-r-8 border-l-0 border-solid border-y-transparent ${
+						$isAuthor ? 'border-r-[#ddf4ff]' : 'border-r-[#f6f8fa]'
+					} md:block`}
+				></div>
 				<div
 					className={`mb-4 md:mb-0 md:p-2 ${
 						$shouldHasTitle ? 'block' : 'hidden'
@@ -177,18 +289,26 @@ function CreateCommentComponent({
 						value={createSlice.title}
 					/>
 				</div>
-				<div className="block lg:flex lg:justify-between lg:border-b-[1px] lg:border-b-[#d4dbe1]">
-					<div className="flex w-full md:mx-2 md:mt-2 md:mb-[-1px]">
+				<div
+					className={`block lg:flex lg:justify-between lg:border-b-[1px] lg:border-b-[#d4dbe1] ${
+						$isAuthor ? 'md:bg-[#ddf4ff]' : 'md:bg-[#f6f8fa]'
+					}`}
+				>
+					<div className="flex w-full  md:mx-2 md:mt-2 md:mb-[-1px]">
 						<button
 							className={`w-6/12 border-x-[1px] ${
 								currentClick === 'Write' ? 'border-t-[1px]' : 'border-y-[1px]'
 							}  border-[#d4dbe1]  ${
-								currentClick === 'Write' ? 'bg-transprant' : 'bg-[#f6f8fa]'
+								currentClick === 'Write' ? 'bg-[#fffff]' : 'bg-[#f6f8fa]'
 							} px-4 py-2 text-sm md:mr-1 md:w-auto md:rounded-t-md  ${
 								currentClick === 'Write'
 									? ' md:border-x-[1px] md:border-b-[1px] md:border-b-[#ffffff]'
 									: ' md:border-0'
-							}  md:bg-[transparent]`}
+							}  ${
+								$isAuthor && currentClick === 'Write'
+									? 'md:bg-[#ffffff]'
+									: 'md:bg-[transparent]'
+							}`}
 							onClick={() => setCurrentClick('Write')}
 						>
 							Write
@@ -202,7 +322,11 @@ function CreateCommentComponent({
 								currentClick === 'Preview'
 									? ' md:border-x-[1px]'
 									: ' md:border-0'
-							}  md:bg-[transparent]`}
+							}  ${
+								$isAuthor && currentClick === 'Preview'
+									? 'md:bg-[#ffffff]'
+									: 'md:bg-[transparent]'
+							}`}
 							onClick={() => setCurrentClick('Preview')}
 						>
 							Preview
@@ -302,13 +426,18 @@ function CreateCommentComponent({
 					} rounded-md border-[1px] border-[#d0d7de] bg-[#f6f8fa]  md:m-2`}
 				>
 					<TextareaMarkdown
-						className=" max-h-[500px] min-h-[200px]  w-full rounded-md  border-b-[1px] border-dashed border-b-[#d0d7de] p-2 text-sm focus:outline-[#0969da] md:rounded-b-none"
+						className=" max-h-[500px] min-h-[200px]  w-full rounded-md  bg-[#f6f8fa] p-2 text-sm focus:bg-white focus:outline-[#0969da] md:rounded-b-none md:border-b-[1px] md:border-dashed md:border-b-[#d0d7de]"
 						placeholder="Leave a comment"
 						ref={ref}
-						value={value}
+						value={
+							currentBody === null ? 'No description provided.' : currentBody
+						}
 						onChange={e => {
 							setValue(e.target.value);
-							dispatch(addBody(e.target.value));
+							textInputOnCange
+								? textInputOnCange(e.target.value)
+								: returnNoting();
+							commentId ? returnNoting() : dispatch(addBody(e.target.value));
 						}}
 						onKeyUp={e => autoAdjustTextArea(e.target)}
 						commands={[
@@ -346,10 +475,27 @@ function CreateCommentComponent({
 						currentClick === 'Preview' ? 'block' : 'hidden'
 					} mx-2 mt-4 mb-2 min-h-[250px] border-b-[1px] border-[#d4dbe1] px-2 pb-1`}
 				>
-					<ReactMarkdown children={createSlice.body} remarkPlugins={[gfm]} />
+					<ReactMarkdown
+						children={
+							currentBody
+								? currentBody
+								: createSlice.body === ''
+								? 'Nothing to preview'
+								: createSlice.body
+						}
+						remarkPlugins={[gfm]}
+					/>
 				</div>
-				<div className="mx-2 mb-2  hidden justify-between md:flex">
-					<div className="group flex cursor-pointer items-center text-[#57606a] hover:text-[#0969da]">
+				<div
+					className={`mx-2 mb-2 ${
+						$shouldHideOnMobile ? 'hidden md:flex' : 'mt-2 flex'
+					} ${$shouldHasDescription ? 'justify-between ' : 'justify-end'}`}
+				>
+					<div
+						className={`group ${
+							$shouldHasDescription ? 'flex' : 'hidden'
+						} cursor-pointer items-center text-[#57606a] hover:text-[#0969da]`}
+					>
 						<MarkdownIcon />
 						<p
 							className={`ml-1 text-xs text-[#57606a] group-hover:text-[#0969da] `}
@@ -357,23 +503,99 @@ function CreateCommentComponent({
 							Styling with Markdown is supported
 						</p>
 					</div>
-					<div className="hidden md:flex">
+					<div
+						className={`${
+							$shouldHasCloseBtn ? 'flex' : 'hidden'
+						} relative mr-1 text-sm`}
+					>
+						<button
+							className={`flex h-full items-center rounded-l-md border-[1px] border-[#d5d8da] bg-[#f6f8fa] px-4 py-[5px] hover:bg-[#f3f4f6] ${
+								isFetching ? 'opacity-80' : ''
+							}`}
+							onClick={() => {
+								handleStateChnage();
+							}}
+						>
+							{currentClickState === 'open' ? (
+								<IssueReopenedIcon fill="#2da44e" />
+							) : currentClickState === 'completed' ? (
+								<CheckCircleIcon fill={'#8250df'} />
+							) : currentClickState === 'not_planned' ? (
+								<SkipIcon fill="#57606a" />
+							) : null}
+							{currentClickState === 'open' ? (
+								<p className="ml-2">Reopen</p>
+							) : currentClickState === 'completed' ? (
+								currentBody !== '' ? (
+									<p className="ml-2">Close issue with comment</p>
+								) : (
+									<p className="ml-2">Close issue</p>
+								)
+							) : currentClickState === 'not_planned' ? (
+								currentBody !== '' ? (
+									<p className="ml-2">Close issue with comment</p>
+								) : (
+									<p className="ml-2">Close issue</p>
+								)
+							) : null}
+						</button>
+						<button
+							className="flex h-full items-center rounded-r-md border-[1px] border-l-0 border-[#d5d8da] bg-[#f6f8fa] px-3 py-[5px] hover:bg-[#f3f4f6]"
+							onClick={() => setStateDropdownOpen(true)}
+						>
+							<TriangleDownIcon />
+						</button>
+						<div className={`${stateDropdownOpen ? 'block' : 'hidden'}`}>
+							<IssueStateDropdown
+								$onClick={() => setStateDropdownOpen(false)}
+								stateArr={stateArr}
+								currentState={currentState as string}
+								$dropDownClick={(e: string) => {
+									setCurrentClickState(e);
+									setStateDropdownOpen(false);
+								}}
+								currentClickState={currentClickState}
+							/>
+						</div>
+					</div>
+					<div className={`${$shouldHasCancelBtn ? 'block' : 'hidden'} mr-1`}>
 						<NewIssueAndLabel
-							buttonName={'Submit new issue'}
+							buttonName={'Cancel'}
+							backgroundColor={'#f6f8fa'}
+							onClick={$cancelBtnClick as () => void}
+							textColor={'#bd0f2b'}
+							$border={'#d5d8da'}
+							$hoverColor={'#a40e26'}
+							$checkMouseEvent
+							$hoverBorderColor={'#d5d8da'}
+							$hoverTextColor={'#ffffff'}
+						/>
+					</div>
+					<div
+						className={`${$shouldHideOnMobile ? 'hidden md:flex' : 'flex'} `}
+					>
+						<NewIssueAndLabel
+							buttonName={$buttonName}
 							backgroundColor={
-								createSlice.title === '' || $isFetching ? '#94d3a2' : '#2da44e'
+								$checkTitleOrBodyIsEmpty === '' || $isFetching
+									? '#94d3a2'
+									: '#2da44e'
 							}
 							onClick={$createBtnClick}
 							textColor={'#ffffff'}
-							$border={createSlice.title === '' ? '#82b88f' : '#2c974b'}
+							$border={$checkTitleOrBodyIsEmpty === '' ? '#82b88f' : '#2c974b'}
 							$hoverColor={'#2c974b'}
-							$checkMouseEvent={createSlice.title !== ''}
+							$checkMouseEvent={$checkTitleOrBodyIsEmpty !== ''}
 							$hoverBorderColor={'#2c974b'}
 						/>
 					</div>
 				</div>
 			</div>
-			<div className="mt-4 mb-2 md:m-2">
+			<div
+				className={`mt-4 mb-2 md:m-2 ${
+					$shouldHasDescription ? 'block' : 'hidden'
+				}`}
+			>
 				<InfoIcon fill={'#57606a'} />
 				<span className="ml-1 text-xs text-[#57606a]">
 					Remember, contributions to this repository should follow our{' '}

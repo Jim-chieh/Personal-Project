@@ -12,6 +12,7 @@ type IssuePopupProps = {
 	$menuData?: PopupDataProps;
 	$stillShowOnMdSize?: boolean;
 	$shouldhasXIcon?: boolean;
+	$onBlurEffectClick?: void | (() => void);
 };
 
 function IssuePopup({
@@ -19,10 +20,14 @@ function IssuePopup({
 	$onClick,
 	$menuData,
 	$stillShowOnMdSize,
-	$shouldhasXIcon
+	$shouldhasXIcon,
+	$onBlurEffectClick
 }: IssuePopupProps) {
 	const [inputValue, setInputValue] = useState('');
 	const dispatch = useDispatch();
+	function returnNothing() {
+		return null;
+	}
 
 	if (!$menuData) return null;
 
@@ -35,6 +40,7 @@ function IssuePopup({
 				onClick={() => {
 					$onClick();
 					setInputValue('');
+					$onBlurEffectClick ? $onBlurEffectClick() : returnNothing();
 				}}
 			></div>
 			<div

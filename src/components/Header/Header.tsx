@@ -391,7 +391,7 @@ function Header() {
 							<Dropdown
 								array={plusArr}
 								$isActive={plusClick}
-								bottom={'-158px'}
+								top={'30px'}
 								right={'0px'}
 							/>
 							<BlurEffect

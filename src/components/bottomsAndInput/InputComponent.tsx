@@ -1,15 +1,22 @@
 import styled from 'styled-components';
 import { SearchIcon } from '@primer/octicons-react';
 
+type WrapperProp = {
+	$padding: boolean;
+	$flexgrow?: boolean;
+	$width?: string;
+};
 type WrapperProps = {
 	$padding: boolean;
 };
 
-const Wrapper = styled.div<WrapperProps>`
+const Wrapper = styled.div<WrapperProp>`
 	padding: ${props => (props.$padding ? '0px 8px' : '0px')};
 	padding-left: ${props => (props.$padding ? '8px' : '0px')};
 	position: relative;
-	flex-grow: 1;
+	flex-grow: ${props => (props.$flexgrow ? '1' : '0')};
+	width: ${props => props.$width};
+
 	@media screen and (max-width: 767px) {
 		padding-left: 0px;
 	}
@@ -49,15 +56,19 @@ type InputComponents = {
 	$value?: string;
 	$onChange: (e: string) => void;
 	$shouldHasPadding: boolean;
+	$flexgrow?: boolean;
+	$width?: string;
 };
 
 function InputComponent({
 	$value,
 	$onChange,
-	$shouldHasPadding
+	$shouldHasPadding,
+	$flexgrow,
+	$width
 }: InputComponents) {
 	return (
-		<Wrapper $padding={$shouldHasPadding}>
+		<Wrapper $padding={$shouldHasPadding} $flexgrow={$flexgrow} $width={$width}>
 			<Input
 				placeholder="Search all labels"
 				value={$value}

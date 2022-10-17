@@ -5,6 +5,8 @@ import {
 	IssueOpenedIcon,
 	CircleSlashIcon
 } from '@primer/octicons-react';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 type HoverPopupProps = {
 	title: string;
@@ -77,7 +79,7 @@ function IssueTitleHoverPopup({
 						}`}</p>
 					</div>
 					<div className="flex  text-sm">
-						{state_reason === null ? (
+						{state_reason === null || state_reason === 'reopened' ? (
 							<IssueOpenedIcon fill={'#1a7f37'} />
 						) : state_reason === 'not_planned' ? (
 							<CircleSlashIcon fill={'#57606a'} />
@@ -95,7 +97,7 @@ function IssueTitleHoverPopup({
 								body === null ? 'hidden' : 'block'
 							}`}
 						>
-							{body}
+							{<ReactMarkdown children={body} remarkPlugins={[gfm]} />}
 						</span>
 					</div>
 					<div className="mt-1 flex pl-5 text-xs">

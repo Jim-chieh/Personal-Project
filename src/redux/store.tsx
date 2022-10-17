@@ -3,12 +3,14 @@ import { createLabelApi } from './LabelCreateApi';
 import issueListReducer from './issueSlice';
 import loginReducer from './loginSlice';
 import createIssueReducer from './createIssueSlice';
+import singleIssueReducer from './singleIssueSlice';
 
 export const store = configureStore({
 	reducer: {
 		issueListReducer: issueListReducer,
 		createIssueReducer: createIssueReducer,
 		loginReducer: loginReducer,
+		singleIssueReducer: singleIssueReducer,
 		[createLabelApi.reducerPath]: createLabelApi.reducer
 	},
 	middleware: getDefaultMiddleware => {

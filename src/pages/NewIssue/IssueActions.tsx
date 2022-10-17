@@ -9,6 +9,7 @@ type IssueActionsProps = {
 		icon?: JSX.Element | string;
 		currentClick?: string[];
 		currentLogin?: string;
+		outerOnclick?: () => void;
 		content?: {
 			$background?: string;
 			title?: string;
@@ -17,8 +18,9 @@ type IssueActionsProps = {
 			picture?: string;
 			showText?: string;
 			action?: string;
+			participants?: string;
 		}[];
-		description?: string;
+		description?: string | JSX.Element;
 		more?: string;
 		outerLink?: JSX.Element;
 		noHoverEffect?: boolean;
@@ -29,6 +31,9 @@ type IssueActionsProps = {
 
 function IssueActions({ action, index }: IssueActionsProps) {
 	const [display, setDisplay] = useState(false);
+	function returnNothing() {
+		return null;
+	}
 	return (
 		<div className="relative mt-6 md:mt-0 md:w-[240px]">
 			<div
@@ -49,7 +54,7 @@ function IssueActions({ action, index }: IssueActionsProps) {
 					>
 						{action.title}
 					</span>
-					<div className="text-[#57606a] group-hover:text-[#0969da] ">
+					<div className="text-xs text-[#57606a] group-hover:text-[#0969da]">
 						{action.icon}
 					</div>
 				</div>
@@ -66,9 +71,9 @@ function IssueActions({ action, index }: IssueActionsProps) {
 							{action.description}
 							<span
 								className="cursor-pointer text-[#57606a] hover:text-[#0969da]"
-								onClick={() =>
-									action.popupData?.addDispatch(action.currentLogin as string)
-								}
+								onClick={() => {
+									action.popupData?.addDispatch(action.currentLogin as string);
+								}}
 							>
 								{action.more}
 							</span>
@@ -108,6 +113,13 @@ function IssueActions({ action, index }: IssueActionsProps) {
 										/>
 									</div>
 								)}
+								{item.participants && (
+									<img
+										className="cursour-pointer mr-1 h-[26px] w-[26px] rounded-[50%] border-[1px] border-[#dddede]"
+										src={item.participants}
+										alt="user avatar"
+									/>
+								)}
 							</div>
 						))
 					)}
@@ -118,7 +130,12 @@ function IssueActions({ action, index }: IssueActionsProps) {
 			>
 				<IssuePopup
 					$display={display}
-					$onClick={() => setDisplay(false)}
+					$onClick={() => {
+						setDisplay(false);
+					}}
+					$onBlurEffectClick={() => {
+						action.outerOnclick ? action.outerOnclick() : returnNothing();
+					}}
 					$menuData={action.popupData}
 					$stillShowOnMdSize={action.popupData?.$stillShowOnMdSize}
 					$shouldhasXIcon={action.popupData?.$shouldhasXIcon}

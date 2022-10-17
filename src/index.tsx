@@ -7,7 +7,7 @@ import './index.css';
 
 import App from './App';
 import IssueListPage from './pages/IssueList/IssueListPage';
-import IssuePage from './pages/IssuePage';
+import IssuePage from './pages/IssuePage/IssuePage';
 import NewIssuePage from './pages/NewIssue/NewIssuePage';
 import LabelManagement from './pages/Label/LabelManagement';
 

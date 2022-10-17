@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import IssueActions from './IssueActions';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -9,7 +9,9 @@ import {
 	removeAssignee,
 	clearAssignee,
 	removeLabel,
-	clearAll
+	clearAll,
+	addTitle,
+	addBody
 } from '../../redux/createIssueSlice';
 import { useCreateIssueMutation } from '../../redux/createIssueApi';
 import {
@@ -38,28 +40,8 @@ import { useGetAllAssigneesQuery } from '../../redux/IssueApi';
 import { useNavigate } from 'react-router-dom';
 import { createIssueParam } from '../../redux/createIssueApi';
 
-const listArr = [
-	<ListUnorderedIcon fill={'#57606a'} />,
-	<ListOrderedIcon fill={'#57606a'} />,
-	<TasklistIcon fill={'#57606a'} />
-];
-
-const quoteCodeLinkArr = [
-	<QuoteIcon fill={'#57606a'} />,
-	<CodeIcon fill={'#57606a'} />,
-	<LinkIcon fill={'#57606a'} />
-];
-
-const alwaysDisplay = [
-	<MentionIcon fill={'#57606a'} />,
-	<ImageIcon fill={'#57606a'} />,
-	<CrossReferenceIcon fill={'#57606a'} />,
-	<ReplyIcon fill={'#57606a'} />
-];
-
 function NewIssuePage() {
 	const [isFetching, setIsFetching] = useState(false);
-	const title = useRef('');
 	const dispatch = useDispatch();
 	const userData = useSelector((store: RootState) => store.loginReducer);
 	const [createIssue] = useCreateIssueMutation();
@@ -67,6 +49,13 @@ function NewIssuePage() {
 		(store: RootState) => store.createIssueReducer
 	);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		dispatch(removeLabel([]));
+		dispatch(removeAssignee([]));
+		dispatch(addTitle(''));
+		dispatch(addBody(''));
+	}, []);
 
 	const { data: labelsData, isLoading: isLabelsLoading } = useGetAllLabelsQuery(
 		{
@@ -210,26 +199,36 @@ function NewIssuePage() {
 			noHoverEffect: true
 		}
 	];
+	console.log(createSlice);
 
 	return (
 		<div className="mt-6 mb-[220px] w-full px-4  md:px-6">
 			<div className="max-w-[1300px] md:mx-auto md:flex  md:justify-center">
-				<CreateCommentComponent
-					$avatarUrl={userData.userAvatar}
-					$shouldHasTitle
-					$createBtnClick={() =>
-						createNewIssue({
-							name: 'Jim-chieh',
-							repo: 'webpack',
-							token: userData.token,
-							title: createSlice.title,
-							body: createSlice.body,
-							labels: createSlice.labels,
-							assignees: createSlice.assignee
-						})
-					}
-					$isFetching={isFetching}
-				/>
+				<div className="md:w-[68%] md:pl-[56px]">
+					<CreateCommentComponent
+						$avatarUrl={userData.userAvatar}
+						$shouldHasTitle
+						$createBtnClick={() =>
+							createNewIssue({
+								name: 'Jim-chieh',
+								repo: 'webpack',
+								token: userData.token,
+								title: createSlice.title,
+								body: createSlice.body,
+								labels: createSlice.labels,
+								assignees: createSlice.assignee
+							})
+						}
+						$isFetching={isFetching}
+						$shouldHasDescription
+						$shouldHideOnMobile
+						$shouldHasCloseBtn={false}
+						$checkTitleOrBodyIsEmpty={createSlice.title}
+						$buttonName={'Submit new issue'}
+						$shouldHasCancelBtn={false}
+						currentBody={createSlice.body}
+					/>
+				</div>
 				<div>
 					{ActionsArr.map((action, index) => (
 						<IssueActions action={action} key={index} index={index} />
@@ -240,7 +239,9 @@ function NewIssuePage() {
 				<div className="mt-6 md:hidden">
 					<NewIssueAndLabel
 						buttonName={'Submit new issue'}
-						backgroundColor={title.current === '' ? '#94d3a2' : '#2da44e'}
+						backgroundColor={
+							createSlice.title === '' || isFetching ? '#94d3a2' : '#2da44e'
+						}
 						onClick={() =>
 							createNewIssue({
 								name: 'Jim-chieh',
@@ -253,9 +254,9 @@ function NewIssuePage() {
 							})
 						}
 						textColor={'#ffffff'}
-						$border={title.current === '' ? '#82b88f' : '#2c974b'}
+						$border={createSlice.title === '' ? '#82b88f' : '#2c974b'}
 						$hoverColor={'#2c974b'}
-						$checkMouseEvent={title.current !== ''}
+						$checkMouseEvent={createSlice.title !== ''}
 						$hoverBorderColor={'#2c974b'}
 						$width={'100%'}
 					/>

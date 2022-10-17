@@ -28,7 +28,7 @@ export const DropdownStories = Template.bind({});
 DropdownStories.args = {
 	array: ['list1', 'list2', 'list3', 'list4'],
 	$isActive: true,
-	bottom: '350px',
+	top: '0px',
 	right: '250px',
 	$firstElementShouldhide: 'none'
 };

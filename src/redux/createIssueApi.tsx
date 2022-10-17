@@ -20,7 +20,8 @@ const createIssueapi = createLabelApi.injectEndpoints({
 				headers: new Headers({
 					'Content-Type': 'application/json',
 					Accept: 'application/vnd.github+json',
-					Authorization: `token ${token}`
+					Authorization: `token ${token}`,
+					'if-none-match': ''
 				}),
 				body: {
 					title: title,
@@ -28,7 +29,8 @@ const createIssueapi = createLabelApi.injectEndpoints({
 					labels: labels,
 					assignees: assignees
 				}
-			})
+			}),
+			invalidatesTags: ['issues']
 		})
 	})
 });

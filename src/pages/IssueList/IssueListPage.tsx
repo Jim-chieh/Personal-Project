@@ -313,6 +313,7 @@ function IssuePage() {
 								setInputValue(value);
 							}}
 							$shouldHasPadding={false}
+							$flexgrow
 						/>
 					</div>
 				</div>
@@ -564,10 +565,10 @@ function IssuePage() {
 							setPage((parseInt(page) + 1).toString());
 							dispatch(switchPage(`${noPR.length < 3 ? page : () => {}}`));
 						}}
-						textColor={noPR.length >= 4 ? '#287cdf' : 'gray'}
+						textColor={noPR.length >= 10 ? '#287cdf' : 'gray'}
 						$border={'none'}
 						$hoverColor={'none'}
-						$checkMouseEvent={noPR.length >= 4}
+						$checkMouseEvent={noPR.length >= 10}
 						$hoverBorderColor={'#d0d7de'}
 					/>
 				</div>

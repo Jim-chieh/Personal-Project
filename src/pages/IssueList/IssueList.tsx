@@ -58,25 +58,24 @@ function IssueList({
 			seconds < 60
 		) {
 			result = seconds;
-			showDay = 'seconds';
+			showDay = 'seconds ago';
 		} else if (days === -1) {
 			result = 1;
-			showDay = 'seconds';
+			showDay = 'seconds ago';
 		} else if (days === 0 && hours === 0 && minutes < 60) {
 			result = minutes;
-			showDay = 'minutes';
+			showDay = 'minutes ago';
 		} else if (days === 0 && hours + 1 < 24) {
 			result = hours;
-			showDay = 'hours';
-			console.log('here1');
+			showDay = 'hours ago';
+		} else if (days === 1 || hours + 1 >= 24) {
+			result = '';
+			showDay = 'yesterday';
 		} else if (days !== 0) {
 			result = days;
-			showDay = 'days';
-		} else if (days === 0 && hours + 1 >= 24) {
-			result = days + 1;
-			showDay = 'day';
+			showDay = 'days ago';
 		}
-		return `#${number} ${state} ${result} ${showDay} ago by ${user.login}`;
+		return `#${number} ${state}ed ${result} ${showDay} by ${user.login}`;
 	}
 
 	return (
@@ -100,7 +99,11 @@ function IssueList({
 					<CircleSlashIcon size={16} fill="#57606a" />
 				</div>
 				<div
-					className={`pt-2 pl-4 ${state_reason === null ? 'block' : 'hidden'}`}
+					className={`pt-2 pl-4 ${
+						state_reason === null || state_reason === 'reopened'
+							? 'block'
+							: 'hidden'
+					}`}
 				>
 					<IssueOpenedIcon size={16} fill="#1a7f37" />
 				</div>
@@ -109,7 +112,9 @@ function IssueList({
 						<div className="flex flex-wrap ">
 							<div className="group relative flex w-full cursor-pointer md:w-fit">
 								<p className=" mr-1 flex items-end text-sm font-semibold group-hover:text-[#0969da]">
-									{title}
+									<a href={`issue/${number}`} className="text-black">
+										{title}
+									</a>
 								</p>
 								<div className=" z-10 hidden group-hover:block">
 									<IssueTitleHoverPopup

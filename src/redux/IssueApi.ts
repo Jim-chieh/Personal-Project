@@ -45,7 +45,8 @@ const issueListapi = createLabelApi.injectEndpoints({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: `token ${token}`
+					Authorization: `token ${token}`,
+					'if-none-match': ''
 				})
 			}),
 			providesTags: ['issues']
@@ -56,7 +57,8 @@ const issueListapi = createLabelApi.injectEndpoints({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: `token ${token}`
+					Authorization: `token ${token}`,
+					'if-none-match': ''
 				})
 			}),
 			providesTags: ['issues']
@@ -67,7 +69,8 @@ const issueListapi = createLabelApi.injectEndpoints({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: `token ${token}`
+					Authorization: `token ${token}`,
+					'if-none-match': ''
 				})
 			}),
 			providesTags: ['issues']

@@ -65,7 +65,8 @@ export const createLabelApi = createApi({
 				method: 'GET',
 				headers: new Headers({
 					'Content-Type': 'application/json',
-					Authorization: `token ${token}`
+					Authorization: `token ${token}`,
+					'if-none-match': ''
 				})
 			}),
 			providesTags: ['labels']
@@ -84,7 +85,8 @@ export const createLabelApi = createApi({
 				headers: new Headers({
 					'Content-Type': 'application/json',
 					Authorization: `token ${token}`,
-					Accept: 'application/vnd.github+json'
+					Accept: 'application/vnd.github+json',
+					'if-none-match': ''
 				}),
 				body: {
 					name: createLabelName,
@@ -109,7 +111,8 @@ export const createLabelApi = createApi({
 				headers: new Headers({
 					'Content-Type': 'application/json',
 					Authorization: `token ${token}`,
-					Accept: 'application/vnd.github+json'
+					Accept: 'application/vnd.github+json',
+					'if-none-match': ''
 				}),
 				body: {
 					name: createLabelName,
@@ -126,7 +129,8 @@ export const createLabelApi = createApi({
 				headers: new Headers({
 					'Content-Type': 'application/json',
 					Authorization: `token ${token}`,
-					Accept: 'application/vnd.github+json'
+					Accept: 'application/vnd.github+json',
+					'if-none-match': ''
 				})
 			}),
 			invalidatesTags: ['labels']
